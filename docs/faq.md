@@ -5,7 +5,7 @@
 Currently, anything that the [Python `zipfile`](https://docs.python.org/3/library/zipfile.html) or [Python `tarfile`](https://docs.python.org/3/library/tarfile.html) functions can handle. Generically, this means
 
 - ZIP files (`.zip`)
-- TAR files (`.tar.gz`, `.tgz`)
+- TAR files (`.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`, `.tar.xz`)
 
 If you need a particular format, feel free to reach out to us.
 
