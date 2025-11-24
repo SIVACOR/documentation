@@ -24,7 +24,7 @@ SIVACOR produces six output files:
 
 - A **run output log** and a **run error log**. Ideally the latter is an empty file, but it contains all the error messages the software may have produced. For packages like Stata, these are more likely included in the **run output log**. 
 
-A few [TRACE-related](https://transparency-certified.github.io/) that can be used by others to verify that the files (figures, tables) were truly produced by this system.
+A few [TRACE-related](https://transparency-certified.github.io/) files are produced that can be used by others to verify that the files (figures, tables) were truly produced by this system.
 
 - A **TRO Declaration** file. It describes the various states of the process, and describes the files present at each step. On SIVACOR, this is relatively straightforward, but it can grow more complicated.
 - A **TRS Signature** file. This is a text file that contains a cryptographic signature of the results, which can be used to verify that the results have not been altered.
