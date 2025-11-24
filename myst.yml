@@ -1,0 +1,26 @@
+version: 1
+project:
+  title: SIVACOR
+  authors:
+    - name: SIVACOR Team
+  copyright: '2025'
+  exclude:
+    - venv/*
+  github: sivacor/docs
+  bibliography:
+    - references.bib
+  exports:
+    - format: pdf
+      template: plain_latex_book
+      output: exports/book.pdf
+  toc:
+    - file: docs/intro.md
+    - title: User's Guide
+      children:
+        - file: docs/faq.md
+site:
+  options:
+    logo: site_logo.png
+    favicon: favicon.ico
+    folders: true
+  template: book-theme
