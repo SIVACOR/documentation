@@ -1,5 +1,14 @@
 # FAQ
 
+## What kind of files can I upload?
+
+Currently, anything that the [Python `zipfile`](https://docs.python.org/3/library/zipfile.html) or [Python `tarfile`](https://docs.python.org/3/library/tarfile.html) functions can handle. Generically, this means
+
+- ZIP files (`.zip`)
+- TAR files (`.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`, `.tar.xz`)
+
+If you need a particular format, feel free to reach out to us.
+
 ## How does this run my code?
 
 For R, the system runs
