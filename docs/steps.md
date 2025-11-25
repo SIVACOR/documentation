@@ -1,11 +1,12 @@
 # User Guide
 
+The main submission site is <https://submit.sivacor.org>.
 ## Logging In
 
+
+[![Login page](images/sivacor-login.png)](https://submit.sivacor.org)
+
 SIVACOR uses institutional logins via [Globus](https://globus.org/) or [ORCID](https://orcid.org). 
-
-![Login page](images/sivacor-login.png)
-
 You can choose one or the other.
 
 ::::{tabs-set}

@@ -19,6 +19,8 @@ project:
       children:
         - file: docs/faq.md
         - file: docs/steps.md
+    - url: 'https://submit.sivacor.org'
+      title: Submit a job
 site:
   options:
     logo: site_logo.png
