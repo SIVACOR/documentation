@@ -14,7 +14,7 @@ If you need a particular format, feel free to reach out to us.
 For R, the system runs
 
 ```
-/usr/local/bin/R --quiet --no-save --no-restore -f (MAIN_FILE)
+/usr/local/bin/R --no-save --no-restore -f (MAIN_FILE)
 ```
 
 For Stata, the system runs
