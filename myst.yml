@@ -27,3 +27,7 @@ site:
     favicon: favicon.ico
     folders: true
   template: book-theme
+  ite:
+  actions:
+    - title: Submit a Job
+      url: https://submit.sivacor.org
