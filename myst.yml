@@ -15,9 +15,10 @@ project:
       output: exports/book.pdf
   toc:
     - file: docs/intro.md
-    - title: User's Guide
+    - title: About this project
       children:
         - file: docs/faq.md
+        - file: docs/steps.md
 site:
   options:
     logo: site_logo.png
