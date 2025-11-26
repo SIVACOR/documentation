@@ -15,10 +15,8 @@ project:
       output: exports/book.pdf
   toc:
     - file: docs/intro.md
-    - title: About this project
-      children:
-        - file: docs/steps.md
-        - file: docs/faq.md
+    - file: docs/steps.md
+    - file: docs/faq.md
     - url: 'https://submit.sivacor.org'
       title: Submit a job
 site:
