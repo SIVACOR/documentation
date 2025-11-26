@@ -21,7 +21,16 @@ For Stata, the system runs
 
 ```
 /usr/local/bin/stata-mp -b do (MAIN_FILE)
+
 ```
+
+## How do I know a job failed?
+
+When a job fails to run, you will see a notice in the job status page:
+
+![Job failed screenshot](images/sivacor-failed.png)
+
+You should inspect the `Run output log` and `Run error log` files to see what went wrong. When a job fails, no `Replicated Package` is produced.
 
 ## What are all these output files?
 
