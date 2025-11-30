@@ -50,6 +50,21 @@ A few [TRACE-related](https://transparency-certified.github.io/) files are produ
 
 These three files are also included in the `tro` folder inside the replication package.
 
+## It's failing on a file, but the file is there!
+
+Actually, the file may not be called exactly the same thing. The containers used by SIVACOR are based on Linux, and Linux uses a case-sensitive file system. So if your main file is called `Main.do`, or `Main.DO`, that is not the same as `main.do`. The same applies for any files written or read by Stata or R: Reading from `data/raw/gs4.csv` is not the same as reading from `data/Raw/GS4.csv`. 
+
+
+## Stata errors
+
+### `r(601)`
+
+This is a file-not found error. There are two reasons for this:
+
+- you did not include the file in your uploaded package
+- you included a file that is similarly named, but has different capitalization. Ensure that your code uses naming that matches exactly the files you included, including upper/lower case.
+
+
 ## What do I do with the replicated package that I can download?
 
 You can upload it directly to the journal submission system! For instance, in the case of the American Economic Association, simply **import** the ZIP file into the AEA's [Data and Code Repository](https://www.icpsr.umich.edu/sites/aea/home) (see [instructions](https://aeadataeditor.github.io/aea-de-guidance/)).
