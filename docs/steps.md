@@ -1,8 +1,33 @@
 # User Guide
 
-The main submission site is <https://submit.sivacor.org>.
+## Preparing a Compatible Replication Package
+
+### You should not include any data that you are not allowed to share publicly.
+
+While SIVACOR does not publish data or replication packages, and deletes completed jobs after a short period of time, it is not a designated secure computing system. 
+
+### Your replication package should be portable.
+
+Code must run without manual intervention, use a single controller script (e.g., `main.do` or `master.R`), and avoid hard-coded absolute paths. You can only upload the package, not edit it on the site. It should also not have inconsistently used case-sensitive file or directory names. 
+
+### All dependencies must either be included or installed automatically.
+
+If your code uses libraries or packages, you must ensure that they are installed automatically. We strongly encourage packages that use "environments", and packages to manage dependencies, such as `renv` for `R`.
+
+### Prepare a ZIP or tar.gz file
+
+Your replication package must be a single ZIP file or tar.gz file. 
+
+
+:::{note}
+
+You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#checklist) on the AEA Data Editor's site useful. 
+
+:::
+
 ## Logging In
 
+The main submission site is <https://submit.sivacor.org>.
 
 [![Login page](images/sivacor-login.png)](https://submit.sivacor.org)
 
