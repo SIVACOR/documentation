@@ -54,6 +54,98 @@ These three files are also included in the `tro` folder inside the replication p
 
 Actually, the file may not be called exactly the same thing. The containers used by SIVACOR are based on Linux, and Linux uses a case-sensitive file system. So if your main file is called `Main.do`, or `Main.DO`, that is not the same as `main.do`. The same applies for any files written or read by Stata or R: Reading from `data/raw/gs4.csv` is not the same as reading from `data/Raw/GS4.csv`. 
 
+## What do I set my working directory to for this to work?
+
+We often hear from authors
+
+> The person who wants to replicate our files has to set their own path. 
+
+and see code like
+
+```stata
+cd "C:\Users\username\Documents\project"
+```
+
+or 
+
+```r
+setwd("C:/Users/username/Documents/project")
+```
+
+You must avoid this for SIVACOR to work. You should use relative paths throughout, and if setting a path, do it once, dynamically. 
+
+:::::{tab-set}
+
+::::{tab-item Stata}
+
+You can set the working directory to the directory of the main do-file by including this code at the top of your main do-file:
+
+```stata
+global rootdir : pwd
+```
+
+and then either
+
+```stata
+cd "$rootdir"
+use "data/mydata.dta", clear
+save "output/results.dta", replace
+```
+
+or (better) use fully-qualified full paths that use `$rootdir`, e.g.,
+
+```stata
+use "$rootdir/data/mydata.dta", clear
+save "$rootdir/output/results.dta", replace
+```
+
+**References**
+
+- <https://larsvilhuber.github.io/self-checking-reproducibility/02-hands_off_running.html#creating-a-main-or-master-script>
+- 
+
+::::
+
+::::{tab-item R}
+
+In R, you should use one of several options to set the working directory dynamically. For instance, you can use the `here` package:
+
+```r
+library(here)
+setwd(here::here())
+```
+
+which will look for certain files (like `.here`) to determine the project root. Alternatively, you can use the `rprojroot` package:
+
+```r
+library(rprojroot)
+setwd(rprojroot::find_root(rprojroot::is_rstudio_project))
+```
+
+Better: use fully qualified paths downstream from the definition of a `rootdir` variable:
+
+```r
+rootdir <- here::here()
+# alternatively:
+# rootdir <- rprojroot::find_root(rprojroot::is_rstudio_project())
+data <- read.csv(file.path(rootdir, "data", "mydata.csv"))
+write.csv(results, file.path(rootdir, "output", "results.csv"))
+```
+
+:::{warning}
+Avoid using `rstudioapi::getActiveProject()` as this requires RStudio to be running. SIVACOR runs R in a terminal, not in RStudio.
+:::
+
+**References**
+
+- <https://here.r-lib.org/>
+- <https://rprojroot.r-lib.org/>
+
+::::
+
+:::::
+
+
 
 ## Stata errors
 
