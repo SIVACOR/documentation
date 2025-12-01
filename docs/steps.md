@@ -25,6 +25,15 @@ You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/pr
 
 :::
 
+:::{admonition} Minimal sample code
+:class: dropdown tip
+
+- Sample code for Stata (any version), Scenario B: <https://github.com/SIVACOR/sivacor-test-stata>
+- Sample code for Stata (any version), Scenario A (`main.do` in a non-root directory): <https://github.com/SIVACOR/sivacor-test-stata/tree/scenario-A>
+- Sample code for R (set up for R 4.3.1, tested on R 4.5.1): <https://github.com/SIVACOR/sivacor-test-r>
+
+:::
+
 ## Logging In
 
 The main submission site is <https://submit.sivacor.org>.
