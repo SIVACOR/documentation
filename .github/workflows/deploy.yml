@@ -36,7 +36,9 @@ jobs:
         with:
           node-version: 18.x
       - name: Install Jupyter Book (via myst)
-        run: npm install -g jupyter-book
+        run: |
+          npm install -g jupyter-book
+          npm install -g mystmd
       - name: Setup Typst
         uses: typst-community/setup-typst@v4
       - name: Build PDF Assets
