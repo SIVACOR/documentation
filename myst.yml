@@ -14,12 +14,13 @@ project:
       template: plain_latex_book
       output: exports/book.pdf
   toc:
-    - url: 'https://submit.sivacor.org'
-      title: Submit a job
     - file: docs/intro.md
     - file: docs/steps.md
     - file: docs/faq.md
     - file: docs/about.md
+    - url: 'https://submit.sivacor.org'
+      title: Submit a job
+    
     
 site:
   options:
