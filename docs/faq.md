@@ -76,7 +76,7 @@ You must avoid this for SIVACOR to work. You should use relative paths throughou
 
 :::::{tab-set}
 
-::::{tab-item Stata}
+::::{tab-item} Stata
 
 You can set the working directory to the directory of the main do-file by including this code at the top of your main do-file:
 
@@ -106,7 +106,7 @@ save "$rootdir/output/results.dta", replace
 
 ::::
 
-::::{tab-item R}
+::::{tab-item} R
 
 In R, you should use one of several options to set the working directory dynamically. For instance, you can use the `here` package:
 
