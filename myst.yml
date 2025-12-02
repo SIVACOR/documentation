@@ -14,18 +14,21 @@ project:
       template: plain_latex_book
       output: exports/book.pdf
   toc:
+    - url: 'https://submit.sivacor.org'
+      title: Submit a job
     - file: docs/intro.md
     - file: docs/steps.md
     - file: docs/faq.md
-    - url: 'https://submit.sivacor.org'
-      title: Submit a job
+    - file: docs/about.md
+    
 site:
   options:
     logo: site_logo.png
     favicon: favicon.ico
     folders: true
   template: book-theme
-  ite:
   actions:
     - title: Submit a Job
       url: https://submit.sivacor.org
+  parts:
+    footer: footer.md
