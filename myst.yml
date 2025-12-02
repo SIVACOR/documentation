@@ -4,6 +4,7 @@ project:
   authors:
     - name: SIVACOR Team
   copyright: '2025'
+  license: CC-BY-4.0
   exclude:
     - venv/*
   github: sivacor/documentation
@@ -26,9 +27,7 @@ project:
     - file: docs/faq.md
     - file: docs/about.md
     - url: 'https://submit.sivacor.org'
-      title: Submit a job
-    
-project:
+      title: Submit a job    
   downloads:
     - file: pdf_book
       title: PDF   
@@ -39,7 +38,7 @@ site:
     folders: true
     hide_myst_branding: true
     source_download: false
-    license: CC-BY-4.0
+    
   template: book-theme
   actions:
     - title: Submit a Job
