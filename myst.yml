@@ -13,6 +13,7 @@ project:
     - format: pdf
       template: plain_latex_book
       output: exports/book.pdf
+      id: pdf_book
   toc:
     - file: docs/intro.md
     - file: docs/steps.md
@@ -27,12 +28,18 @@ project:
     - url: 'https://submit.sivacor.org'
       title: Submit a job
     
-    
+project:
+  downloads:
+    - file: pdf_book
+      title: PDF   
 site:
   options:
     logo: site_logo.png
     favicon: favicon.ico
     folders: true
+    hide_myst_branding: true
+    source_download: false
+    license: CC-BY-4.0
   template: book-theme
   actions:
     - title: Submit a Job
