@@ -17,6 +17,7 @@ project:
     - file: docs/intro.md
     - file: docs/steps.md
       children:
+        - file: docs/step0-prepare.md
         - file: docs/step1-upload.md
         - file: docs/step2-choosing-image.md
         - file: docs/step3-monitoring.md
