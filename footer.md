@@ -10,7 +10,11 @@
 
 ::::{div}
 
-![](/img/UoI_wordmark.png)
+```{image} /img/UoI_wordmark.png
+:alt: University of Illinois Wordmark
+:height: 50px
+:align: center
+```
 
 ::::
 
@@ -23,8 +27,11 @@
 
 ::::{div}
 
-![](/img/Cornell_wordmark.svg)
-
+```{image} /img/Cornell_wordmark.svg)
+:alt: Cornell University Wordmark
+:height: 50px
+:align: center
+```
 
 ::::
 
