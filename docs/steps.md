@@ -1,6 +1,8 @@
 # User Guide
 
 ```{toctree}
-:glob:
-step?-*.md
+---
+glob:
+---
+docs/step?-*.md
 ```
