@@ -27,7 +27,7 @@
 
 ::::{div}
 
-```{image} /img/Cornell_wordmark.svg)
+```{image} /img/Cornell_wordmark.svg
 :alt: Cornell University Wordmark
 :height: 50px
 :align: center
