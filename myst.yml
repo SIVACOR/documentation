@@ -2,7 +2,43 @@ version: 1
 project:
   title: SIVACOR
   authors:
-    - name: SIVACOR Team
+    - name: Lars Vilhuber
+      affiliation:
+      - id: CU
+        institution: Cornell University
+        ror: 05bnh6r87
+      orcid: 0000-0001-5733-8932
+      roles:
+        - Conceptualization
+        - Funding acquisition
+        - Methodology
+        - Investigation
+        - Writing – original draft
+        - Writing – review & editing
+    - name: Kacper Kowalik
+      affiliation:
+      - id: NCSA
+        institution: National Center for Supercomputing Applications
+        ror: 03r10zj06
+        department: Engagament
+      orcid: 0000-0003-1709-3744
+      roles:
+        - Conceptualization
+        - Data curation
+        - Resources
+        - Software
+        - Validation
+    - name: Craig Willis
+      affiliation:
+      - id: UoI
+        institution: University of Illinois at Urbana-Champaign
+        ror: 047426m28
+        department: School of Information Sciences
+      orcid: 0000-0002-8282-4862
+      roles:
+        - Conceptualization
+        - Funding acquisition
+        - Methodology
   copyright: '2025'
   license: CC-BY-4.0
   exclude:
