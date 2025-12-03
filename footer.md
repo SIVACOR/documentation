@@ -2,15 +2,16 @@
 % but the formatting column sizes are defined manually in css/footer.css
 % see the `grid-template-columns` line.
 
-:::::{grid} 1 1 3 3 
+:::::{grid} 1 1 2 2
 :class: outer-grid col-screen
 
 <!-- Project description -->
 
 
 ::::{div}
+:class: hidden dark:block
 
-```{image} /img/UoI_wordmark.png
+```{image} /img/uoi_dark.png
 :alt: University of Illinois Wordmark
 :height: 50px
 :align: center
@@ -19,11 +20,14 @@
 ::::
 
 ::::{div}
+:class: dark:hidden
 
-# [SIVACOR](docs/about/)
-
+```{image} /img/uoi_light.png
+:alt: University of Illinois Wordmark
+:height: 50px
+:align: center
+```
 ::::
-
 
 ::::{div}
 
@@ -36,4 +40,3 @@
 ::::
 
 :::::
-
