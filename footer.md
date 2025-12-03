@@ -30,8 +30,20 @@
 ::::
 
 ::::{div}
+:class: hidden dark:block
 
-```{image} /img/Cornell_wordmark.svg
+```{image} /img/cornell_dark.png
+:alt: Cornell University Wordmark
+:height: 50px
+:align: center
+```
+
+::::
+
+::::{div}
+:class: dark:hidden
+
+```{image} /img/cornell_light.png
 :alt: Cornell University Wordmark
 :height: 50px
 :align: center
