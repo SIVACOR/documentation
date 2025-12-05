@@ -12,6 +12,25 @@ Code must run without manual intervention, use a single controller script (e.g.,
 
 If your code uses libraries or packages, you must ensure that they are installed automatically. We strongly encourage packages that use "environments", and packages to manage dependencies, such as `renv` for `R`.
 
+### Your replication package only uses a single software application.
+
+Each run of SIVACOR only supports a single software application (e.g., Stata, R, Python), as encapsulated by containers. If your replication requires multiple applications, you will need to configure separate runs. However, your package itself can include the code for multiple applications.
+
+::::{note}
+:class: dropdown
+
+The single-application requirement means you cannot call one application from another (e.g., call R from Stata). It also is highly inconvenient when iterating between applications frequently. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
+
+::::
+
+::::{admonition} Beta functionality: Chaining of runs
+:class: dropdown warning
+
+SIVACOR has new functionality that allows to chain multiple runs that use different software containers, without having to re-upload intermediate results. There may be limitations. Please contact us with any questions.
+
+:::: 
+
+
 ### Prepare a ZIP or tar.gz file
 
 Your replication package must be a single ZIP file or tar.gz file. 
