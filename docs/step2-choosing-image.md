@@ -2,7 +2,7 @@
 
 If the upload was successful, scroll down.
 
-![Upload page continued](images/sivacor-image-choice.png)
+![Upload page continued](images/sivacor-image-choice-chained.png)
 
 Choose first a Docker image from the curated list. Variuos `R` and `Stata` images are available. You can also select an image tag, but generally, the latest image should work. 
 
@@ -19,6 +19,13 @@ Finally, identify the name of the main file. This is the file that will be execu
 Please be sure to use the proper case (`main.do` is not the same as `Main.do`) and include the extension.
 
 :::
+
+::::{admonition} Beta functionality: Chained runs
+:class: dropdown warning
+
+You can chain multiple runs together, by selecting the `+ ADD STEP` button. The runs will be run in separate containers, but the output of one run will be made available as input to the next run.
+
+::::
 
 Then click on the `Run with...` button.
 
