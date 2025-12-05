@@ -4,7 +4,7 @@
 
 The main submission site is <https://submit.sivacor.org>.
 
-[![Login page](images/sivacor-login.png)](https://submit.sivacor.org)
+![Login page](images/sivacor-login.png)
 
 SIVACOR uses institutional logins via [Globus](https://globus.org/) or [ORCID](https://orcid.org). 
 You can choose one or the other.
