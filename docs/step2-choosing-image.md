@@ -25,8 +25,10 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 
 You can chain multiple runs together, by selecting the `+ ADD STEP` button. The runs will be run in separate containers, but the output of one run will be made available as input to the next run.
 
+![Chaining runs](images/sivacor-image-choice-chained-2.png)
+
 ::::
 
 Then click on the `Run with...` button.
 
-![Submit job](images/sivacor-image-choice-ready.png)
+![Submit job](images/sivacor-image-run-chained.png)
