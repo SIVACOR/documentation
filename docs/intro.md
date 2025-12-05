@@ -19,4 +19,16 @@ At the moment, you should not use this for any journal other than journals of th
 
 SIVACOR allows researchers to work in their preferred environments until the last moment, without needing to fully understand Docker or similar technologies. The system  provides a web interface where users can upload a ZIP file containing their code and data, and select from a set of curated computational environments (Docker images). The SIVACOR backend will then automatically create a containerized environment, execute the analysis, and generate a TRO that includes the code, data, execution environment details, and results. This TRO can then be provided to journal editors, replacing the often tedious and manual process of verifying the reproducibility of the submitted research.
 
+:::{note}
+
+SIVACOR is currently in a pilot phase. As such, the system is limited 
+
+- to specific curated Docker images
+- to running with a maximum of 28GB of RAM on an 8-core AMD EPYC-Milan Processor
+
+There is at present no runtime limit.
+
+:::
+
+
 
