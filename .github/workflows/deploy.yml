@@ -51,7 +51,7 @@ jobs:
       - name: Build PDF Assets
         run: myst build --pdf
       - name: Build HTML Assets
-        run: jupyter-book build --html
+        run: jupyter-book build --execute --html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
