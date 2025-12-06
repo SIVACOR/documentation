@@ -23,7 +23,7 @@ SIVACOR allows researchers to work in their preferred environments until the las
 
 SIVACOR is currently in a pilot phase. As such, the system is limited 
 
-- to specific curated Docker images
+- to specific curated Docker images (see [Images](images.md) for details)
 - to running with a maximum of 28GB of RAM on an 8-core AMD EPYC-Milan Processor
 
 There is at present no runtime limit.
