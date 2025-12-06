@@ -1,0 +1,7 @@
+jupyter
+ipykernel
+pyyaml
+pandas
+requests
+ipython
+itables

@@ -60,6 +60,7 @@ project:
         - file: docs/step2-choosing-image.md
         - file: docs/step3-monitoring.md
         - file: docs/step4-download.md
+        - file: docs/images.md
     - file: docs/faq.md
     - file: docs/about.md
     - url: 'https://submit.sivacor.org'

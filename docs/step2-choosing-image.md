@@ -4,7 +4,7 @@ If the upload was successful, scroll down.
 
 ![Upload page continued](images/sivacor-image-choice-chained.png)
 
-Choose first a Docker image from the curated list. Variuos `R` and `Stata` images are available. You can also select an image tag, but generally, the latest image should work. 
+Choose first a Docker image from the curated list. You can also select an image tag, but generally, the latest image should work. 
 
 :::{tip}
 
