@@ -117,7 +117,7 @@ We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for 
 :tags: ["remove-input"]
 if 'df_matlab' in globals():
     show(df_matlab, lengthMenu=[10, 25, 50, -1], classes="display compact", showIndex=False,
-         columnDefs=[{"width": "70%", "targets": 0, "className": "dt-left"}, {"width": "30%", "targets": 1, "className": "dt-left"}])
+         columnDefs=[{"width": "70%", "targets": 0, "className": "dt-left"}, {"width": "30%", "targets": 1, "className": "dt-left"}],
          autoWidth=False)
 ```
 
