@@ -29,6 +29,17 @@ You can chain multiple runs together, by selecting the `+ ADD STEP` button. The 
 
 ::::
 
+
+:::{note}
+
+SIVACOR is currently in a pilot phase. As such, the system is limited 
+
+- to running with a maximum of 28GB of RAM on an 8-core AMD EPYC-Milan Processor
+
+There is at present no runtime limit.
+
+:::
+
 Then click on the `Run with...` button.
 
 ![Submit job](images/sivacor-image-run-chained.png)
