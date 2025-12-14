@@ -11,18 +11,30 @@ If you need a particular format, feel free to reach out to us.
 
 ## How does this run my code?
 
-For R, the system runs
+::::{tab-set}
+
+:::{tab-item} R
+
+For R, the system first tries to identify the working directory that R should be run from. The system searches for one of `.Rprofile`, `renv.lock`, or `(SOME FILE).rproj`, and uses that directory as the working directory. Failing that, it defines the path to `(MAIN_FILE)`  as the working directory. It then runs
 
 ```
+cd (WORKING_DIRECTORY)
 /usr/local/bin/R --no-save --no-restore -f (MAIN_FILE)
 ```
 
-For Stata, the system runs
+:::
+
+:::{tab-item} Stata
+
+For Stata, the system always assumes that the directory containing the `(MAIN_FILE)` is the working directory. It then runs
 
 ```
+cd (WORKING_DIRECTORY)
 /usr/local/bin/stata-mp -b do (MAIN_FILE)
 
 ```
+:::
+::::
 
 ## How do I know a job failed?
 

@@ -8,9 +8,31 @@ While SIVACOR does not publish data or replication packages, and deletes complet
 
 Code must run without manual intervention, use a single controller script (e.g., `main.do` or `master.R`), and avoid hard-coded absolute paths. You can only upload the package, not edit it on the site. It should also not have inconsistently used case-sensitive file or directory names. 
 
+:::{tip}
+
+For some guidance on constructing a portable replication package, see [Steps 1-3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-1-main-file) at the AEA Data Editor's website. 
+
+:::
+
 ### All dependencies must either be included or installed automatically.
 
-If your code uses libraries or packages, you must ensure that they are installed automatically. We strongly encourage packages that use "environments", and packages to manage dependencies, such as `renv` for `R`.
+If your code uses libraries or packages, you must ensure that they are installed automatically. We strongly encourage packages that use "environments", and packages to manage dependencies.
+
+
+::::{tab-set}
+
+:::{tab-item} Tips for `R`
+
+Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/). You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
+
+:::
+
+:::{tab-item} Stata
+
+Guidance for portable dependencies for Stata is provided [at Step 3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-3-dependencies) of the AEA Data Editor's guidance. See also the World Bank's [`repado`](https://worldbank.github.io/repkit/reference/repado.html).
+
+:::
+::::
 
 ### Your replication package only uses a single software application.
 
