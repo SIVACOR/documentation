@@ -15,7 +15,7 @@ If you need a particular format, feel free to reach out to us.
 
 :::{tab-item} R
 
-For R, the system first tries to identify the working directory that R should be run from. The system searches for one of `.Rprofile`, `renv.lock`, or `(SOME FILE).rproj`, and uses that directory as the working directory. Failing that, it defines the path to `(MAIN_FILE)`  as the working directory. It then runs
+For R, the system first tries to identify the working directory that R should be run from. The system searches for `renv.lock`, and uses that directory as the working directory. Failing that, it defines the path to `(MAIN_FILE)`  as the working directory. It then runs
 
 ```
 cd (WORKING_DIRECTORY)
@@ -33,6 +33,18 @@ cd (WORKING_DIRECTORY)
 /usr/local/bin/stata-mp -b do (MAIN_FILE)
 
 ```
+:::
+
+:::{tab-item} MATLAB
+For MATLAB, the system always assumes that the directory containing the `(MAIN_FILE)` is the working directory. It then runs
+
+```
+cd (WORKING_DIRECTORY)
+/usr/local/bin/matlab -batch "(MAIN_FILE_WITHOUT_.M_EXTENSION)"
+```
+
+Stripping `.m` is done automatically, you should not omit it from your main file name.
+
 :::
 ::::
 
