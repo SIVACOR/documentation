@@ -186,4 +186,8 @@ This is a file-not found error. There are two reasons for this:
 You can upload it directly to the journal submission system! For instance, in the case of the American Economic Association, simply **import** the ZIP file into the AEA's [Data and Code Repository](https://www.icpsr.umich.edu/sites/aea/home) (see [instructions](https://aeadataeditor.github.io/aea-de-guidance/)).
 
 
+## The system appears to be down.
 
+SIVACOR runs on [Jetstream 2](https://jetstream-cloud.org/). If Jetstream 2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream 2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
+
+If JetStream 2 is operational, but SIVACOR appears down, please contact us via the email at the bottom of this page.
