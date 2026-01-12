@@ -180,6 +180,21 @@ This is a file-not found error. There are two reasons for this:
 - you did not include the file in your uploaded package
 - you included a file that is similarly named, but has different capitalization. Ensure that your code uses naming that matches exactly the files you included, including upper/lower case.
 
+## R errors
+
+### `rJava`
+
+Due to the way the containers are set up, it is currently not possible to use Java-related packages. The typical error message will be
+
+```
+Error: package or namespace load failed for ‘rJava’:
+ .onLoad failed in loadNamespace() for 'rJava', details:
+  call: dyn.load(file, DLLpath = DLLpath, ...)
+  error: unable to load shared object '/tmp/workspace-6964fac0d696fbdb1d66ce2c/R/library/rJava/libs/rJava.so':
+  libjvm.so: cannot open shared object file: No such file or directory
+```
+
+Issue: <https://github.com/SIVACOR/sivacor-repo-choice/issues/3>
 
 ## What do I do with the replicated package that I can download?
 
