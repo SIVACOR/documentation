@@ -74,6 +74,82 @@ A few [TRACE-related](https://transparency-certified.github.io/) files are produ
 
 These three files are also included in the `tro` folder inside the replication package.
 
+## What can I do with the TRO files? How can I check the package?
+
+There are two levels of verification possible:
+
+- whether the **TRO Declaration** has been modified.
+- whether some or all of the arrangements correspond to the files you downloaded.
+
+Both of these checks can be done with the Python [`tro-utils`](https://github.com/transparency-certified/tro-utils) package. 
+
+::::{admonition} Installing `tro-utils`
+:class: tip dropdown
+
+You can install `tro-utils` via `pip`:
+
+```bash
+pip install tro-utils
+```
+
+or 
+
+```bash
+pipx install tro-utils
+```
+
+::::
+
+::::{admonition} Verifying the integrity of the TRO Declaration
+:class: tip dropdown
+
+You can verify that the TRO Declaration has not been modified since it was signed by running:
+
+```bash
+tro-utils verify-timestamp /path/to/tro/(UUID).jsonld 
+```
+
+which might yield something like this:
+
+```bash
+> tro-utils verify-timestamp tro/tro-696d3b46adffb76fef0d83bc.jsonld 
+Using configuration from /etc/ssl/openssl.cnf
+Warning: certificate from '/tmp/tmpuw0g59lb' with subject '/O=Free TSA/OU=TSA/description=This certificate digitally signs documents and time stamp requests made using the freetsa.org online services/CN=www.freetsa.org/emailAddress=busilezas@gmail.com/L=Wuerzburg/C=DE/ST=Bayern' is not a CA cert
+Verification: OK
+```
+
+It is OK to ignore the warning, the important part is the `Verification: OK` line.
+
+
+::::
+
+::::{admonition} Verifying the arrangements
+:class: tip dropdown
+
+You can verify that the arrangements in the TRO Declaration correspond to the files you downloaded by running:
+
+```bash
+tro-utils verify-package path/to/tro/(UUID).jsonld path/to/files
+```
+
+For instance, in the standard SIVACOR download, the following will generically work
+
+```bash
+> tro-utils verify-package tro/tro-\*.jsonld project/
+```
+
+yielding
+
+```bash
+Verifying that arrangement 'arrangement/0' matches package contents of 'project/' ✗
+Verifying that arrangement 'arrangement/1' matches package contents of 'project/' ✓
+```
+
+This indicates that there are two arrangements (`0` and `1`) recorded in the package, but only arrangement `1` matches the files in the `project/` folder, presumably because some files were either modified, added, or deleted from arrangement `0`. In the context of SIVACOR, arrangement `0` are the files you uploaded.
+
+::::
+
+
 ## It's failing on a file, but the file is there!
 
 Actually, the file may not be called exactly the same thing. The containers used by SIVACOR are based on Linux, and Linux uses a case-sensitive file system. So if your main file is called `Main.do`, or `Main.DO`, that is not the same as `main.do`. The same applies for any files written or read by Stata or R: Reading from `data/raw/gs4.csv` is not the same as reading from `data/Raw/GS4.csv`. 
