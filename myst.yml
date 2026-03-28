@@ -80,5 +80,7 @@ site:
   actions:
     - title: Submit a Job
       url: https://submit.sivacor.org
+    - title: Contact Us
+      url: mailto:support@sivacor.org
   parts:
     footer: footer.md

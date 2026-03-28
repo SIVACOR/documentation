@@ -281,4 +281,4 @@ You can upload it directly to the journal submission system! For instance, in th
 
 SIVACOR runs on [Jetstream 2](https://jetstream-cloud.org/). If Jetstream 2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream 2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
 
-If JetStream 2 is operational, but SIVACOR appears down, please contact us via the email at the bottom of this page.
+If JetStream 2 is operational, but SIVACOR appears down, please contact us via the button at the top of this page.
