@@ -56,6 +56,8 @@ When a job fails to run, you will see a notice in the job status page:
 
 You should inspect the `Run output log` and `Run error log` files to see what went wrong. When a job fails, no `Replicated Package` is produced.
 
+You might want to consult the [debugging hints](debugging.md) for tips.
+
 ## What are all these output files?
 
 SIVACOR produces six output files:
