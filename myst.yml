@@ -62,6 +62,8 @@ project:
         - file: docs/step4-download.md
         - file: docs/images.md
     - file: docs/faq.md
+      children:
+        - file: docs/debugging.md
     - file: docs/about.md
     - url: 'https://submit.sivacor.org'
       title: Submit a job    
