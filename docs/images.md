@@ -54,7 +54,7 @@ for image_name, tags in data.items():
     for tag in tags:
         rows.append({
             'Software': software,
-            'Docker Image': image_name,
+            'Container': image_name,
             'Tag': str(tag),
             'Link to Docker Hub': docker_hub_link
         })
@@ -72,7 +72,7 @@ for software, group_df in software_groups:
     software_data[software] = group_df
 
 # Export data to global namespace for use in MyST tabs
-globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Docker Image', 'Tag']].copy() 
+globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy() 
                   for software, group_df in software_data.items()})
 ```
 
