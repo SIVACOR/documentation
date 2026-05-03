@@ -57,7 +57,22 @@ SIVACOR has new functionality that allows to chain multiple runs that use differ
 
 ### Prepare a ZIP or tar.gz file
 
-Your replication package must be a single ZIP file or tar.gz file. 
+Your replication package must be a single ZIP file or tar.gz file.
+
+:::{tip} Excluding files with `.sivacorignore`
+
+You can include a file named `.sivacorignore` at the root of your project to exclude files or directories before the replicated package is created. It follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use glob patterns, negations, and directory-specific rules.
+
+For example, to exclude a `data/raw/` directory and all `.tmp` files:
+
+```
+data/raw/
+*.tmp
+```
+
+This is useful for stripping large intermediate files, sensitive data, or build artifacts that should not be part of the archived output.
+
+:::
 
 
 :::{note}
