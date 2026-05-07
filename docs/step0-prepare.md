@@ -59,9 +59,12 @@ SIVACOR has new functionality that allows to chain multiple runs that use differ
 
 Your replication package must be a single ZIP file or tar.gz file.
 
-:::{tip} Excluding files with `.sivacorignore`
+:::{admonition} Excluding files from final package
+:class: dropdown tip
 
-You can include a file named `.sivacorignore` at the root of your project to exclude files or directories before the replicated package is created. It follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use glob patterns, negations, and directory-specific rules.
+In some cases, you might want to remove files, which are part of your uploaded package, from the final replicated package, because they are subject to redistribution restrictions. 
+
+You can include a file named `.sivacorignore` at the root of your project to exclude files or directories before the final replicated package is created. It follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use glob patterns, negations, and directory-specific rules.
 
 For example, to exclude a `data/raw/` directory and all `.tmp` files:
 
@@ -87,6 +90,7 @@ You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/pr
 - Sample code for Stata (any version), Scenario B: <https://github.com/SIVACOR/sivacor-test-stata>
 - Sample code for Stata (any version), Scenario A (`main.do` in a non-root directory): <https://github.com/SIVACOR/sivacor-test-stata/tree/scenario-A>
 - Sample code for R (set up for R 4.3.1, tested on R 4.5.1): <https://github.com/SIVACOR/sivacor-test-r>
+- Sample code for MATLAB with and without use of Dynare: <https://github.com/SIVACOR/sivacor-test-matlab> (both use the same `dynare/dynare` container).
 
 :::
 
