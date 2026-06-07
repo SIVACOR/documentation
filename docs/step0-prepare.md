@@ -36,54 +36,6 @@ Guidance for portable dependencies for Stata is provided [at Step 3](https://aea
 :::
 ::::
 
-### Your replication package only uses a single software application.
-
-Each run of SIVACOR only supports a single software application (e.g., Stata, R, Python), as encapsulated by containers. If your replication requires multiple applications, you will need to configure separate runs. However, your package itself can include the code for multiple applications.
-
-::::{note}
-:class: dropdown
-
-The single-application requirement means you cannot call one application from another (e.g., call R from Stata). It also is highly inconvenient when iterating between applications frequently. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
-
-::::
-
-::::{admonition} Beta functionality: Chaining of runs
-:class: dropdown warning
-
-SIVACOR has new functionality that allows to chain multiple runs that use different software containers, without having to re-upload intermediate results. There may be limitations. Please contact us with any questions.
-
-:::: 
-
-
-### Prepare a ZIP or tar.gz file
-
-Your replication package must be a single ZIP file or tar.gz file.
-
-:::{admonition} Excluding files from final package
-:class: dropdown tip
-
-In some cases, you might want to remove files, which are part of your uploaded package, from the final replicated package, because they are subject to redistribution restrictions. 
-
-You can include a file named `.sivacorignore` at the root of your project to exclude files or directories before the final replicated package is created. It follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use glob patterns, negations, and directory-specific rules.
-
-For example, to exclude a `data/raw/` directory and all `.tmp` files:
-
-```
-data/raw/
-*.tmp
-```
-
-This is useful for stripping large intermediate files, sensitive data, or build artifacts that should not be part of the archived output.
-
-:::
-
-
-:::{note}
-
-You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#checklist) on the AEA Data Editor's site useful. 
-
-:::
-
 :::{admonition} Minimal sample code
 :class: dropdown tip
 
@@ -93,5 +45,51 @@ You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/pr
 - Sample code for MATLAB with and without use of Dynare: <https://github.com/SIVACOR/sivacor-test-matlab> (both use the same `dynare/dynare` container).
 
 :::
+
+
+### Your replication package only uses a single software application per step
+
+Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python), as encapsulated by containers. If your replication requires multiple applications, you will need to configure separate runs. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission.
+
+::::{note}
+:class: dropdown
+
+The single-application requirement means you cannot call one application from another (e.g., call R from Stata). It also is highly inconvenient when iterating between applications frequently. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
+
+::::
+
+
+
+
+### Excluding files from final package
+
+The final digitally signed replication package contains all data as originally included. If you need to remove files because you do not have redistribution rights, or large intermediate files, you can include a file named `.sivacorignore` at the root of your project to exclude files or directories before the final replicated package is created. It follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use glob patterns, negations, and directory-specific rules.
+
+
+:::{admonition} Example file
+:class: dropdown tip
+
+For example, to exclude a `data/raw/` directory and all `.tmp` files:
+
+```
+data/raw/
+*.tmp
+```
+
+:::
+
+
+
+
+### Prepare a ZIP or tar.gz file
+
+Your replication package must be a single ZIP file or tar.gz file.
+
+:::{note}
+
+You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#checklist) on the AEA Data Editor's site useful. 
+
+:::
+
 
 The next step is to [upload your package to SIVACOR](step1-upload.md).

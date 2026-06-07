@@ -72,7 +72,7 @@ for software, group_df in software_groups:
     software_data[software] = group_df
 
 # Export data to global namespace for use in MyST tabs
-globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy() 
+globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy().rename(columns={'Container': 'Software'}) 
                   for software, group_df in software_data.items()})
 ```
 
@@ -80,7 +80,7 @@ globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Contain
 
 :::{tab-item} Stata
 
-Stata images are built by the AEA Data Editor, with permission from StataCorp. See the [dataeditors repositories](https://hub.docker.com/u/dataeditors) for more information.
+Stata images are built by the AEA Data Editor, with permission from StataCorp. See the [dataeditors repositories](https://hub.docker.com/u/dataeditors) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version.
 
 
 ```{code-cell} python
@@ -95,7 +95,7 @@ if 'df_stata' in globals():
 
 :::{tab-item} R
 
-We use a subset of images from the [rocker project](https://www.rocker-project.org/) for `R`. See the  [rocker repositories](https://hub.docker.com/u/rocker) for more information.
+We use a subset of images from the [rocker project](https://www.rocker-project.org/) for `R`. See the  [rocker repositories](https://hub.docker.com/u/rocker) for more information. An image name is defined by a combination of pre-installed packages. Tags identify different versions of R.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -111,7 +111,7 @@ if 'df_r' in globals():
 
 :::{tab-item} MATLAB
 
-We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/).
+We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Tags identify a particular combination of Dynare and MATLAB versions. 
 
 ```{code-cell} python
 :tags: ["remove-input"]
