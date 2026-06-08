@@ -5,9 +5,9 @@ kernelspec:
   name: python3
 ---
 
-# Available Images
+# Available Software
 
-SIVACOR only allows you to run certain well-defined Docker images from known and trusted sources. The table below shows all available images with their tags and links to their Docker Hub repositories.
+SIVACOR only allows you to run certain well-defined software stacks, packaged as Docker images, from known and trusted sources. The table below shows all available software images with their tags and links to their Docker Hub repositories.
 
 
 ```{code-cell} python
@@ -72,7 +72,7 @@ for software, group_df in software_groups:
     software_data[software] = group_df
 
 # Export data to global namespace for use in MyST tabs
-globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy().rename(columns={'Container': 'Software'}) 
+globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy().rename(columns={'Container': 'Image'}) 
                   for software, group_df in software_data.items()})
 ```
 
