@@ -278,6 +278,11 @@ Issue: <https://github.com/SIVACOR/sivacor-repo-choice/issues/3>
 
 You can upload it directly to the journal submission system! For instance, in the case of the American Economic Association, simply **import** the ZIP file into the AEA's [Data and Code Repository](https://www.icpsr.umich.edu/sites/aea/home) (see [instructions](https://aeadataeditor.github.io/aea-de-guidance/)).
 
+## How do I delete files on SIVACOR?
+
+SIVACOR only temporarily retains any files that you upload. You can delete files immediately (after success or failure) by clicking the **Delete & Run New Job** button on the job status page:
+
+![Deleting files](images/sivacor-completed-delete.png)
 
 ## The system appears to be down.
 
