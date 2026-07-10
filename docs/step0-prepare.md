@@ -83,10 +83,10 @@ Guidance for portable dependencies for Stata is provided [at Step 3](https://aea
 
 ### Your replication package only uses a single software application per step
 
-Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python), as encapsulated by containers. If your replication requires multiple applications, you will need to configure separate runs. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission.
+Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python), as encapsulated by containers. If your replication requires multiple applications, you will need to configure separate runs. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](step2-choosing-image.md#chained-runs-steps).
 
 ::::{note}
-:class: dropdown
+:class: dropdown tip
 
 The single-application requirement means you cannot call one application from another (e.g., call R from Stata). It also is highly inconvenient when iterating between applications frequently. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
 

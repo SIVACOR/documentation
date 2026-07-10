@@ -1,4 +1,4 @@
-# Choosing Docker Image and Running Jobs
+# Choosing Software and Running Jobs
 
 If the upload was successful, scroll down.
 
