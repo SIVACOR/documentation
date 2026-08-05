@@ -20,7 +20,7 @@
 # (`myst start` does NOT run the injector -- it serves pages the build step
 # never post-processes.)
 
-enabled: true
+enabled: false
 
 # info | warning | critical  -- picks the colour scheme.
 level: warning
