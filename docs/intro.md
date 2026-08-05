@@ -1,4 +1,4 @@
-# About this project
+# SIVACOR
 
 Scalable Infrastructure for Validation of Computational Social Science Research (SIVACOR) is a pilot site for automated verification of computational social science research. 
 
