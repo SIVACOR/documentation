@@ -65,6 +65,8 @@ project:
       children:
         - file: docs/debugging.md
     - file: docs/about.md
+      children:
+        - file: docs/system.md
     - url: 'https://submit.sivacor.org'
       title: Submit a job    
   downloads:

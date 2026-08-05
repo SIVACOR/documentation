@@ -2,13 +2,25 @@
 
 ## Background
 
-SIVACOR grew out of the work of the NSF Grant **Collaborative Research: Elements: TRAnsparency CErtified (TRACE): Trusting Computational Research Without Repeating It**:
+SIVACOR grew out of the work of the NSF Grant **Collaborative Research: Elements: TRAnsparency CErtified (TRACE): Trusting Computational Research Without Repeating It**, see the [Transparency Certified (TRACE) project page](https://transparency-certified.github.io/) for more information.
+
+## Funding
+
+<img src="/img/Sloan-Logo-primary-blac-web.png" width="150px" style="float: left; margin-right: 15px;">
+
+The project is currently funded by the Alfred P. Sloan Foundation under Grant [G-2026-79586](https://sloan.org/grant-detail/g-2026-79586).
+
+<br style="clear: both;">
+
+<img src="/img/nsf-logo.gif" width="150px" style="float: left; margin-right: 15px;">
+
+Prior funding by the National Science Foundation (NSF) for the TRACE project was provided under the following awards:
 
 - [OAC-2209628](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2209628)
 - [OAC-2209629](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2209629)
 - [OAC-2209630](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2209630)
 
-See the [Transparency Certified (TRACE) project page](https://transparency-certified.github.io/) for more information.
+## Maintainers
 
 This site is actively maintained by Kacper Kowalik and Lars Vilhuber.
 
