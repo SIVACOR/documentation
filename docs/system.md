@@ -11,6 +11,16 @@ Coming.
 :::
 
 
+:::{note}
+
+SIVACOR is currently in a pilot phase. As such, the system is limited 
+
+- to running with a maximum of 28GB of RAM on an 8-core AMD EPYC-Milan Processor
+
+There is at present no runtime limit.
+
+:::
+
 ## TRS: Trusted Research System
 
 SIVACOR has the following TRS [capabilities](https://transparency-certified.github.io/trace-specification/docs/trov-vocabulary/#predefined-values-trs-capability-types):
