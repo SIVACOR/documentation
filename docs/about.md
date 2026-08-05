@@ -6,13 +6,9 @@ SIVACOR grew out of the work of the NSF Grant **Collaborative Research: Elements
 
 ## Funding
 
-<img src="/img/Sloan-Logo-primary-blac-web.png" width="150px" style="float: left; margin-right: 15px;">
 
 The project is currently funded by the Alfred P. Sloan Foundation under Grant [G-2026-79586](https://sloan.org/grant-detail/g-2026-79586).
 
-<br style="clear: both;">
-
-<img src="/img/nsf-logo.gif" width="150px" style="float: left; margin-right: 15px;">
 
 Prior funding by the National Science Foundation (NSF) for the TRACE project was provided under the following awards:
 
