@@ -1,0 +1,42 @@
+# Site-wide dismissable banner for docs.sivacor.org.
+#
+# This is the announcement channel that keeps working when the SIVACOR stack is
+# not: the docs site is static GitHub Pages, so it survives an outage of
+# girder.sivacor.org / submit.sivacor.org. Deliberately independent of both --
+# nothing here talks to Girder. (The submit UI has its own, separate banner,
+# driven by Girder's `sivacor.banner_*` settings; announcing on both means
+# editing both.)
+#
+# To raise a banner:
+#   1. edit the fields below, set `enabled: true`
+#   2. commit + push to `main`
+#   3. the Pages deploy (~2 min) bakes it into every page
+# To take it down: set `enabled: false` (or let `expires` lapse) and push.
+#
+# Preview locally:
+#   jupyter-book build --html
+#   python scripts/inject_banner.py
+#   python -m http.server -d _build/html 8000
+# (`myst start` does NOT run the injector -- it serves pages the build step
+# never post-processes.)
+
+enabled: true
+
+# info | warning | critical  -- picks the colour scheme.
+level: warning
+
+# Plain text, no markup. Rendered as-is, so keep it short enough for one or two
+# lines on a phone. Times should be explicit about the zone; SIVACOR user-facing
+# timestamps are America/Chicago.
+message: >-
+  Scheduled maintenance: Job submission will be unavailable
+  Wed 05 Aug 2026, 07:00-17:00 CT.
+
+# Optional call-to-action appended after the message.
+link: ''
+link_text: ''
+
+# Optional ISO-8601 timestamp (include the offset). Past this moment the banner
+# stops rendering client-side, so a forgotten banner expires on its own without
+# a redeploy. Leave empty for a banner that stays until `enabled: false`.
+expires: '2026-08-05T17:00:00-05:00'

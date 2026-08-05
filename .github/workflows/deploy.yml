@@ -53,6 +53,11 @@ jobs:
         run: myst build --pdf
       - name: Build HTML Assets
         run: jupyter-book build --execute --html
+      # Bakes banner.yml into every built page. No-op when the banner is
+      # disabled. Must run after the HTML build and before the upload; the PDF
+      # is built earlier on purpose, so it never carries the banner.
+      - name: Inject site banner
+        run: python scripts/inject_banner.py
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
