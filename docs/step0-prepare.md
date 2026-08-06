@@ -102,13 +102,11 @@ The single-application requirement means you cannot call one application from an
 
 ### Size considerations
 
-Software images can be large, and they share the same 60 GB disk as your replication
-package (see [Hardware capabilities](system.md#hardware-capabilities)). About 4.5 GB of that
-disk is already taken by the operating system and the SIVACOR harness itself, leaving roughly
-55.5 GB for the image plus your package. The table below is pulled live from Docker Hub each
-time this page is built, and shows, for the most recently added version of a few
-representative images, how much is downloaded, how much room that takes once unpacked, and
-what is left over for you (see [Available Software](images.md) for the full, curated list):
+The size available to run your code depends on the software being used, and how you manage files within your replication package. A complete run of your code needs room for more than one copy of itself:
+the archive you upload, the workspace it is extracted into, and anything your code writes all need to be accommodated.
+
+The base system has about 
+55.5GB of space available. Software sizes differ. The table below lists free space after accounting for typical software versions. Specific sizes might differ slightly. See [Available Software](images.md) for the full, curated list of software.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -182,15 +180,8 @@ table += "</tbody>\n</table>"
 display(HTML(table))
 ```
 
-\* Docker Hub reports the *compressed* download size, but an image is unpacked as it is
-downloaded, and takes up roughly two to three times its download size once on disk. The
-"space used on disk" column therefore multiplies the download size by three — a deliberately
-conservative ceiling, so the real figure is usually a few GB lower. Free space is then 60 GB
-minus the 4.5 GB used by the system and harness, minus that unpacked size.
+For more information on the system itself, see [Hardware capabilities](system.md#hardware-capabilities).
 
-Bear in mind that your replication package also needs room for more than one copy of itself:
-the archive you upload, the workspace it is extracted into, and anything your code writes all
-share what is left.
 
 If free space runs low, the run is stopped and you will see an error saying the submission
 ran out of disk space — see the
