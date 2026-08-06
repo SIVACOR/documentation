@@ -10,7 +10,7 @@ You can also download a `Workflow definition` — a small YAML file describing t
 versions and main files this run used. It is not part of the signed package; it is there so
 you (or a colleague) can reproduce the same setup later by importing it on the submission
 page, instead of filling the form in by hand. See
-[Optional chained runs](step2-choosing-image.md#optional-chained-runs-steps). It is offered
+[Optional chained runs](#chained-runs-steps). It is offered
 for failed runs too, which is useful when you want to fix your code and run exactly the same
 configuration again.
 

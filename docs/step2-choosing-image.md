@@ -24,6 +24,7 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 
 :::
 
+(chained-runs-steps)=
 ## Optional chained runs (steps)
 
 You can chain multiple runs together, by selecting the `+ ADD STEP` button. The runs will be run in separate containers. Each run inherits the workspace modified by the previous run, so the output of one run will be made available as input to the next run.
