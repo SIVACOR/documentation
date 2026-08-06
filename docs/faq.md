@@ -58,9 +58,55 @@ You should inspect the `Run output log` and `Run error log` files to see what we
 
 You might want to consult the [debugging hints](debugging.md) for tips.
 
+## My job used to work, and now it runs out of memory
+
+SIVACOR now runs every submission on a machine created for that submission alone, with
+**8 cores and 30 GiB of RAM** (see [System Description](system.md)). Earlier in the pilot,
+submissions ran on a larger shared server, so an analysis that only just fitted before may
+now exceed the available memory.
+
+If your analysis genuinely needs more than this, please contact us — do not spend a long time
+trying to shrink it first.
+
+## My job failed saying it ran out of disk space
+
+The error looks like this:
+
+> Ran out of disk space: 4.7 GiB free on the workspace filesystem, below the 5.0 GiB floor.
+
+The machine running your submission has 60 GB of disk, and that space is shared between your
+replication package (including everything your code writes) and the software image it runs
+in. Large images consume a substantial part of it — the MATLAB / Dynare image alone is about
+15 GB.
+
+Things that help:
+
+- exclude large intermediate or raw data files with
+  [`.sivacorignore`](step0-prepare.md#excluding-files-from-final-package) — note this affects
+  the final package, not what your code writes while running
+- delete intermediate files in your own code once you no longer need them
+- check that your code is not writing very large log or temporary files unintentionally
+
+If your analysis legitimately needs more room, please contact us.
+
+## My job failed with "Submission abandoned"
+
+The message looks like one of these:
+
+> Submission abandoned: no sign of life for 0:31:07; the worker running it is presumed lost.
+
+> Submission abandoned: exceeded the maximum runtime of 7 days, 0:00:00; started at ...
+
+The first means the machine running your submission was lost. That is an infrastructure
+problem rather than a problem with your code — just submit the package again, and contact us
+if it keeps happening.
+
+The second means your run hit the 7 day limit. If your analysis genuinely needs longer,
+contact us before resubmitting.
+
 ## What are all these output files?
 
-SIVACOR produces six output files:
+SIVACOR produces six output files, plus a workflow definition:
 
 ![SIVACOR output files](images/sivacor-screenshot.png)
 
@@ -75,6 +121,11 @@ A few [TRACE-related](https://transparency-certified.github.io/) files are produ
 - A **trusted timestamp** file. This file contains a timestamp that is certified by a trusted time server, used in the signing process.
 
 These three files are also included in the `tro` folder inside the replication package.
+
+- A **workflow definition**, a small YAML file recording the software, versions and main
+  files this run used. It is not part of the signed package, and is not evidence of
+  anything — it is a convenience, so the same configuration can be re-created later by
+  importing it on the submission page. It never contains any secrets you supplied.
 
 ## What can I do with the TRO files? How can I check the package?
 
@@ -289,3 +340,13 @@ SIVACOR only temporarily retains any files that you upload. You can delete files
 SIVACOR runs on [Jetstream 2](https://jetstream-cloud.org/). If Jetstream 2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream 2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
 
 If JetStream 2 is operational, but SIVACOR appears down, please contact us via the button at the top of this page.
+
+## My submission has been "Waiting for a worker" for a long time
+
+SIVACOR starts a machine for each submission, which normally takes two to three minutes,
+followed by the download of the software image. If other users' submissions are occupying
+the machines available to the pilot, yours waits until one frees up.
+
+A wait of several minutes is normal, especially for MATLAB. If a submission stays in this
+state for much longer than that, please contact us and include the Job ID shown on the
+page — there is a copy button next to it.
