@@ -1,3 +1,10 @@
+---
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Preparing a Compatible Replication Package
 
 ### You should not include any data that you are not allowed to upload to third-party systems
@@ -92,8 +99,63 @@ The single-application requirement means you cannot call one application from an
 
 ::::
 
+### Size considerations
 
+Software images can be large, and they share the same 60 GB disk as your replication
+package (see [Hardware capabilities](system.md#hardware-capabilities)). The table below is
+pulled live from Docker Hub each time this page is built, and shows the download size and
+remaining free space for the most recently added version of a few representative images
+(see [Available Software](images.md) for the full, curated list):
 
+```{code-cell} python
+:tags: ["remove-input"]
+
+import yaml
+import requests
+from IPython.display import Markdown, display
+
+DISK_GB = 60  # total disk available to a submission, in decimal GB
+
+# A handful of representative images, not the full curated list (see images.md for that).
+SAMPLE_IMAGES = [
+    ("rocker/verse", "R"),
+    ("rocker/geospatial", "R"),
+    ("dynare/dynare", "MATLAB"),
+    ("dataeditors/stata19_5-mp-i-python", "Stata"),
+    ("dataeditors/stata19-mp", "Stata"),
+]
+
+repos_url = "https://raw.githubusercontent.com/SIVACOR/sivacor-repo-choice/main/allowed_repos.yaml"
+allowed = yaml.safe_load(requests.get(repos_url).text)
+
+rows = []
+for image_name, software in SAMPLE_IMAGES:
+    tag = str(allowed[image_name][0])  # first entry is the most recently added tag
+    tag_info = requests.get(
+        f"https://hub.docker.com/v2/repositories/{image_name}/tags/{tag}/"
+    ).json()
+    size_bytes = next(
+        (img["size"] for img in tag_info["images"] if img["architecture"] == "amd64"),
+        tag_info["full_size"],
+    )
+    size_gb = size_bytes / 1e9
+    rows.append((software, f"{image_name}:{tag}", size_gb, DISK_GB - size_gb))
+
+table = "| Software | Image | Download size | Free space after download\\* |\n"
+table += "|---|---|---:|---:|\n"
+for software, image_tag, size_gb, free_gb in rows:
+    table += f"| {software} | `{image_tag}` | {size_gb:.1f} GB | {free_gb:.1f} GB |\n"
+
+display(Markdown(table))
+```
+
+\* Docker Hub reports the compressed download size; the image takes up somewhat more room
+once it is unpacked on disk, so treat this as an upper bound on the space actually left over
+for your replication package.
+
+If free space runs low, the run is stopped and you will see an error saying the submission
+ran out of disk space — see the
+[FAQ](faq.md#my-job-failed-saying-it-ran-out-of-disk-space) for what to do about it.
 
 
 ### Prepare a ZIP or tar.gz file

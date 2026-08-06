@@ -17,14 +17,9 @@ carried over from one submission to the next.
 Your analysis is given the whole machine — SIVACOR does not place additional CPU or
 memory limits on the container.
 
-:::{warning}
-
-The 60 GB of disk must hold **both** your replication package (including everything your
-code writes) **and** the software image it runs in. Those images are large: the MATLAB /
-Dynare image alone is about 15 GB. If free space runs low, the run is stopped and you will
-see an error saying the submission ran out of disk space.
-
-:::
+The 60 GB of disk is shared between your replication package and the software image it runs
+in — see [Size considerations](step0-prepare.md#size-considerations) when preparing your
+package.
 
 ### Limits
 
