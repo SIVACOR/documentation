@@ -33,7 +33,18 @@ You can chain multiple runs together, by selecting the `+ ADD STEP` button. The 
 :::{admonition} Advanced configuration of steps
 :class: tip dropdown
 
-If you need to repeatedly run similar jobs on SIVACOR, you might want to create a `sivacor.yaml` file that specifies the steps and their configuration. 
+If you need to repeatedly run similar jobs on SIVACOR, you can describe the steps in a file
+and import it instead of filling in the form. Expand **Optional: Import workflow definition**
+at the top of the submission form, then choose or drag in a `YAML` or `JSON` file (any file
+name, up to 256 KB). The file is checked before anything is filled in, and you will be told
+which step is at fault if something is wrong — for example if an image or tag is not one of
+the [curated images](images.md).
+
+Importing replaces whatever is currently in the form, so you can always review and adjust
+the steps before running.
+
+A finished run offers the matching `Workflow definition` download, so the easiest way to get
+a valid file is to run once, download it, and reuse it afterwards.
 
 Expected configuration:
 
@@ -51,6 +62,18 @@ env_secrets:
   - key: API_TOKEN
     value: s3cret
 ```
+
+`image_name`, `image_tag` and `main_file` are required for every step;
+`network_isolation` and `env_secrets` are optional.
+
+:::{warning}
+
+Secrets imported from a file are placed in the form and sent with the submission, but they
+are never stored in your browser, and they are never included in a downloaded
+`Workflow definition`. If you share a workflow file that you wrote by hand, remember to
+remove any `env_secrets` from it first.
+
+:::
 
 :::
 

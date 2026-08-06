@@ -26,6 +26,15 @@ Once logged in, you will see the upload page.
 
 ![Upload page](images/sivacor-upload-page.png)
 
-Upload the replication package (`ZIP` or `tar.gz` files). 
+Upload the replication package (`ZIP` or `tar.gz` files). You can either click to choose a
+file, or drag it onto the upload area. A single archive may be at most **5 GB**, and each
+user may store up to **10 GB** on SIVACOR at any one time.
 
 ![Successful upload](images/sivacor-upload-successful.png)
+
+:::{tip}
+
+If you picked the wrong file, click `Delete Uploaded File` and upload the correct one. The
+upload area reappears once the file has been removed.
+
+:::

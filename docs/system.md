@@ -4,22 +4,39 @@ SIVACOR operates through a series of Trusted Research Performances (TRPs) that e
 
 ## Hardware capabilities
 
+Every submission runs on its own virtual machine, created when your job starts and
+destroyed when it finishes. Your code is the only thing running on it, and nothing is
+carried over from one submission to the next.
+
+| Resource | Available to your submission |
+|----------|------------------------------|
+| Processor | 8 cores (AMD EPYC-Milan Processor) |
+| Memory | 30 GiB |
+| Disk | 60 GB |
+
+Your analysis is given the whole machine — SIVACOR does not place additional CPU or
+memory limits on the container.
+
 :::{warning}
 
-Coming.
+The 60 GB of disk must hold **both** your replication package (including everything your
+code writes) **and** the software image it runs in. Those images are large: the MATLAB /
+Dynare image alone is about 15 GB. If free space runs low, the run is stopped and you will
+see an error saying the submission ran out of disk space.
 
 :::
 
+### Limits
 
-:::{note}
+- **Run time.** A run is stopped after **7 days**.
+- **Sign of life.** A run that reports no activity for **30 minutes** is marked as failed,
+  on the assumption that the machine running it has been lost.
+- **Retention.** Submissions are deleted **14 days** after they are submitted.
+- **Uploads.** A single archive may be at most 5 GB, and each user may store up to 10 GB.
+- **One at a time.** You can have only one submission in progress at a time.
 
-SIVACOR is currently in a pilot phase. As such, the system is limited 
-
-- to running with a maximum of 28GB of RAM on an 8-core AMD EPYC-Milan Processor
-
-There is at present no runtime limit.
-
-:::
+At busy times, your submission may have to wait for a machine to become available before it
+starts. See [Monitoring Jobs](step3-monitoring.md).
 
 ## TRS: Trusted Research System
 
