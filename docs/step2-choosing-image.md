@@ -75,8 +75,6 @@ remove any `env_secrets` from it first.
 
 :::
 
-:::
-
 
 ## Submitting jobs
 
