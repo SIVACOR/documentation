@@ -4,6 +4,9 @@
 name: Jupyter Book (via myst) GitHub Pages Deploy
 on:
   push:
+    # Only the default branch; PRs are covered by the `pull_request` trigger
+    # below, so an unfiltered `push` would build every branch twice.
+    branches: [main]
   pull_request:
   workflow_dispatch:
 env:
@@ -15,6 +18,12 @@ env:
 # Default permissions are read-only; the deploy job elevates its own.
 permissions:
   contents: read
+
+# Supersede redundant builds for the same ref. On main we let every run finish,
+# since each one may publish; elsewhere only the latest commit is worth building.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build:
