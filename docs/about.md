@@ -20,6 +20,10 @@ Prior funding by the National Science Foundation (NSF) for the TRACE project was
 
 This site is actively maintained by Kacper Kowalik and Lars Vilhuber.
 
+## Feedback
+
+Please provide us with feedback at <https://feedback.sivacor.org/>.
+
 ## GPG Key
 
 You can verify packages replicated on SIVACOR using the following GPG key:
