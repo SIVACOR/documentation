@@ -28,6 +28,10 @@ concurrency:
 jobs:
   build:
     # Runs on every push and pull request, so build breakage surfaces before merge.
+    permissions:
+      contents: read
+      # Needed only to post the preview link back to the PR.
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -74,10 +78,20 @@ jobs:
             pages deploy ./_build/html
             --project-name=sivacor-docs-preview
             --branch=pr-${{ github.event.pull_request.number }}
-      - name: Link preview in job summary
+      # `--edit-last` keeps this to one comment per PR that is rewritten in
+      # place, rather than a new one on every push. Values are passed through
+      # env rather than interpolated into the script, so nothing from the PR
+      # can be executed as shell.
+      - name: Publish preview link
         if: steps.preview.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          URL: ${{ steps.preview.outputs.pages-deployment-alias-url }}
         run: |
-          echo "📖 Docs preview: ${{ steps.preview.outputs.pages-deployment-alias-url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "📖 Docs preview: $URL" >> "$GITHUB_STEP_SUMMARY"
+          gh pr comment "$PR" --edit-last --create-if-none \
+            --body "📖 **Docs preview:** $URL — built from commit \`${GITHUB_SHA:0:7}\`"
       - name: Upload artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
