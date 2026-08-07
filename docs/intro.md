@@ -11,7 +11,7 @@ Our target audience are social science researchers who ultimately need to publis
 
 :::{warning}
 
-At the moment, you should not use this for any journal other than journals of the [American Economic Association](https://www.aeaweb.org/journals).
+Contact your journal's data editor to verify if they will accept SIVACOR-certified replication packages.
 
 :::
 
