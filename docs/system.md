@@ -8,20 +8,26 @@ Every submission runs on its own virtual machine, created when your job starts a
 destroyed when it finishes. Your code is the only thing running on it, and nothing is
 carried over from one submission to the next.
 
-| Resource | Available to your submission |
-|----------|------------------------------|
-| Processor | 16 cores (AMD EPYC-Milan Processor) |
-| Memory | ≈56.8 GiB, on a 60 GiB machine |
-| Disk | 60 GB |
+**You choose the size** when you submit — see [choosing the machine
+size](step2-choosing-image.md#worker-size). New submissions default to the smallest.
+
+| Size | Processor | Available to your analysis | Disk |
+|---|---|---|---|
+| 30 GiB | 8 cores (AMD EPYC-Milan) | ≈28 GiB | 60 GB |
+| 60 GiB | 16 cores | ≈58 GiB | 60 GB |
+| 125 GiB | 32 cores | ≈123 GiB | 60 GB (by request) |
+| 250 GiB | 64 cores | ≈248 GiB | 60 GB (by request) |
 
 Your analysis gets all of the cores, and all of the memory except a small reserve —
 about 2 GiB is held back so that the machine itself, and the agent supervising your
-run, cannot be starved by the analysis. That reserve is why the memory figure above is
-lower than the machine's own, and it is an approximation: the exact limit is reported in
+run, cannot be starved by the analysis. That reserve is why each "available" figure is
+lower than the size's name, and it is an approximation: the exact limit is reported in
 your run's performance data.
 
 An analysis that tries to exceed the limit is stopped, and the job log says so and names
 the figure. It is not silently slowed down or swapped to disk.
+
+**Disk is the same at every size.** A larger machine buys memory and cores, never space.
 
 The 60 GB of disk is shared between your replication package and the software image it runs
 in — see [Size considerations](step0-prepare.md#size-considerations) when preparing your
@@ -72,7 +78,7 @@ Coming: Uses the terms used in the actual specification.
 
 - Container image reference from the pre-specified list
 - Execution parameters: network isolation, name of entry point
-- Resource allocation specifications *(coming)*
+- Resource allocation: the machine size the submission asked for, one per submission
 
 
 ## TRP: Artifact Filtering
