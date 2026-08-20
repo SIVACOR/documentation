@@ -61,9 +61,12 @@ You might want to consult the [debugging hints](debugging.md) for tips.
 ## My job used to work, and now it runs out of memory
 
 SIVACOR now runs every submission on a machine created for that submission alone, with
-**8 cores and 30 GiB of RAM** (see [System Description](system.md)). Earlier in the pilot,
-submissions ran on a larger shared server, so an analysis that only just fitted before may
-now exceed the available memory.
+**16 cores and about 56.8 GiB of usable RAM** (see [System Description](system.md)).
+Earlier in the pilot, submissions ran on a larger shared server, so an analysis that only
+just fitted before may now exceed the available memory.
+
+The job log names the limit your run was given, and the exact figure is in the run's
+performance data — quote that rather than the approximation above when you get in touch.
 
 If your analysis genuinely needs more than this, please contact us — do not spend a long time
 trying to shrink it first.

@@ -10,12 +10,18 @@ carried over from one submission to the next.
 
 | Resource | Available to your submission |
 |----------|------------------------------|
-| Processor | 8 cores (AMD EPYC-Milan Processor) |
-| Memory | 30 GiB |
+| Processor | 16 cores (AMD EPYC-Milan Processor) |
+| Memory | ≈56.8 GiB, on a 60 GiB machine |
 | Disk | 60 GB |
 
-Your analysis is given the whole machine — SIVACOR does not place additional CPU or
-memory limits on the container.
+Your analysis gets all of the cores, and all of the memory except a small reserve —
+about 2 GiB is held back so that the machine itself, and the agent supervising your
+run, cannot be starved by the analysis. That reserve is why the memory figure above is
+lower than the machine's own, and it is an approximation: the exact limit is reported in
+your run's performance data.
+
+An analysis that tries to exceed the limit is stopped, and the job log says so and names
+the figure. It is not silently slowed down or swapped to disk.
 
 The 60 GB of disk is shared between your replication package and the software image it runs
 in — see [Size considerations](step0-prepare.md#size-considerations) when preparing your
