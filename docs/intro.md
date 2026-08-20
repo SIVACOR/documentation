@@ -24,7 +24,7 @@ SIVACOR allows researchers to work in their preferred environments until the las
 SIVACOR is currently in a pilot phase. As such, the system is limited
 
 - to specific curated Docker images (see [Images](images.md) for details)
-- to running each submission on a machine with 8 cores and 30 GiB of RAM (an AMD EPYC-Milan Processor), with 60 GB of disk shared between your files and the software image
+- to running each submission on a machine you choose from a fixed set, from 8 cores and 30 GiB of RAM up to 64 cores and 250 GiB (AMD EPYC-Milan Processors); the two largest are granted on request. Every size has the same 60 GB of disk, shared between your files and the software image
 - to a maximum run time of 7 days
 
 Results are deleted 14 days after submission. See [System Description](system.md) for details.
