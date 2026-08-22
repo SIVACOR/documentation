@@ -47,7 +47,8 @@ actually used, as a share of what it was allowed, which is usually the fastest w
 Three things about this table are easy to get wrong, and all three cost real time:
 
 - **Disk does not grow with the size.** Every size has the same 60 GB, shared between your package
-  and the software image. If you have run out of *disk*, a bigger machine will not help — see
+  and the software image. If you have run out of *disk*, a bigger machine will not help — ask for
+  [extra scratch disk](#scratch-disk) instead, and see
   [size considerations](step0-prepare.md#size-considerations).
 - **Cores are not chosen separately.** They move with the memory; the numbers above are the whole
   ladder.
@@ -66,6 +67,43 @@ memory. Once you have access, the size becomes selectable and behaves like any o
 
 If an imported workflow file asks for a size you do not have access to, the import is refused and
 tells you which sizes you can use.
+
+(scratch-disk)=
+## Extra scratch disk
+
+Under the machine size, **Extra Scratch Disk** asks for a temporary disk *in addition to* the
+machine's own 60 GB. It is for the small number of packages whose data, outputs and software image
+cannot fit that 60 GB together — the case where a run fails saying it ran out of disk space, and
+where a larger machine size would not have helped.
+
+**It is off unless you ask, and granted per account.** The field is empty on every new submission —
+it is deliberately not remembered from your last one — and for most accounts it is visible but not
+selectable, labelled *(by request)*. To ask for it, email
+[support@sivacor.org](mailto:support@sivacor.org) and say roughly how much space your package needs.
+
+Once your account has an allowance:
+
+- type the number of gigabytes you want for **this** submission, up to your allowance;
+- the form shows what it rounds up to — requests are rounded **up** to the nearest 10 GB, so you
+  never get less than you asked for;
+- your analysis sees one filesystem, the usual working directory, with that much more room in it;
+- the disk is created for your submission and **destroyed when the run finishes**. Nothing on it
+  survives; anything you want to keep has to be in the package that gets uploaded back, exactly as
+  without it.
+
+:::{important}
+
+- **This is disk, not memory.** If a run was stopped for using too much *memory*, extra scratch disk
+  changes nothing — pick a larger [machine size](#worker-size) instead.
+- **Ask for what you need, not for your whole allowance.** The space comes from a shared pool, and
+  while your submission holds a large amount of it, other submissions asking for space may have to
+  wait. The form tells you what your last run's workspace actually peaked at, which is usually the
+  right basis for the number.
+- **An allowance is per account, and yours is not carried in a workflow file.** A `disk_gb` line in a
+  file someone shares with you is *their* allowance; if it exceeds yours, the import is refused and
+  names your own limit.
+
+:::
 
 (chained-runs-steps)=
 ## Optional chained runs (steps)
@@ -123,6 +161,11 @@ stages:
 `memory_gb` must be one of the sizes in the table above. A file naming a size that is no longer
 offered is refused rather than quietly run on a different machine, and the message names the sizes
 that are available.
+
+`resources` may also carry `disk_gb`, for [extra scratch disk](#scratch-disk) — but only if your own
+account has an allowance for it. A downloaded `Workflow definition` carries the figure the run was
+granted, so a file that came from somebody else may ask for more than you can have; the import is
+then refused and names your limit. A run that used no extra disk has no `disk_gb` line at all.
 
 :::{warning}
 

@@ -98,7 +98,14 @@ Things that help:
 - delete intermediate files in your own code once you no longer need them
 - check that your code is not writing very large log or temporary files unintentionally
 
-If your analysis legitimately needs more room, please contact us.
+A larger [machine size](step2-choosing-image.md#worker-size) does **not** help here: every size has
+the same 60 GB of disk.
+
+If your package genuinely needs more room than that, ask for
+[extra scratch disk](step2-choosing-image.md#scratch-disk) — a temporary disk in addition to the
+machine's own, granted per account on request. Email
+[support@sivacor.org](mailto:support@sivacor.org) and say roughly how much space you need; it helps to
+quote what your last run's workspace peaked at, which the submission form shows you.
 
 ## My job failed with "Submission abandoned"
 

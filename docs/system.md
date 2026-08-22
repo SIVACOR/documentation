@@ -33,6 +33,12 @@ The 60 GB of disk is shared between your replication package and the software im
 in — see [Size considerations](step0-prepare.md#size-considerations) when preparing your
 package.
 
+A submission may additionally be given a **temporary scratch disk**, of a size it asks for, on top of
+the machine's own 60 GB. It is granted per account on request, created for the one submission and
+destroyed with the machine — see [extra scratch disk](step2-choosing-image.md#scratch-disk). Nothing
+about the record of your run changes: the files are in the usual working directory and are hashed
+into the TRO like any other.
+
 ### Limits
 
 - **Run time.** A run is stopped after **7 days**.
@@ -78,7 +84,8 @@ Coming: Uses the terms used in the actual specification.
 
 - Container image reference from the pre-specified list
 - Execution parameters: network isolation, name of entry point
-- Resource allocation: the machine size the submission asked for, one per submission
+- Resource allocation: the machine size the submission asked for, and any extra scratch disk it was
+  granted — one of each per submission
 
 
 ## TRP: Artifact Filtering
