@@ -187,6 +187,10 @@ If free space runs low, the run is stopped and you will see an error saying the 
 ran out of disk space — see the
 [FAQ](faq.md#my-job-failed-saying-it-ran-out-of-disk-space) for what to do about it.
 
+If your package cannot be made to fit the free space in the table above, you can ask for
+[extra scratch disk](step2-choosing-image.md#scratch-disk) instead of shrinking it: a temporary disk
+on top of the machine's own, granted per account on request.
+
 
 ### Prepare a ZIP or tar.gz file
 
