@@ -24,12 +24,34 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 
 :::
 
+(advanced-settings)=
+## Advanced settings
+
+Below the steps is an **Advanced** panel, folded by default. Most submissions never need to open
+it: everything inside has a sensible default, and the summary line shows what those defaults
+currently come to — so you can read the settings without unfolding anything.
+
+![The Advanced panel, opened](images/sivacor-advanced-panel.png)
+
+It holds three settings, each applying to the whole submission rather than to one step:
+
+- **Worker Size** — the machine your submission runs on ([below](#worker-size));
+- **Extra Scratch Disk** — a temporary disk on top of the machine's own
+  ([below](#scratch-disk));
+- **Environment Secrets** — values passed to your code as environment variables. They are sent
+  with the submission and never stored in your browser, and they never appear in a downloaded
+  `Workflow definition`.
+
+The panel opens itself in two cases, because leaving it shut would hide something you need to
+see: when a scratch-disk request cannot be granted, and when you import a workflow file that
+sets any of these.
+
 (worker-size)=
 ## Choose the machine size
 
-Under the steps, **Worker Size** sets the machine your submission runs on. It applies to the whole
-submission — every step runs on the same machine, one submission at a time — so there is one setting,
-not one per step.
+Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
+whole submission — every step runs on the same machine, one submission at a time — so there is one
+setting, not one per step.
 
 | Size | Cores | Available to your analysis | Disk | Relative cost |
 |---|---|---|---|---|
@@ -71,10 +93,10 @@ tells you which sizes you can use.
 (scratch-disk)=
 ## Extra scratch disk
 
-Under the machine size, **Extra Scratch Disk** asks for a temporary disk *in addition to* the
-machine's own 60 GB. It is for the small number of packages whose data, outputs and software image
-cannot fit that 60 GB together — the case where a run fails saying it ran out of disk space, and
-where a larger machine size would not have helped.
+In the same **Advanced** panel, under the machine size, **Extra Scratch Disk** asks for a temporary
+disk *in addition to* the machine's own 60 GB. It is for the small number of packages whose data,
+outputs and software image cannot fit that 60 GB together — the case where a run fails saying it ran
+out of disk space, and where a larger machine size would not have helped.
 
 **It is off unless you ask, and granted per account.** The field is empty on every new submission —
 it is deliberately not remembered from your last one — and for most accounts it is visible but not
@@ -182,3 +204,8 @@ remove any `env_secrets` from it first.
 Then click on the `Run Replication Workflow` button.
 
 ![Submit job](images/sivacor-image-run-chained.png)
+
+The button is grey until an upload has finished, and says so underneath — while a file is still
+going up, and again if you delete the uploaded file. Everything else on the form is checked when
+you click: if a step is missing an image, a tag or a main file, the page tells you which one
+rather than leaving the button dead.
