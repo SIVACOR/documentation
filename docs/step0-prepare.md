@@ -105,8 +105,11 @@ The single-application requirement means you cannot call one application from an
 The size available to run your code depends on the software being used, and how you manage files within your replication package. A complete run of your code needs room for more than one copy of itself:
 the archive you upload, the workspace it is extracted into, and anything your code writes all need to be accommodated.
 
-The base system has about 
-55.5GB of space available. Software sizes differ. The table below lists free space after accounting for typical software versions. Specific sizes might differ slightly. See [Available Software](images.md) for the full, curated list of software.
+The machine's filesystem is **58 GiB**, of which about **12.7 GiB** is the operating system, Docker
+and the SIVACOR harness — so roughly **45 GiB** is available before the analysis software is added.
+Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives
+on. The table below lists what is left for your package after each one. See
+[Available Software](images.md) for the full, curated list.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -115,14 +118,27 @@ import yaml
 import requests
 from IPython.display import HTML, display
 
-DISK_GB = 60  # total disk on the machine, in decimal GB
-OVERHEAD_GB = 4.5  # operating system + SIVACOR harness
+# Everything here is GiB (powers of 1024), which is what `df` on a worker reports.
+# Mixing decimal GB with `df` figures was how an earlier version of this table came
+# out optimistic in two places at once.
+DISK_GIB = 58.0      # the filesystem's own figure on a worker
+OVERHEAD_GIB = 12.7  # operating system + Docker + the SIVACOR harness
 
-# Docker Hub reports the *compressed* size of the layers; `docker pull` unpacks them, and the
-# compressed copies are not kept. Measured unpacked/compressed ratios for the images below
-# range from 2.05x (dataeditors/stata19_5-mp) to 2.95x (rocker/geospatial), so 3x is used as a
-# deliberately conservative ceiling rather than a best estimate.
-UNPACK_FACTOR = 3
+# Docker Hub reports the *compressed* layer total. What that costs on the worker's
+# disk is much more than the unpacked size, because the workers' Docker keeps the
+# compressed blobs in its content store *and* materialises a snapshot per layer --
+# so a file rewritten by a later layer is stored three times over.
+#
+# Measured 2026-08-22 on a VM built exactly like a worker, as the free-space delta
+# across a cold pull (and confirmed by `docker system df`):
+#
+#   dynare/dynare:6.1-R2024a   6.16 GiB compressed -> 21.00 GiB on disk  (3.41x)
+#   rocker/r-ver:4.6.1         0.34 GiB compressed ->  1.26 GiB on disk  (3.69x)
+#
+# 3.5 is the measured middle. The previous value, 3, was described here as "a
+# deliberately conservative ceiling" but was in fact an under-estimate: it told
+# researchers they had more room than they do.
+FOOTPRINT_FACTOR = 3.5
 
 # A handful of representative images, not the full curated list (see images.md for that).
 SAMPLE_IMAGES = [
@@ -146,15 +162,15 @@ for image_name, software in SAMPLE_IMAGES:
         (img["size"] for img in tag_info["images"] if img["architecture"] == "amd64"),
         tag_info["full_size"],
     )
-    size_gb = size_bytes / 1e9
-    unpacked_gb = size_gb * UNPACK_FACTOR
+    compressed_gib = size_bytes / 1024**3
+    on_disk_gib = compressed_gib * FOOTPRINT_FACTOR
     rows.append(
         (
             software,
             f"{image_name}:{tag}",
-            size_gb,
-            unpacked_gb,
-            DISK_GB - OVERHEAD_GB - unpacked_gb,
+            compressed_gib,
+            on_disk_gib,
+            DISK_GIB - OVERHEAD_GIB - on_disk_gib,
         )
     )
 
@@ -164,21 +180,35 @@ table = (
     "<table>\n<thead><tr>"
     f"<th {L}>Software</th><th {L}>Image</th>"
     f"<th {R}>Download size</th>"
-    f"<th {R}>Space used on disk*</th>"
+    f"<th {R}>Space it occupies*</th>"
     f"<th {R}>Free space for your package*</th>"
     "</tr></thead>\n<tbody>\n"
 )
-for software, image_tag, size_gb, unpacked_gb, free_gb in rows:
+for software, image_tag, compressed_gib, on_disk_gib, free_gib in rows:
     table += (
         f"<tr><td {L}>{software}</td><td {L}><code>{image_tag}</code></td>"
-        f"<td {R}>{size_gb:.1f} GB</td>"
-        f"<td {R}>{unpacked_gb:.1f} GB</td>"
-        f"<td {R}>{free_gb:.1f} GB</td></tr>\n"
+        f"<td {R}>{compressed_gib:.1f} GiB</td>"
+        f"<td {R}>{on_disk_gib:.1f} GiB</td>"
+        f"<td {R}>{free_gib:.1f} GiB</td></tr>\n"
     )
 table += "</tbody>\n</table>"
 
 display(HTML(table))
 ```
+
+\* Estimated from the compressed download size. The software is kept **both** compressed and
+unpacked on the worker's disk, so it occupies roughly **3.5x** what it downloads — measured on a
+worker, and the reason these figures are lower than the download sizes suggest. Individual tags differ.
+
+:::{important}
+
+**If your analysis uses MATLAB/Dynare, read the `dynare` row before anything else.** That image alone
+occupies over 21 GiB, which leaves under 24 GiB for your package and everything it writes — by far the
+tightest combination on the platform, and the one that has actually run out of disk in practice. A
+large package plus Dynare frequently will not fit, and
+[extra scratch disk](step2-choosing-image.md#scratch-disk) is the way through it.
+
+:::
 
 For more information on the system itself, see [Hardware capabilities](system.md#hardware-capabilities).
 
