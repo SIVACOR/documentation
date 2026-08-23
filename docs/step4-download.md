@@ -20,11 +20,12 @@ page, instead of filling the form in by hand (see
 SIVACOR does not retain your results for long: a submission is **deleted 14 days after it was
 submitted**. If you want to keep any results, you **must** download them before then.
 
-Starting a new run does not delete the previous one, but the page only ever shows your most
-recent submission — so once you start another run, the earlier results are no longer
-reachable from the dashboard, and will be deleted when their 14 days are up.
+**Starting a new run deletes the previous one.** The only button that returns you to the
+submission form is `Delete & Run New Job` — it asks you to confirm, and then removes the
+submission and everything in it. Download what you want to keep *before* you click it: once
+the submission is gone there is no way back to it, not even by its link.
 
-You can choose to not wait for the automated deletion jobs, and explicitly delete your results by clicking the `Delete & Run New Job` button on the job page.
+This is also how you delete results without waiting for the 14 days to run out.
 
 ::::
 

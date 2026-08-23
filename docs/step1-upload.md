@@ -38,3 +38,9 @@ If you picked the wrong file, click `Delete Uploaded File` and upload the correc
 upload area reappears once the file has been removed.
 
 :::
+
+Until an upload has finished, `Run Replication Workflow` at the bottom of the page stays grey
+and says why. It goes grey again if you delete the uploaded file, so a run can never be started
+against a file that is half-uploaded or no longer there.
+
+![The run button before anything is uploaded](images/sivacor-run-disabled.png)

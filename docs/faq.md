@@ -353,6 +353,11 @@ SIVACOR only temporarily retains any files that you upload. You can delete files
 
 ![Deleting files](images/sivacor-completed-delete.png)
 
+This is also the only button that returns you to the submission form, so it is the same click
+either way: starting your next run and deleting the previous one are one action. It asks you to
+confirm first — **download anything you want to keep before confirming**, because the
+submission and its link are gone afterwards.
+
 ## The system appears to be down.
 
 SIVACOR runs on [Jetstream 2](https://jetstream-cloud.org/). If Jetstream 2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream 2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
