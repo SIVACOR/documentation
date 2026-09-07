@@ -7,7 +7,7 @@ kernelspec:
 
 # Available Software
 
-SIVACOR only allows you to run certain well-defined software stacks, packaged as Docker images, from known and trusted sources. The table below shows all available software images with their tags and links to their Docker Hub repositories.
+SIVACOR only allows you to run certain well-defined software stacks, packaged as Docker images, from known and trusted sources. The table below shows all available software images with their tags and links to their Docker Hub repositories. If you believe additional images should be added, file a [pull request](https://github.com/SIVACOR/sivacor-repo-choice/issues/new) at the [sivacor-repo-choice](https://github.com/SIVACOR/sivacor-repo-choice/) repository, and contact us.
 
 
 ```{code-cell} python
