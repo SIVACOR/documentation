@@ -168,6 +168,13 @@ OVERHEAD_GIB = 12.7  # operating system + Docker + the SIVACOR harness
 #   dynare/dynare:6.1-R2024a   6.16 GiB compressed -> 21.00 GiB on disk  (3.41x)
 #   rocker/r-ver:4.6.1         0.34 GiB compressed ->  1.26 GiB on disk  (3.69x)
 #
+# Julia sits slightly above this factor (2026-09-16): 0.343 GiB compressed
+# unpacks to 1.163 GiB, so with both copies kept it rests at ~1.51 GiB -- 4.4x.
+# The table therefore credits a Julia submission with ~0.1 GiB more room than it
+# has, out of 44 GiB. Left alone rather than made per-image, because a factor
+# per software is a second table to keep true and this one is already the
+# smallest image by a wide margin.
+#
 # 3.5 is the measured middle. The previous value, 3, was described here as "a
 # deliberately conservative ceiling" but was in fact an under-estimate: it told
 # researchers they had more room than they do.
@@ -180,22 +187,40 @@ SAMPLE_IMAGES = [
     ("dynare/dynare", "MATLAB"),
     ("dataeditors/stata19_5-mp-i-python", "Stata"),
     ("dataeditors/stata19-mp", "Stata"),
+    ("ghcr.io/sivacor/julia1.13", "Julia"),
 ]
+
+# Sizes normally come from Docker Hub's API. SIVACOR builds its own Julia images
+# and publishes them to GHCR, which is a different API behind a different token
+# flow -- so rather than add a second network path to the docs build, the Julia
+# figure is a measured literal. Read from the registry manifest 2026-09-16:
+# julia1.13:1.13.0-20260916 is 0.343 GiB compressed (julia1.11 0.333, julia1.10
+# 0.209). Re-measure when a new line is added; these images barely change size.
+MEASURED_COMPRESSED_GIB = {"ghcr.io/sivacor/julia1.13": 0.343}
 
 repos_url = "https://raw.githubusercontent.com/SIVACOR/sivacor-repo-choice/main/allowed_repos.yaml"
 allowed = yaml.safe_load(requests.get(repos_url).text)
 
 rows = []
 for image_name, software in SAMPLE_IMAGES:
+    # An image this build cannot price is skipped, not fatal. The allow-list is
+    # a separate repository on its own release cycle: a sample image it has not
+    # gained yet -- or has dropped -- would otherwise take the whole docs site
+    # down with a KeyError.
+    if image_name not in allowed or not allowed[image_name]:
+        continue
     tag = str(allowed[image_name][0])  # first entry is the most recently added tag
-    tag_info = requests.get(
-        f"https://hub.docker.com/v2/repositories/{image_name}/tags/{tag}/"
-    ).json()
-    size_bytes = next(
-        (img["size"] for img in tag_info["images"] if img["architecture"] == "amd64"),
-        tag_info["full_size"],
-    )
-    compressed_gib = size_bytes / 1024**3
+    if image_name in MEASURED_COMPRESSED_GIB:
+        compressed_gib = MEASURED_COMPRESSED_GIB[image_name]
+    else:
+        tag_info = requests.get(
+            f"https://hub.docker.com/v2/repositories/{image_name}/tags/{tag}/"
+        ).json()
+        size_bytes = next(
+            (img["size"] for img in tag_info["images"] if img["architecture"] == "amd64"),
+            tag_info["full_size"],
+        )
+        compressed_gib = size_bytes / 1024**3
     on_disk_gib = compressed_gib * FOOTPRINT_FACTOR
     rows.append(
         (
