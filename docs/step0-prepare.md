@@ -58,6 +58,7 @@ For some guidance on constructing a portable replication package, see [Steps 1-3
 
 :::
 
+(dependencies)=
 ### All dependencies must either be included or installed automatically.
 
 If your code uses libraries or packages, you must ensure that they are **installed automatically** (for Stata, we suggest you include them). We strongly encourage packages that use "environments", and packages to manage dependencies.
@@ -74,6 +75,38 @@ Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packr
 :::{tab-item} Stata
 
 Guidance for portable dependencies for Stata is provided [at Step 3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-3-dependencies) of the AEA Data Editor's guidance. See also the World Bank's [`repado`](https://worldbank.github.io/repkit/reference/repado.html).
+
+:::
+
+:::{tab-item} Julia
+
+**A `Project.toml` is required.** Julia is the one stack where SIVACOR assembles your environment
+for you rather than running against whatever the container happens to contain, and it can only do
+that from a declaration. A submission without one is refused before anything runs, with a message
+saying so.
+
+**Include your `Manifest.toml` as well.** This is the difference between a run that is reproducible
+*in advance* and one that is only reproducible *after the fact*:
+
+- **With a `Manifest.toml`**, SIVACOR installs exactly the versions it pins. The same package
+  submitted next year resolves to the same versions as today.
+- **Without one**, SIVACOR resolves your `Project.toml` against the registry as it stands on the
+  day, generates a `Manifest.toml`, and includes it in your results. That file records what this
+  run used — it does not pin what a future run would use. The job log tells you which of the two
+  happened.
+
+Generate both by activating your project and adding your dependencies:
+
+```julia
+julia --project=.
+julia> ]           # enter the package REPL
+(YourProject) pkg> add DataFrames CSV GLM
+```
+
+Commit both files next to your main file, or at the top of your package. If your package contains
+several `Project.toml` files — a `docs/` or `test/` one alongside the main project, as is normal in
+Julia — SIVACOR uses the nearest one at or above your main file, which is the same environment
+`julia --project=@.` would pick.
 
 :::
 ::::
