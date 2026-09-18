@@ -41,14 +41,25 @@ for image_name, tags in data.items():
         software = 'MATLAB'
     elif image_name.startswith('rocker/'):
         software = 'R'
+    elif '/julia' in image_name.lower():
+        # One repository per Julia release line -- julia1.10, julia1.11 -- so
+        # without this the fallback below would title-case each into a software
+        # of its own ("Julia1.10", "Julia1.11") and the table would gain a row
+        # group per line. The line belongs in the Container column.
+        software = 'Julia'
     else:
         # Capitalize first letter of each part
         parts = image_name.split('/')[-1].split('-')
         software = ' '.join([part.capitalize() for part in parts])
 
-    # Create Docker Hub URL and link
-    docker_hub_url = f"https://hub.docker.com/r/{image_name}"
-    docker_hub_link = f'<a href="{docker_hub_url}" target="_blank">More info</a>'
+    # Create the registry link. SIVACOR builds its own Julia images and
+    # publishes them to GitHub Container Registry, so a hub.docker.com URL would
+    # be a dead link for those.
+    if image_name.startswith('ghcr.io/'):
+        info_url = 'https://github.com/orgs/SIVACOR/packages'
+    else:
+        info_url = f"https://hub.docker.com/r/{image_name}"
+    info_link = f'<a href="{info_url}" target="_blank">More info</a>'
 
     # Add a row for each tag
     for tag in tags:
@@ -56,7 +67,9 @@ for image_name, tags in data.items():
             'Software': software,
             'Container': image_name,
             'Tag': str(tag),
-            'Link to Docker Hub': docker_hub_link
+            # Not "Link to Docker Hub": SIVACOR's own images live on GHCR,
+            # so the column holds two registries now.
+            'More info': info_link
         })
 
 # Create DataFrame
@@ -117,6 +130,34 @@ We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for 
 :tags: ["remove-input"]
 if 'df_matlab' in globals():
     show(df_matlab, lengthMenu=[10, 25, 50, -1], classes="display compact", showIndex=False,
+         columnDefs=[{"width": "400px", "targets": 0, "className": "dt-left"}, {"width": "150px", "targets": 1, "className": "dt-left"}],
+         autoWidth=False)
+```
+
+:::
+
+:::{tab-item} Julia
+
+Julia is the one stack whose images SIVACOR builds itself, from the
+[official Julia image](https://github.com/docker-library/julia). They are published to the GitHub
+Container Registry at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages) and the source
+is [`SIVACOR/julia`](https://github.com/SIVACOR/julia).
+
+There is one repository per Julia release line — `julia1.10`, `julia1.11` — and a tag per build,
+`<julia version>-<build date>`. A tag always names the same image: when a new Julia is released, or
+when the underlying Debian is rebuilt for a security fix, a **new** tag is published rather than an
+existing one replaced. Pick the line matching the Julia you developed against, and the newest tag
+within it.
+
+Unlike the other stacks, these images ship **no packages** — only Julia itself and the package
+registry. Your dependencies are installed from your `Project.toml` when you submit, which is why
+that file is required; see [Step 0](#dependencies)
+and [the two-stage run](#julia-network).
+
+```{code-cell} python
+:tags: ["remove-input"]
+if 'df_julia' in globals():
+    show(df_julia, lengthMenu=[10, 25, 50, -1], classes="display compact", showIndex=False,
          columnDefs=[{"width": "400px", "targets": 0, "className": "dt-left"}, {"width": "150px", "targets": 1, "className": "dt-left"}],
          autoWidth=False)
 ```

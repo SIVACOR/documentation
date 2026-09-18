@@ -343,6 +343,13 @@ Error: package or namespace load failed for ‘rJava’:
 
 Issue: <https://github.com/SIVACOR/sivacor-repo-choice/issues/3>
 
+### Julia errors
+
+Julia failures divide into two kinds, and the job log says which stage you are in. A failure under
+`===== Stage N Dependency Resolution =====` is about your `Project.toml` — see
+[the debugging notes](#julia-resolve-failed), and read `stderr`, because
+that is where Julia's package manager writes. A failure after it is your own code.
+
 ## What do I do with the replicated package that I can download?
 
 You can upload it directly to the journal submission system! For instance, in the case of the American Economic Association, simply **import** the ZIP file into the AEA's [Data and Code Repository](https://www.icpsr.umich.edu/sites/aea/home) (see [instructions](https://aeadataeditor.github.io/aea-de-guidance/)).
