@@ -93,7 +93,7 @@ Three things about this table are easy to get wrong, and all three cost real tim
 - **Disk does not grow with the size.** Every size has the same 60 GB, shared between your package
   and the software image. If you have run out of *disk*, a bigger machine will not help — ask for
   [extra scratch disk](#scratch-disk) instead, and see
-  [size considerations](step0-prepare.md#size-considerations).
+  [Package must be able to run on the SIVACOR workers](step0-prepare.md#size-considerations).
 - **Cores are not chosen separately.** They move with the memory; the numbers above are the whole
   ladder.
 - **The usable figure is approximate and is always lower than the size's name.** A small amount is

@@ -118,7 +118,7 @@ The error looks like this:
 The machine running your submission has 60 GB of disk, and that space is shared between your
 replication package (including everything your code writes) and the software image it runs
 in. Large images consume a substantial part of it — see the
-[size considerations table](step0-prepare.md#size-considerations) for how much room typical
+[disk size table](step0-prepare.md#size-considerations) for how much room typical
 images leave free.
 
 Things that help:

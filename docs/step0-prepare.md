@@ -29,7 +29,7 @@ If you have data that you are allowed to upload, but not publish, see "[Excludin
 
 
 (excluding-files-from-final-package)=
-### Excluding files from final package
+## Excluding files from final package
 
 The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro). 
 
@@ -91,9 +91,17 @@ If your code uses libraries or packages, you must ensure that they are **install
 
 ::::{tab-set}
 
-:::{tab-item} Tips for `R`
+:::{tab-item} R
 
-Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/). You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
+Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/).[^groundhog] You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
+
+:::{warning}
+
+Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your replication package. It is generally much more efficient to leverage the `CRAN` mirror defined naturally within the `rocker` images. 
+
+:::
+
+[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
 
 :::
 
@@ -158,9 +166,8 @@ several `Project.toml` files, SIVACOR uses the nearest one at or above your main
 :::
 
 
-
-## Size considerations
-
+(size-considerations)=
+## Package must be able to run on the SIVACOR workers
 The size available to run your code depends on the software being used, and how you manage files within your replication package. A complete run of your code needs room:
 
 - the operating system
@@ -247,7 +254,7 @@ for image_name, software in SAMPLE_IMAGES:
     # gained yet -- or has dropped -- would otherwise take the whole docs site
     # down with a KeyError.
     if image_name not in allowed or not allowed[image_name]:
-        continue
+        continue 
     tag = str(allowed[image_name][0])  # first entry is the most recently added tag
     if image_name in MEASURED_COMPRESSED_GIB:
         compressed_gib = MEASURED_COMPRESSED_GIB[image_name]
@@ -293,17 +300,15 @@ table += "</tbody>\n</table>"
 display(HTML(table))
 ```
 
-\* Estimated from the compressed download size. The software is kept **both** compressed and
-unpacked on the worker's disk, so it occupies roughly **3.5x** what it downloads — measured on a
-worker, and the reason these figures are lower than the download sizes suggest. Individual tags differ.
+\* Estimated from the compressed download size.[^downloadsize] 
+
+[^downloadsize]: The container is kept **both** compressed and
+unpacked on the worker's disk, so it occupies roughly **3.5x** what it downloads.
 
 :::{important}
 
-**If your analysis uses MATLAB/Dynare, read the `dynare` row before anything else.** That image alone
-occupies over 21 GiB, which leaves under 24 GiB for your package and everything it writes — by far the
-tightest combination on the platform, and the one that has actually run out of disk in practice. A
-large package plus Dynare frequently will not fit, and
-[extra scratch disk](step2-choosing-image.md#scratch-disk) is the way through it.
+**If your analysis uses MATLAB/Dynare, pay particular attention to the  `dynare` entry.** Images provided by the Dynare project are large, typically over 21 GiB. This leaves less than 24 GiB for the package and everything it writes. If you run into problems, see how to request 
+[extra scratch disk](step2-choosing-image.md#scratch-disk).
 
 :::
 
@@ -312,13 +317,11 @@ large package plus Dynare frequently will not fit, and
 For more information on the system itself, see [Hardware capabilities](system.md#hardware-capabilities).
 
 
-If free space runs low, the run is stopped and you will see an error saying the submission
-ran out of disk space — see the
-[FAQ](faq.md#my-job-failed-saying-it-ran-out-of-disk-space) for what to do about it.
+A run is stopped if the worker runs out of disk space,  see the
+[FAQ](faq.md#my-job-failed-saying-it-ran-out-of-disk-space). 
 
-If your package cannot be made to fit the free space in the table above, you can ask for
-[extra scratch disk](step2-choosing-image.md#scratch-disk) instead of shrinking it: a temporary disk
-on top of the machine's own, granted per account on request.
+If your package cannot be made to fit the free space in the table above, you may be able to ask for
+[extra scratch disk](step2-choosing-image.md#scratch-disk).
 
 
 ## Prepare a ZIP or tar.gz file
