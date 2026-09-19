@@ -55,6 +55,12 @@ jobs:
         run: myst build --pdf
       - name: Build HTML Assets
         run: jupyter-book build --execute --html
+      # Concatenates the step0-4 pages, wrapped in SKILL-HEADER.md and
+      # SKILL-FOOTER.md, into _build/html/SKILL.md, so the user guide is
+      # published as a single Agent-Skills file at <site>/SKILL.md. Runs after
+      # the HTML build only so that the output directory exists.
+      - name: Build SKILL.md
+        run: python scripts/build_skill.py
       # Bakes banner.yml into every built page. No-op when the banner is
       # disabled. Must run after the HTML build and before the upload; the PDF
       # is built earlier on purpose, so it never carries the banner.
