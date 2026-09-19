@@ -28,6 +28,6 @@ Once a machine has been allocated, your job will start running. The main submiss
 ![Job running](images/sivacor-running-job.png)
 
 
-## ❓ FAQ
+## ℹ️ FAQ
 
 See the [FAQ](faq.md#monitoring-job-status).

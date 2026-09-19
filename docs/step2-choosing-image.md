@@ -233,6 +233,6 @@ you click: if a step is missing an image, a tag or a main file, the page tells y
 rather than leaving the button dead.
 
 
-## ❓ FAQ
+## ℹ️ FAQ
 
 See the [FAQ](faq.md#choosing-software-and-running-jobs).

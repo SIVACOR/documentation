@@ -46,6 +46,6 @@ against a file that is half-uploaded or no longer there.
 ![The run button before anything is uploaded](images/sivacor-run-disabled.png)
 
 
-## ❓ FAQ
+## ℹ️ FAQ
 
 See the [FAQ](faq.md#types-of-archives) if you experience difficulty uploading. 

@@ -337,6 +337,6 @@ You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/pr
 
 The next step is to [upload your package to SIVACOR](step1-upload.md).
 
-## ❓ FAQ
+## ℹ️ FAQ
 
 See the [FAQ](faq.md#preparing-a-package).
