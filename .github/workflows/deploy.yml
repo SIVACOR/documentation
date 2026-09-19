@@ -66,6 +66,10 @@ jobs:
       # is built earlier on purpose, so it never carries the banner.
       - name: Inject site banner
         run: python scripts/inject_banner.py
+      # Adds the tick-able section checklist to the "Preparing a Compatible
+      # Replication Package" page (client-side, from the rendered headings).
+      - name: Inject section checklist
+        run: python scripts/inject_checklist.py
       # Preview deploys go to Cloudflare Pages, not GitHub Pages, which only has
       # room for one deployment (production, from main). Skipped for forked PRs:
       # their runs cannot read secrets, and handing a Pages-write token to

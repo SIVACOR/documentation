@@ -268,7 +268,11 @@ def load_config(path: Path) -> dict | None:
     return cfg
 
 
-def inject(html_dir: Path, snippet: str) -> int:
+def inject(html_dir: Path, snippet: str, marker: str = MARKER) -> int:
+    """Insert ``snippet`` before ``</head>`` of every page not already carrying ``marker``.
+
+    Shared with the other post-build injectors (``inject_checklist.py``).
+    """
     pages = sorted(html_dir.rglob("*.html"))
     if not pages:
         sys.exit(f"{html_dir}: no HTML files found -- was the site built?")
@@ -276,7 +280,7 @@ def inject(html_dir: Path, snippet: str) -> int:
     touched = 0
     for page in pages:
         text = page.read_text(encoding="utf-8")
-        if MARKER in text:
+        if marker in text:
             continue
         # Callable replacement: the snippet contains backslash escapes that
         # re would otherwise try to interpret as template references.
