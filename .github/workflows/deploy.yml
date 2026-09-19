@@ -65,7 +65,15 @@ jobs:
       # disabled. Must run after the HTML build and before the upload; the PDF
       # is built earlier on purpose, so it never carries the banner.
       - name: Inject site banner
+        if: github.event_name != 'pull_request'
         run: python scripts/inject_banner.py
+      # PR builds are published as Cloudflare Pages previews, so they always
+      # carry a banner saying so, stamped with the build time (merged with
+      # banner.yml if that is enabled). Same condition as the preview deploy
+      # step below; builds that go nowhere are not worth stamping.
+      - name: Inject preview banner
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        run: python scripts/inject_banner.py --preview "$(date -u '+%Y-%m-%d %H:%M UTC')"
       # Adds the tick-able section checklist to the "Preparing a Compatible
       # Replication Package" page (client-side, from the rendered headings).
       - name: Inject section checklist

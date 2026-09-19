@@ -14,10 +14,16 @@ point), so it depends on nothing at runtime: no fetch, no Girder, no
 Usage::
 
     python scripts/inject_banner.py [--config banner.yml] [--html-dir _build/html]
+    python scripts/inject_banner.py --preview "2026-09-19 14:03 UTC"
 
 A missing config, ``enabled: false``, or an empty message is a no-op with exit
 status 0, so the deploy workflow can call this unconditionally. Re-running over
 an already-injected tree is also a no-op.
+
+``--preview`` is for builds published somewhere other than the live site (the
+Cloudflare Pages PR previews): it always raises a banner saying so, stamped
+with the build time. If ``banner.yml`` is enabled as well, the preview note is
+prepended to that announcement rather than replacing it.
 """
 
 from __future__ import annotations
@@ -207,6 +213,8 @@ BANNER_JS = """
 
 LEVELS = ("info", "warning", "critical")
 
+PREVIEW_NOTE = "Preview build ({built_at}) -- this is not the live site."
+
 
 def build_snippet(cfg: dict) -> str:
     """Render the <style> + <script> pair injected into every page's <head>."""
@@ -227,6 +235,29 @@ def build_snippet(cfg: dict) -> str:
         f'<style id="{MARKER}">{LAYOUT_CSS}{BANNER_CSS}</style>'
         f"<script>{script}</script>"
     )
+
+
+def with_id(cfg: dict) -> dict:
+    """Attach the dismissal key, derived from the content.
+
+    A *new* announcement therefore reappears for readers who dismissed the
+    previous one; a preview note carries its build time, so every fresh preview
+    shows it again.
+    """
+    digest = hashlib.sha256(
+        "\x1f".join([cfg["level"], cfg["message"], cfg["link"], cfg["link_text"]]).encode()
+    ).hexdigest()[:12]
+    return {**cfg, "id": digest}
+
+
+def preview_config(built_at: str, announcement: dict | None) -> dict:
+    """Banner for a preview deploy: the preview note, merged with any announcement."""
+    note = PREVIEW_NOTE.format(built_at=built_at.strip())
+    if announcement is None:
+        return with_id(
+            {"level": "info", "message": note, "link": "", "link_text": "", "expires": ""}
+        )
+    return with_id({**announcement, "message": f"{note} {announcement['message']}"})
 
 
 def load_config(path: Path) -> dict | None:
@@ -259,13 +290,7 @@ def load_config(path: Path) -> dict | None:
         "link_text": str(raw.get("link_text") or "").strip(),
         "expires": str(raw.get("expires") or "").strip(),
     }
-    # Dismissal is keyed on the content, so a *new* announcement reappears for
-    # readers who dismissed the previous one.
-    digest = hashlib.sha256(
-        "\x1f".join([cfg["level"], cfg["message"], cfg["link"], cfg["link_text"]]).encode()
-    ).hexdigest()[:12]
-    cfg["id"] = digest
-    return cfg
+    return with_id(cfg)
 
 
 def inject(html_dir: Path, snippet: str, marker: str = MARKER) -> int:
@@ -299,9 +324,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--config", type=Path, default=Path("banner.yml"))
     parser.add_argument("--html-dir", type=Path, default=Path("_build/html"))
+    parser.add_argument(
+        "--preview",
+        metavar="BUILT_AT",
+        help="always inject a 'preview build' banner stamped with this build time, "
+        "merged with banner.yml if that is enabled",
+    )
     args = parser.parse_args()
 
     cfg = load_config(args.config)
+    if args.preview:
+        cfg = preview_config(args.preview, cfg)
     if cfg is None:
         return
 
