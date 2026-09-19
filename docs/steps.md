@@ -8,4 +8,4 @@ The following steps will guide you through the process of using SIVACOR.
 3. [Monitoring Jobs](step3-monitoring.md)
 4. [Downloading Results](step4-download.md)
 
-The whole guide is also available as a single file, [SKILL.md](/SKILL.md), which you can give to an AI assistant to walk you through a submission.
+> A single-file [SKILL.md](/SKILL.md) may be useful for AI agents.

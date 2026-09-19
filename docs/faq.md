@@ -46,7 +46,37 @@ cd (WORKING_DIRECTORY)
 Stripping `.m` is done automatically, you should not omit it from your main file name.
 
 :::
+
+:::{tab-item} Julia
+
+TBA
+:::
+
 ::::
+
+## Trying to submit a new job while a job is already in progress
+
+If you try to submit while an earlier submission is still running, SIVACOR refuses the new
+one and tells you which submission is blocking it:
+
+> You already have a submission in progress ('...'). Please wait for it to finish, or
+> cancel it, before submitting a new one.
+
+The message includes a **Go to your submission in progress** link that takes you to the
+submission that is still running. From there you can either wait for it to finish, or use
+**Cancel Job** to stop it — once it is cancelled you can submit a new one.
+
+## Job is presumed lost
+
+Occasionally the machine running a submission is lost. When that happens, SIVACOR marks the
+submission as failed with a message like:
+
+> Submission abandoned: no sign of life for 0:31:07; the worker running it is presumed lost.
+
+You will receive a failure email. This is an infrastructure problem, not a problem
+with your code: simply submit the package again. If it keeps happening, please contact us.
+
+
 
 ## How do I know a job failed?
 
@@ -77,6 +107,7 @@ enough to tell whether you need the next size up.
 
 If your analysis needs one of the sizes marked *by request*, or needs more than the largest,
 please contact us — do not spend a long time trying to shrink it first.
+
 
 ## My job failed saying it ran out of disk space
 
@@ -360,10 +391,8 @@ SIVACOR only temporarily retains any files that you upload. You can delete files
 
 ![Deleting files](images/sivacor-completed-delete.png)
 
-This is also the only button that returns you to the submission form, so it is the same click
-either way: starting your next run and deleting the previous one are one action. It asks you to
-confirm first — **download anything you want to keep before confirming**, because the
-submission and its link are gone afterwards.
+You are asked to
+confirm first. **Download anything you want to keep before confirming**, it is not possible to recover deleted files.
 
 ## The system appears to be down.
 
