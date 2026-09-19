@@ -43,6 +43,10 @@ project:
   license: CC-BY-4.0
   exclude:
     - venv/*
+    # Wrapper text for the generated SKILL.md (see scripts/build_skill.py);
+    # not pages of the site.
+    - SKILL-HEADER.md
+    - SKILL-FOOTER.md
   github: sivacor/documentation
   #bibliography:
   #  - references.bib
