@@ -231,3 +231,8 @@ The button is grey until an upload has finished, and says so underneath — whil
 going up, and again if you delete the uploaded file. Everything else on the form is checked when
 you click: if a step is missing an image, a tag or a main file, the page tells you which one
 rather than leaving the button dead.
+
+
+## ❓ FAQ
+
+See the [FAQ](faq.md#choosing-software-and-running-jobs).

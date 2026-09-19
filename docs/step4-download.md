@@ -39,3 +39,7 @@ For the AEA journals, you should "import" this ZIP file into the AEA's [Data and
 
 ::::
 
+
+## ❓ FAQ
+
+See the [FAQ](faq.md#downloading-results).
