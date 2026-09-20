@@ -66,6 +66,10 @@ When there are multiple steps to a workflow, this repeats for each step:
 > `[2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_arrangement)`
 > `[2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_performance)`
 
+In this example, there were two steps, which are also displayed for the user at the end of the process:
+
+![Information on steps](images/sivacor-running-job-success-2.png)
+
 ## Cleaning up
 
 Since every job can also remove files, via the [`.sivacorignore`](excluding-files-from-final-package) mechanism, the last step is another arrangement, capturing the final state of the workspace.
@@ -87,3 +91,6 @@ The finalized package is made available to the user again
 
 > `[2026-09-19T18:32:30-05:00] Uploading executed replication package to Girder.`
 
+which then appears to the user as:
+
+![Completed run](images/sivacor-completed-run-2.png)
