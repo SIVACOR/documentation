@@ -43,6 +43,10 @@ project:
   license: CC-BY-4.0
   exclude:
     - venv/*
+    # Wrapper text for the generated SKILL.md (see scripts/build_skill.py);
+    # not pages of the site.
+    - SKILL-HEADER.md
+    - SKILL-FOOTER.md
   github: sivacor/documentation
   #bibliography:
   #  - references.bib
@@ -61,12 +65,14 @@ project:
         - file: docs/step3-monitoring.md
         - file: docs/step4-download.md
         - file: docs/images.md
+        - file: docs/behind-the-scenes-flow.md
     - file: docs/faq.md
       children:
         - file: docs/debugging.md
     - file: docs/about.md
       children:
         - file: docs/system.md
+        - file: docs/keys.md
     - url: 'https://submit.sivacor.org'
       title: Submit a job    
   downloads:

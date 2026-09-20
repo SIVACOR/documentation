@@ -32,7 +32,7 @@ user may store up to **10 GB** on SIVACOR at any one time.
 
 ![Successful upload](images/sivacor-upload-successful.png)
 
-:::{tip}
+:::{hint}
 
 If you picked the wrong file, click `Delete Uploaded File` and upload the correct one. The
 upload area reappears once the file has been removed.
@@ -44,3 +44,8 @@ and says why. It goes grey again if you delete the uploaded file, so a run can n
 against a file that is half-uploaded or no longer there.
 
 ![The run button before anything is uploaded](images/sivacor-run-disabled.png)
+
+
+## ℹ️ FAQ
+
+See the [FAQ](faq.md#types-of-archives) if you experience difficulty uploading. 

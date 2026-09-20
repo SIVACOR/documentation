@@ -30,7 +30,7 @@ the figure. It is not silently slowed down or swapped to disk.
 **Disk is the same at every size.** A larger machine buys memory and cores, never space.
 
 The 60 GB of disk is shared between your replication package and the software image it runs
-in — see [Size considerations](step0-prepare.md#size-considerations) when preparing your
+in — see [Package must be able to run on the SIVACOR workers](step0-prepare.md#size-considerations) when preparing your
 package.
 
 A submission may additionally be given a **temporary scratch disk**, of a size it asks for, on top of

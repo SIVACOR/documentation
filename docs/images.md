@@ -93,7 +93,7 @@ globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Contain
 
 :::{tab-item} Stata
 
-Stata images are built by the AEA Data Editor, with permission from StataCorp. See the [dataeditors repositories](https://hub.docker.com/u/dataeditors) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version.
+Stata images are built by the AEA Data Editor, with permission from StataCorp. See the [dataeditors repositories](https://hub.docker.com/u/dataeditors) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version. Images contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
 
 
 ```{code-cell} python
@@ -108,7 +108,7 @@ if 'df_stata' in globals():
 
 :::{tab-item} R
 
-We use a subset of images from the [rocker project](https://www.rocker-project.org/) for `R`. See the  [rocker repositories](https://hub.docker.com/u/rocker) for more information. An image name is defined by a combination of pre-installed packages. Tags identify different versions of R.
+We use a subset of images from the [rocker project](https://www.rocker-project.org/) for `R`. See the  [rocker repositories](https://hub.docker.com/u/rocker) for more information. An image name is defined by a combination of pre-installed packages. Any additional packages must be installed, using an appropriate method,  see [Step 0](#dependencies). Tags identify different versions of R.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -124,7 +124,7 @@ if 'df_r' in globals():
 
 :::{tab-item} MATLAB
 
-We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Tags identify a particular combination of Dynare and MATLAB versions. 
+We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most MATLAB toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Tags identify a particular combination of Dynare and MATLAB versions. 
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -138,21 +138,13 @@ if 'df_matlab' in globals():
 
 :::{tab-item} Julia
 
-Julia is the one stack whose images SIVACOR builds itself, from the
-[official Julia image](https://github.com/docker-library/julia). They are published to the GitHub
-Container Registry at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages) and the source
-is [`SIVACOR/julia`](https://github.com/SIVACOR/julia).
+Julia containers differ only minimally from [official Julia images](https://github.com/docker-library/julia). They add a non-root user, and make efficiency simplifications for the package registry, see  [`SIVACOR/julia`](https://github.com/SIVACOR/julia). Images are available at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages).
 
-There is one repository per Julia release line — `julia1.10`, `julia1.11` — and a tag per build,
-`<julia version>-<build date>`. A tag always names the same image: when a new Julia is released, or
-when the underlying Debian is rebuilt for a security fix, a **new** tag is published rather than an
-existing one replaced. Pick the line matching the Julia you developed against, and the newest tag
+Containers are named after the Julia release — `julia1.10`, `julia1.11` — and a tag per build,
+`<julia version>-<build date>`. New tags are created either when a new Julia release is made, or when the underlying Linux container is updated. Pick the version matching the Julia you developed against, and the newest tag
 within it.
 
-Unlike the other stacks, these images ship **no packages** — only Julia itself and the package
-registry. Your dependencies are installed from your `Project.toml` when you submit, which is why
-that file is required; see [Step 0](#dependencies)
-and [the two-stage run](#julia-network).
+Julia containers do not include  **any packages**. Use  `Project.toml` to add packages; see [Step 0](#dependencies).
 
 ```{code-cell} python
 :tags: ["remove-input"]
