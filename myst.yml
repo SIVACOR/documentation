@@ -43,6 +43,8 @@ project:
   license: CC-BY-4.0
   exclude:
     - venv/*
+    # Build-time data for code cells, not pages.
+    - docs/_data/*
     # Wrapper text for the generated SKILL.md (see scripts/build_skill.py);
     # not pages of the site.
     - SKILL-HEADER.md

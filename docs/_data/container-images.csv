@@ -1,0 +1,7 @@
+image,software,compressed_gib,measured
+rocker/verse,R,,
+rocker/geospatial,R,,
+dynare/dynare,MATLAB,,
+dataeditors/stata19_5-mp-i-python,Stata,,
+dataeditors/stata19-mp,Stata,,
+ghcr.io/sivacor/julia1.13,Julia,0.343,2026-09-16

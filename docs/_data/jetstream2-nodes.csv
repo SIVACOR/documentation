@@ -1,0 +1,5 @@
+size,memory_gib,cores,processor,memory_available_gib,disk_gb,disk_fs_gib,overhead_gib,footprint_factor,default
+m3.medium,30,8,AMD EPYC-Milan,28,60,58.0,12.7,3.5,true
+m3.large,60,16,AMD EPYC-Milan,58,60,58.0,12.7,3.5,false
+m3.xl,125,32,AMD EPYC-Milan,123,60,58.0,12.7,3.5,false
+m3.2xl,250,64,AMD EPYC-Milan,248,60,58.0,12.7,3.5,false
