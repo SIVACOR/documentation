@@ -24,8 +24,8 @@ The system is actively developed, and the specific details may vary over time.
 
 ## Preparing the system
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:28:23-05:00] Preparing SIVACOR submission
@@ -37,8 +37,8 @@ The computer system is configured to run the user's code. A compute node is requ
 
 ## Unpacking the uploaded ZIP file
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:05-05:00] Creating workspace from source folder.
@@ -49,8 +49,8 @@ At this point, the uploaded archive is unpacked.
 
 ## First snapshot
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:05-05:00] Running TRO utilities in the workspace. (add_arrangement)
@@ -62,8 +62,8 @@ An [arrangement](https://transparency-certified.github.io/trace-specification/do
 ## Setting up the software, and running the code.
 
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:06-05:00] Executing workflow on workspace.
@@ -77,8 +77,8 @@ The various software components, as defined by the user on [Step 2](step2-choosi
 ## Recording the state after running code
 
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:24-05:00] Running TRO utilities in the workspace. (add_arrangement)
@@ -92,8 +92,8 @@ The [arrangement](https://transparency-certified.github.io/trace-specification/d
 
 When there are multiple steps to a workflow, this repeats for each step:
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:24-05:00] Executing workflow on workspace.
@@ -112,8 +112,8 @@ In this example, there were two steps, which are also displayed for the user at 
 
 Since every job can also remove files, via the [`.sivacorignore`](excluding-files-from-final-package) mechanism, the last step is another arrangement, capturing the final state of the workspace.
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (add_arrangement)
@@ -125,8 +125,8 @@ Since every job can also remove files, via the [`.sivacorignore`](excluding-file
 
 To ensure the integrity and authenticity of the replication package, it is [signed](https://transparency-certified.github.io/trace-specification/docs/tro-declaration-format/#signing-and-timestamping):
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (sign)
@@ -139,8 +139,8 @@ Different TRACE implementations can use different signing mechanisms. SIVACOR us
 
 The finalized package is made available to the user again
 
-:::{warning}
-:icon: false
+:::{admonition}
+:class: seealso
 
 ```
 [2026-09-19T18:32:30-05:00] Uploading executed replication package to Girder.
