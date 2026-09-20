@@ -65,12 +65,14 @@ project:
         - file: docs/step3-monitoring.md
         - file: docs/step4-download.md
         - file: docs/images.md
+        - file: docs/behind-the-scenes-flow.md
     - file: docs/faq.md
       children:
         - file: docs/debugging.md
     - file: docs/about.md
       children:
         - file: docs/system.md
+        - file: docs/keys.md
     - url: 'https://submit.sivacor.org'
       title: Submit a job    
   downloads:
