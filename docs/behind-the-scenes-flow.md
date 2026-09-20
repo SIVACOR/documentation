@@ -20,7 +20,7 @@ A summary of those activies shows up on the runtime view of the SIVACOR system:
 
 > The system is actively developed, and the specific details may vary over time.
 
-### Preparing the system
+## Preparing the system
 
 > `[2026-09-19T18:28:23-05:00] Preparing SIVACOR submission`
 > `[2026-09-19T18:32:05-05:00] New submission: 'brutal-beans' created.` 
