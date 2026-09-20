@@ -37,16 +37,21 @@ If some of the R packages require additional system libraries, we currently have
 ## Julia
 
 (julia-resolve-failed)=
-### The job failed before my code ran
+### `using SomePackage` fails, or my setup step did
 
-A Julia submission resolves its dependencies in a stage of its own, before your main file is
-executed. If that stage fails, nothing of yours has run yet and the error is about your
-*declaration*, not your code.
+The Julia images ship no packages. If your code needs them, one of your steps has to install them —
+see [Step 0](#dependencies). A missing setup step shows up as Julia's own
+`ArgumentError: Package Foo not found in current path`, from your analysis step rather than from
+SIVACOR.
+
+If you *have* a setup step and it is the one that failed, the error is about your *declaration*,
+not your analysis code.
 
 **Read `stderr`, not `stdout`.** Julia's package manager writes everything — what it installed,
-what it could not resolve — to `stderr`. Your `stdout` will contain only your own output, so a
-resolution failure looks like an empty file if you check there first. Both are in the job's
-output files, under a `===== Stage N Dependency Resolution =====` heading.
+what it could not install — to `stderr`. Your `stdout` will contain only your own output, so an
+installation failure looks like an empty file if you check there first. Both are in the job's
+output files; each step's output is under its own `===== Stage N Output =====` heading, numbered in
+the order you added the steps.
 
 Four things cause this, and the message names which:
 
@@ -66,7 +71,6 @@ Check the Julia version. The image you selected pins a specific release, and a `
 generated on a different one may not resolve. Selecting the image matching your local Julia is
 usually the fastest fix.
 
-Note also that dependency resolution has the internet and your analysis may not — see
-[Step 2](#julia-network). Code
-that downloads data at run time fails under network isolation even though the packages installed
+Note also that network isolation is per step — see [Step 2](#julia-network). Code that downloads
+data at run time fails in an isolated step even though your setup step installed its packages
 fine.

@@ -16,7 +16,8 @@ If you need a different image, please contact us.
 
 ## Identify the main file
 
-Finally, identify the name of the main file. This is the file that will be executed by SIVACOR. For `R`, this is typically an `R` script (`.R` file). For `Stata`, this is typically a `do` file (`.do` file). For `Julia`, this is a `.jl` file, and your package must also contain a `Project.toml` — see [Step 0](#dependencies). 
+Finally, identify the name of the main file. This is the file that will be executed by SIVACOR. For `R`, this is typically an `R` script (`.R` file). For `Stata`, this is typically a `do` file (`.do` file).
+For `Julia`, this is a `.jl` file. If your code needs packages, add a setup step ahead of it, see [Step 0](#dependencies) and [below](#julia-network).
 
 :::{warning}
 
@@ -25,26 +26,28 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 :::
 
 (julia-network)=
-## Julia: dependency resolution happens before your code runs
+## Julia: installing packages, and network isolation
 
-A Julia submission runs in **two stages**, and this is worth knowing before you choose network
-isolation.
+The Julia images ship no packages, so a submission whose code needs them has to install them —
+and installing needs the internet. Network isolation is **per step**, which is what makes both
+possible in one run:
 
-1. **Dependency resolution.** SIVACOR reads your `Project.toml`, downloads the packages it names
-   and precompiles them. This stage **needs the internet** and always has it, whatever you chose.
-   Your own code does not run here — though installing a package can run that package's own build
-   script, which is normal for Julia.
-2. **Your analysis.** This is where your main file runs, and this is the stage your network
-   isolation setting applies to.
+1. **A setup step**, with isolation **off**, running a script of yours that installs your
+   dependencies — typically `Pkg.instantiate()`; see [Step 0](#dependencies).
+2. **Your analysis step**, with isolation **on** if you want it. The packages installed by step 1
+   are still there: steps share one workspace, and the Julia depot lives in it.
 
-So **a Julia submission always reaches the network**, even when you ask for isolation. What the
-isolation setting controls — and what the signed Transparent Research Object records — is whether
-*your analysis* had network access. The two stages are recorded separately in the TRO for exactly
-this reason: the isolation claim is attached to the stage where it is true, and not to the one
-where it is not.
+Each step is recorded separately in the signed Transparent Research Object, with its own isolation
+claim, so the certificate says plainly that the install had the network and your analysis did not.
 
-The practical consequence: if your code needs to download something at run time, it will still
-fail under isolation. Only dependency resolution is exempt.
+Two practical consequences:
+
+- **If you isolate a step, nothing in it can reach the network** — including package installation.
+  A single isolated step whose code calls `using SomePackage` fails with Julia's own error about the
+  package not being found, not with a message from SIVACOR. That is the fix: add the setup step.
+- **Installing a package is not inert.** Julia runs each package's own `deps/build.jl` on install,
+  so your setup step executes third-party build code with network access. That is normal for Julia,
+  and it is one more reason the step is yours to write and to see in the log.
 
 (advanced-settings)=
 ## Advanced settings

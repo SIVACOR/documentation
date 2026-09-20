@@ -80,20 +80,42 @@ Guidance for portable dependencies for Stata is provided [at Step 3](https://aea
 
 :::{tab-item} Julia
 
-**A `Project.toml` is required.** Julia is the one stack where SIVACOR assembles your environment
-for you rather than running against whatever the container happens to contain, and it can only do
-that from a declaration. A submission without one is refused before anything runs, with a message
-saying so.
+The Julia images ship Julia and the package registry, and **no packages**. So if your code says
+`using DataFrames`, something in your replication package has to install it — SIVACOR does not do
+that for you, and does not read your `Project.toml` on its own.
+
+**Add a setup step that installs your dependencies.** Write a short script beside your main file:
+
+```julia
+# setup.jl
+using Pkg
+Pkg.instantiate()
+```
+
+and submit it as the **first step** of your run, with network isolation **off**, followed by your
+analysis as a second step, isolated if you want it to be. Steps share one workspace, including the
+package depot, so everything `setup.jl` installs is there when your main file runs. See
+[chained runs in Step 2](#chained-runs-steps) for how to add a step, and
+[the Julia notes](#julia-network) for what this means for network isolation.
+
+Anything else that installs works too — `Pkg.add(...)` in the setup script, or at the top of your
+main file if you are not isolating it. `Pkg.instantiate()` is just the one that installs exactly
+what you declared, and nothing else.
+
+**Declare your dependencies in a `Project.toml`**, which is what `Pkg.instantiate()` reads. Your
+step runs in the directory holding its own script, and Julia searches upward from there for the
+governing `Project.toml` (`--project=@.`), so a project file beside your scripts or at the top of
+your package both work. Several `Project.toml` files in one package — a `docs/` or `test/` one
+alongside the main project, as is normal in Julia — are fine: the nearest one above the script wins.
 
 **Include your `Manifest.toml` as well.** This is the difference between a run that is reproducible
 *in advance* and one that is only reproducible *after the fact*:
 
-- **With a `Manifest.toml`**, SIVACOR installs exactly the versions it pins. The same package
-  submitted next year resolves to the same versions as today.
-- **Without one**, SIVACOR resolves your `Project.toml` against the registry as it stands on the
-  day, generates a `Manifest.toml`, and includes it in your results. That file records what this
-  run used — it does not pin what a future run would use. The job log tells you which of the two
-  happened.
+- **With a `Manifest.toml`**, `Pkg.instantiate()` installs exactly the versions it pins. The same
+  package submitted next year resolves to the same versions as today.
+- **Without one**, it resolves your `Project.toml` against the registry as it stands on the day and
+  writes a `Manifest.toml`, which is included in your results. That file records what this run
+  used — it does not pin what a future run would use.
 
 Generate both by activating your project and adding your dependencies:
 
@@ -103,10 +125,7 @@ julia> ]           # enter the package REPL
 (YourProject) pkg> add DataFrames CSV GLM
 ```
 
-Commit both files next to your main file, or at the top of your package. If your package contains
-several `Project.toml` files — a `docs/` or `test/` one alongside the main project, as is normal in
-Julia — SIVACOR uses the nearest one at or above your main file, which is the same environment
-`julia --project=@.` would pick.
+Commit both files next to your main file, or at the top of your package.
 
 :::
 ::::

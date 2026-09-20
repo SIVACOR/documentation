@@ -61,19 +61,18 @@ You might want to consult the [debugging hints](debugging.md) for tips.
 ## My job used to work, and now it runs out of memory
 
 SIVACOR runs every submission on a machine created for that submission alone, and **you choose
-how large it is** — see [choosing the machine size](step2-choosing-image.md#worker-size). Two
+how large it is**, see [choosing the machine size](step2-choosing-image.md#worker-size). Two
 things commonly cause this:
 
 - **Your submission used the default size.** New submissions default to the smallest machine
   (30 GiB, about 28 GiB usable). If your analysis needs more, pick a larger size and run it
-  again — that is the whole fix.
+  again.
 - **You are comparing against the old shared server.** Earlier in the pilot, submissions ran on a
   larger shared machine, so an analysis that only just fitted before may exceed a smaller size now.
 
 The job log names the limit your run was actually given, and the exact figure is in the run's
-performance data — quote that rather than an approximation when you get in touch. The submission
-form also shows what your last run peaked at, as a share of what it was allowed, which is usually
-enough to tell whether you need the next size up.
+performance data. The submission form also shows what your last run peaked at, as a share of what it was allowed, which
+is usually enough to tell whether you need the next size up.
 
 If your analysis needs one of the sizes marked *by request*, or needs more than the largest,
 please contact us — do not spend a long time trying to shrink it first.
@@ -86,7 +85,7 @@ The error looks like this:
 
 The machine running your submission has 60 GB of disk, and that space is shared between your
 replication package (including everything your code writes) and the software image it runs
-in. Large images consume a substantial part of it — see the
+in. Large images consume a substantial part of it, see the
 [size considerations table](step0-prepare.md#size-considerations) for how much room typical
 images leave free.
 
@@ -345,10 +344,11 @@ Issue: <https://github.com/SIVACOR/sivacor-repo-choice/issues/3>
 
 ### Julia errors
 
-Julia failures divide into two kinds, and the job log says which stage you are in. A failure under
-`===== Stage N Dependency Resolution =====` is about your `Project.toml` — see
-[the debugging notes](#julia-resolve-failed), and read `stderr`, because
-that is where Julia's package manager writes. A failure after it is your own code.
+The Julia images ship no packages, so `Package Foo not found` usually means your run has no step
+that installs them — see [the debugging notes](#julia-resolve-failed) and
+[Step 0](#dependencies). If the step that failed is your setup step, read `stderr`: that is where
+Julia's package manager writes, and `stdout` will look empty. Each step's output is under its own
+`===== Stage N Output =====` heading.
 
 ## What do I do with the replicated package that I can download?
 

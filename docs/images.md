@@ -150,9 +150,9 @@ existing one replaced. Pick the line matching the Julia you developed against, a
 within it.
 
 Unlike the other stacks, these images ship **no packages** — only Julia itself and the package
-registry. Your dependencies are installed from your `Project.toml` when you submit, which is why
-that file is required; see [Step 0](#dependencies)
-and [the two-stage run](#julia-network).
+registry. Installing what your code needs is part of your replication package: add a step that
+does it, see [Step 0](#dependencies) and [installing packages and network
+isolation](#julia-network).
 
 ```{code-cell} python
 :tags: ["remove-input"]
