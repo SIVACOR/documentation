@@ -32,7 +32,7 @@ user may store up to **10 GB** on SIVACOR at any one time.
 
 ![Successful upload](images/sivacor-upload-successful.png)
 
-:::{tip}
+:::{hint}
 
 If you picked the wrong file, click `Delete Uploaded File` and upload the correct one. The
 upload area reappears once the file has been removed.

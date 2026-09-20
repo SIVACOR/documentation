@@ -18,41 +18,73 @@ A summary of those activies shows up on the runtime view of the SIVACOR system:
 
 ![SIVACOR runtime view](images/sivacor-running-job.png)
 
-> The system is actively developed, and the specific details may vary over time.
+:::{attention}
+The system is actively developed, and the specific details may vary over time.
+:::
 
 ## Preparing the system
 
-> `[2026-09-19T18:28:23-05:00] Preparing SIVACOR submission`
-> `[2026-09-19T18:32:05-05:00] New submission: 'brutal-beans' created.` 
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:28:23-05:00] Preparing SIVACOR submission
+[2026-09-19T18:32:05-05:00] New submission: 'brutal-beans' created.
+```
+:::
 
 The computer system is configured to run the user's code. A compute node is requested.
 
 ## Unpacking the uploaded ZIP file
 
-> `[2026-09-19T18:32:05-05:00] Creating workspace from source folder.` 
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:05-05:00] Creating workspace from source folder.
+```
+:::
 
 At this point, the uploaded archive is unpacked. 
 
 ## First snapshot
 
-> `[2026-09-19T18:32:05-05:00] Running TRO utilities in the workspace. (add_arrangement)` 
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:05-05:00] Running TRO utilities in the workspace. (add_arrangement)
+```
+:::
 
 An [arrangement](https://transparency-certified.github.io/trace-specification/docs/trov-vocabulary/#arrangements-and-locations) captures checksums, time stamps, and file path of all files in the workspace. This is the first one: it should correspond exactly to the unpacked archive.
 
 ## Setting up the software, and running the code.
 
 
-> `[2026-09-19T18:32:06-05:00] Executing workflow on workspace.`
-> `Starting recorded run`
-> `Pulled dataeditors/stata19_5-mp:2026-08-12 (10 layers)`
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:06-05:00] Executing workflow on workspace.
+Starting recorded run
+Pulled dataeditors/stata19_5-mp:2026-08-12 (10 layers)
+```
+:::
 
 The various software components, as defined by the user on [Step 2](step2-choosing-image.md), are downloaded (`pulled`), here Stata. The user's script is then run. 
 
 ## Recording the state after running code
 
 
-> `[2026-09-19T18:32:24-05:00] Running TRO utilities in the workspace. (add_arrangement)`
-> `[2026-09-19T18:32:24-05:00] Running TRO utilities in the workspace. (add_performance)`
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:24-05:00] Running TRO utilities in the workspace. (add_arrangement)
+[2026-09-19T18:32:24-05:00] Running TRO utilities in the workspace. (add_performance)
+```
+:::
 
 The [arrangement](https://transparency-certified.github.io/trace-specification/docs/trov-vocabulary/#arrangements-and-locations) after running the user's code is recorded, capturing any changes that occurred. The run of the user's code is a [performance](https://transparency-certified.github.io/trace-specification/docs/trov-vocabulary/#core-entities), and is separately recorded.
 
@@ -60,11 +92,17 @@ The [arrangement](https://transparency-certified.github.io/trace-specification/d
 
 When there are multiple steps to a workflow, this repeats for each step:
 
-> `[2026-09-19T18:32:24-05:00] Executing workflow on workspace.`
-> `Starting recorded run`
-> `Pulled dataeditors/stata19_5-mp:2026-08-12 (1 layers)`
-> `[2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_arrangement)`
-> `[2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_performance)`
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:24-05:00] Executing workflow on workspace.
+Starting recorded run
+Pulled dataeditors/stata19_5-mp:2026-08-12 (1 layers)
+[2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_arrangement)
+[2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_performance)
+```
+:::
 
 In this example, there were two steps, which are also displayed for the user at the end of the process:
 
@@ -74,14 +112,26 @@ In this example, there were two steps, which are also displayed for the user at 
 
 Since every job can also remove files, via the [`.sivacorignore`](excluding-files-from-final-package) mechanism, the last step is another arrangement, capturing the final state of the workspace.
 
-> `[2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (add_arrangement)`
-> `[2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (prune_performance)`
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (add_arrangement)
+[2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (prune_performance)
+```
+:::
 
 ## Wrapping the package: signing
 
 To ensure the integrity and authenticity of the replication package, it is [signed](https://transparency-certified.github.io/trace-specification/docs/tro-declaration-format/#signing-and-timestamping):
 
-> `[2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (sign)`
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:29-05:00] Running TRO utilities in the workspace. (sign)
+```
+:::
 
 Different TRACE implementations can use different signing mechanisms. SIVACOR uses PGP, the key can be found on the [Signing key](keys.md) page.
 
@@ -89,7 +139,13 @@ Different TRACE implementations can use different signing mechanisms. SIVACOR us
 
 The finalized package is made available to the user again
 
-> `[2026-09-19T18:32:30-05:00] Uploading executed replication package to Girder.`
+:::{warning}
+:icon: false
+
+```
+[2026-09-19T18:32:30-05:00] Uploading executed replication package to Girder.
+```
+:::
 
 which then appears to the user as:
 

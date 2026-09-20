@@ -8,7 +8,7 @@ If the upload was successful, scroll down.
 
 Choose first the software and version from the curated list (see [container images](images.md)). You can also select an image tag (sub version), but generally, the latest version should work. 
 
-:::{tip}
+:::{attention}
 
 If you need a different image, please contact us.
 
@@ -157,7 +157,7 @@ You can chain multiple runs together, by selecting the `+ ADD STEP` button. The 
 ![Chaining runs](images/sivacor-image-choice-chained-2.png)
 
 :::{admonition} Advanced configuration of steps
-:class: tip dropdown
+:class: seealso dropdown
 
 If you need to repeatedly run similar jobs on SIVACOR, you can describe the steps in a file
 and import it instead of filling in the form. Expand **Optional: Import workflow definition**
@@ -211,12 +211,9 @@ account has an allowance for it. A downloaded `Workflow definition` carries the 
 granted, so a file that came from somebody else may ask for more than you can have; the import is
 then refused and names your limit. A run that used no extra disk has no `disk_gb` line at all.
 
-:::{warning}
+:::{danger}
 
-Secrets imported from a file are placed in the form and sent with the submission, but they
-are never stored in your browser, and they are never included in a downloaded
-`Workflow definition`. If you share a workflow file that you wrote by hand, remember to
-remove any `env_secrets` from it first.
+Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
 
 :::
 
@@ -227,10 +224,10 @@ Then click on the `Run Replication Workflow` button.
 
 ![Submit job](images/sivacor-image-run-chained.png)
 
-The button is grey until an upload has finished, and says so underneath — while a file is still
-going up, and again if you delete the uploaded file. Everything else on the form is checked when
-you click: if a step is missing an image, a tag or a main file, the page tells you which one
-rather than leaving the button dead.
+:::{hint}
+If the  button is greyed out, you may have forgotten to press the `Upload` button. 
+:::
+
 
 
 ## ℹ️ FAQ

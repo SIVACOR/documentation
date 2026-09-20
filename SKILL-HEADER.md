@@ -32,6 +32,6 @@ The steps are:
 3. Monitoring job status
 4. Downloading results
 
-The text uses [MyST](https://mystmd.org) Markdown: blocks fenced by `:::{tip}`, `:::{warning}`,
+The text uses [MyST](https://mystmd.org) Markdown: blocks fenced by `:::{hint}`, `:::{warning}`,
 `:::{important}` and similar are call-outs; `:::{tab-item} R` and its siblings are alternatives
 for different software, only one of which applies to a given package.

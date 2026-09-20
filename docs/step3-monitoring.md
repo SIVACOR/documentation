@@ -1,12 +1,12 @@
 #  Monitoring Job Status
 
-:::{caution}
+:::{note}
 
 You can only run one job at a time. If you have an ongoing job, you will not be able to submit a new one.
 
 :::
 
-:::{tip}
+:::{hint}
 
 You do not have to keep the page open. The page updates itself, and you can leave and come
 back to it — your submission keeps running, and you will be emailed when it ends.

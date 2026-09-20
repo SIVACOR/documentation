@@ -12,13 +12,13 @@ You can now download the `Replicated Package`, a ZIP file that contains your ori
 You can also download a `Workflow definition` — a small YAML file describing the software, versions and main files this run used. It is not part of the signed package; it is there so you (or a colleague) can reproduce the same setup later by importing it on the submission page, instead of filling the form in by hand (see
 [Optional chained runs](#chained-runs-steps). 
 
-::::{warning}
+::::{danger}
 
 SIVACOR only briefly retains your results (see [privacy policy](https://submit.sivacor.org/privacy)). To keep any results, you **must** download results as soon as possible.
 
 ::::
 
-::::{warning}
+::::{danger}
 
 
 **Starting a new run deletes the previous one.** By clicking the button  `Delete & Run New Job`  you are asked to confirm. Deletion is immediate.
@@ -26,12 +26,12 @@ This is also how you delete results without waiting for the 14 days to run out.
 
 ::::
 
-::::{tip}
+::::{hint}
 
 You should provide the `Replicated Package` ZIP file to the journal where you are submitting your article.
 
 :::{admonition} AEA Journals
-:class: note dropdown
+:class: seealso dropdown
 
 For the AEA journals, you should "import" this ZIP file into the AEA's [Data and Code Repository](https://www.icpsr.umich.edu/sites/aea/home) (see [instructions](https://aeadataeditor.github.io/aea-de-guidance/)).
 

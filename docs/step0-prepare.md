@@ -12,7 +12,7 @@ kernelspec:
 Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
 
 ::::{admonition} Additional information
-:class: dropdown tip
+:class: dropdown seealso
 
 The single-application requirement means you cannot call one application from another (e.g., call R from Stata). If your code iterates frequently between applications, for instance in a loop, it is also not recommended to use this system. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
 
@@ -34,7 +34,7 @@ If you have data that you are allowed to upload, but not publish, see "[Excludin
 The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro). 
 
 :::{admonition} Example file and usage
-:class: dropdown tip
+:class: dropdown hint
 
 The `.sivacorignore` file follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use [glob patterns](https://en.wikipedia.org/wiki/Glob_%28programming%29), negations, and directory-specific rules.
 
@@ -77,7 +77,7 @@ after the run (note removal of `data/raw`).
 
 Code must run **without manual intervention**, use a **single controller script** (e.g., `main.do` or `master.R`) per step, and **omit hard-coded absolute paths**. File and directory paths are  **case-sensitive**, and should use **OS-neutral path separators** (`/`, not `\`). 
 
-:::{tip}
+:::{seealso}
 
 For some guidance on constructing a portable replication package, see [Steps 1-3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-1-main-file) at the AEA Data Editor's website. 
 
@@ -136,8 +136,9 @@ julia> include("setup.jl")
 
 where
 
-```julia
-# setup.jl: Install project dependencies
+```{code} julia
+:filename: setup.jl
+# Install project dependencies
 using Pkg
 Pkg.add("DataFrames")
 Pkg.add("CSV")
@@ -154,7 +155,7 @@ several `Project.toml` files, SIVACOR uses the nearest one at or above your main
 ::::
 
 :::{admonition} Minimal sample code
-:class: dropdown tip
+:class: dropdown seealso
 
 - Sample code for Stata (any version), Scenario B: <https://github.com/SIVACOR/sivacor-test-stata>
 - Sample code for Stata (any version), Scenario A (`main.do` in a non-root directory): <https://github.com/SIVACOR/sivacor-test-stata/tree/scenario-A>
