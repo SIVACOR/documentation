@@ -8,7 +8,7 @@ If the upload was successful, scroll down.
 
 Choose first the software and version from the curated list (see [container images](images.md)). You can also select an image tag (sub version), but generally, the latest version should work. 
 
-:::{tip}
+:::{attention}
 
 If you need a different image, please contact us.
 
@@ -49,109 +49,6 @@ Two practical consequences:
   so your setup step executes third-party build code with network access. That is normal for Julia,
   and it is one more reason the step is yours to write and to see in the log.
 
-(advanced-settings)=
-## Advanced settings
-
-Below the steps is an **Advanced** panel, folded by default. Most submissions never need to open
-it: everything inside has a sensible default, and the summary line shows what those defaults
-currently come to — so you can read the settings without unfolding anything.
-
-![The Advanced panel, opened](images/sivacor-advanced-panel.png)
-
-It holds three settings, each applying to the whole submission rather than to one step:
-
-- **Worker Size** — the machine your submission runs on ([below](#worker-size));
-- **Extra Scratch Disk** — a temporary disk on top of the machine's own
-  ([below](#scratch-disk));
-- **Environment Secrets** — values passed to your code as environment variables. They are sent
-  with the submission and never stored in your browser, and they never appear in a downloaded
-  `Workflow definition`.
-
-The panel opens itself in two cases, because leaving it shut would hide something you need to
-see: when a scratch-disk request cannot be granted, and when you import a workflow file that
-sets any of these.
-
-(worker-size)=
-## Choose the machine size
-
-Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
-whole submission — every step runs on the same machine, one submission at a time — so there is one
-setting, not one per step.
-
-| Size | Cores | Available to your analysis | Disk | Relative cost |
-|---|---|---|---|---|
-| 30 GiB | 8 | ≈28 GiB | 60 GB | 1× |
-| 60 GiB | 16 | ≈58 GiB | 60 GB | 2× |
-| 125 GiB | 32 | ≈123 GiB | 60 GB | 4× — by request |
-| 250 GiB | 64 | ≈248 GiB | 60 GB | 8× — by request |
-
-**New submissions default to the smallest size.** Most analyses need far less memory than they are
-given, so start there and move up only if you need to — the form tells you what your last run
-actually used, as a share of what it was allowed, which is usually the fastest way to decide.
-
-:::{important}
-
-Three things about this table are easy to get wrong, and all three cost real time:
-
-- **Disk does not grow with the size.** Every size has the same 60 GB, shared between your package
-  and the software image. If you have run out of *disk*, a bigger machine will not help — ask for
-  [extra scratch disk](#scratch-disk) instead, and see
-  [size considerations](step0-prepare.md#size-considerations).
-- **Cores are not chosen separately.** They move with the memory; the numbers above are the whole
-  ladder.
-- **The usable figure is approximate and is always lower than the size's name.** A small amount is
-  held back so the machine itself cannot be starved by your analysis. The exact limit for a run is
-  reported in its performance data, and the job log names it if a run exceeds it.
-
-:::
-
-### Sizes marked "by request"
-
-The two largest sizes are visible but not selectable by default. They cost four and eight times the
-smallest, so they are granted on request rather than by a click: email
-[support@sivacor.org](mailto:support@sivacor.org) and say what you are running and why it needs the
-memory. Once you have access, the size becomes selectable and behaves like any other.
-
-If an imported workflow file asks for a size you do not have access to, the import is refused and
-tells you which sizes you can use.
-
-(scratch-disk)=
-## Extra scratch disk
-
-In the same **Advanced** panel, under the machine size, **Extra Scratch Disk** asks for a temporary
-disk *in addition to* the machine's own 60 GB. It is for the small number of packages whose data,
-outputs and software image cannot fit that 60 GB together — the case where a run fails saying it ran
-out of disk space, and where a larger machine size would not have helped.
-
-**It is off unless you ask, and granted per account.** The field is empty on every new submission —
-it is deliberately not remembered from your last one — and for most accounts it is visible but not
-selectable, labelled *(by request)*. To ask for it, email
-[support@sivacor.org](mailto:support@sivacor.org) and say roughly how much space your package needs.
-
-Once your account has an allowance:
-
-- type the number of gigabytes you want for **this** submission, up to your allowance;
-- the form shows what it rounds up to — requests are rounded **up** to the nearest 10 GB, so you
-  never get less than you asked for;
-- your analysis sees one filesystem, the usual working directory, with that much more room in it;
-- the disk is created for your submission and **destroyed when the run finishes**. Nothing on it
-  survives; anything you want to keep has to be in the package that gets uploaded back, exactly as
-  without it.
-
-:::{important}
-
-- **This is disk, not memory.** If a run was stopped for using too much *memory*, extra scratch disk
-  changes nothing — pick a larger [machine size](#worker-size) instead.
-- **Ask for what you need, not for your whole allowance.** The space comes from a shared pool, and
-  while your submission holds a large amount of it, other submissions asking for space may have to
-  wait. The form tells you what your last run's workspace actually peaked at, which is usually the
-  right basis for the number.
-- **An allowance is per account, and yours is not carried in a workflow file.** A `disk_gb` line in a
-  file someone shares with you is *their* allowance; if it exceeds yours, the import is refused and
-  names your own limit.
-
-:::
-
 (chained-runs-steps)=
 ## Optional chained runs (steps)
 
@@ -160,7 +57,7 @@ You can chain multiple runs together, by selecting the `+ ADD STEP` button. The 
 ![Chaining runs](images/sivacor-image-choice-chained-2.png)
 
 :::{admonition} Advanced configuration of steps
-:class: tip dropdown
+:class: seealso dropdown
 
 If you need to repeatedly run similar jobs on SIVACOR, you can describe the steps in a file
 and import it instead of filling in the form. Expand **Optional: Import workflow definition**
@@ -214,15 +111,118 @@ account has an allowance for it. A downloaded `Workflow definition` carries the 
 granted, so a file that came from somebody else may ask for more than you can have; the import is
 then refused and names your limit. A run that used no extra disk has no `disk_gb` line at all.
 
-:::{warning}
+:::{danger}
 
-Secrets imported from a file are placed in the form and sent with the submission, but they
-are never stored in your browser, and they are never included in a downloaded
-`Workflow definition`. If you share a workflow file that you wrote by hand, remember to
-remove any `env_secrets` from it first.
+Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
 
 :::
 
+
+
+
+(advanced-settings)=
+## Advanced settings
+
+Below the steps is an **Advanced** panel. 
+
+![Advanced panel](images/sivacor-advanced-panel.png)
+
+It holds three settings. 
+
+:::{important}
+
+Each setting applies to the **whole** submission.
+:::
+
+- [**Worker Size**](#worker-size): the type of machine your submission runs on
+- [**Extra Scratch Disk**](#scratch-disk): a temporary disk in addition to the machine's own disk space
+- [**Environment Secrets**](#environment-secrets): values passed to your code as environment variables. 
+
+
+(worker-size)=
+## Choose the machine size
+
+Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
+whole submission: every step runs on the same machine.
+
+| Size | Cores | Available to your analysis | Disk | Relative cost |
+|---|---|---|---|---|
+| 30 GiB | 8 | ≈28 GiB | 60 GB | 1× |
+| 60 GiB | 16 | ≈58 GiB | 60 GB | 2× |
+| 125 GiB | 32 | ≈123 GiB | 60 GB | 4× — by request |
+| 250 GiB | 64 | ≈248 GiB | 60 GB | 8× — by request |
+
+**Submissions default to the smallest size.** Only request more if you know that you need more. The output from a run shows what your last run
+actually used, as a share of what it was allowed.
+
+:::{admonition} Where to find run statistics
+:class: dropdown hint
+
+![Run statistics](images/sivacor-completed-run-full-highlight.png)
+:::
+
+:::{important}
+
+Important points to consider:
+
+- **Disk does not grow with the size.** Every size has the same 60 GB primary disk, shared between your package
+  and the software image. If you have run out of *disk*, a bigger machine will not help: ask for
+  [extra scratch disk](#scratch-disk) instead. See
+  [Step 0](step0-prepare.md#size-considerations).
+- **Cores and memory are tied, not chosen separately.** 
+- **The usable disk and memory size is always lower than the  name suggests.** A small amount is reserved for the operating system itself. 
+- The two **largest sizes are not selectable** by default. They must be requested, see **Requesting additional resources**.
+:::
+
+
+(scratch-disk)=
+## Extra scratch disk
+
+**Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary 60 GB disk. It is enabled only upon request, see **Requesting additional resources**.
+
+Once your account has a scratch disk allowance:
+
+- enter the number of gigabytes you want for **this** submission, up to your allowance. Requests are rounded **up** to the nearest 10 GB;
+- **no changes are needed** for your analysis. Your code sees a single filesystem. 
+- the requested number is not preserved from one run to the next - it must be re-entered every time you submit a job.
+
+:::{important}
+
+- **This is disk, not memory.** If a run was stopped for using too much *memory*, pick a larger [machine size](#worker-size) instead.
+- **Ask for what you need, not the maximum.** The space comes from a shared pool, and is in competition with any other submissions. If you request a large amount, other submissions asking for space may have to
+  wait. 
+
+
+:::
+
+## Requesting additional resources
+
+To request additional resources, send an email to [support@sivacor.org](mailto:support@sivacor.org). 
+
+:::{admonition} Information requested
+:class: dropdown seealso
+
+SIVACOR uses a limited allocation of compute resources. The largest machine sizes cost the project four and eight times the smallest, and additional volumes are similarly limited. We review requests sent to [support@sivacor.org](mailto:support@sivacor.org). Please  say what you are running and why it needs the additional resources. Once your account is authorized to use the larger machine sizes, they become selectable. If authorized to use additional volumes, the field becomes editable.
+
+:::
+
+## Environment variables
+
+You can set environment variables for your job by using the `env_secrets` block in a workflow definition file, or by entering them in the submission form. These variables are available to your code during execution.
+
+![Entering environment variables](images/sivacor-fred-apikey.png)
+
+
+:::{admonition} Workflow YAML Example
+:class: dropdown tip
+
+```yaml
+env_secrets:
+  - key: API_TOKEN
+    value: s3cret
+```
+
+:::
 
 ## Submitting jobs
 
@@ -230,7 +230,12 @@ Then click on the `Run Replication Workflow` button.
 
 ![Submit job](images/sivacor-image-run-chained.png)
 
-The button is grey until an upload has finished, and says so underneath — while a file is still
-going up, and again if you delete the uploaded file. Everything else on the form is checked when
-you click: if a step is missing an image, a tag or a main file, the page tells you which one
-rather than leaving the button dead.
+:::{hint}
+If the  button is greyed out, you may have forgotten to press the `Upload` button. 
+:::
+
+
+
+## ℹ️ FAQ
+
+See the [FAQ](faq.md#choosing-software-and-running-jobs).

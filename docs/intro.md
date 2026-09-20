@@ -17,17 +17,17 @@ Contact your journal's data editor to verify if they will accept SIVACOR-certifi
 
 ## How does it work
 
-SIVACOR allows researchers to work in their preferred environments until the last moment, without needing to fully understand Docker or similar technologies. The system  provides a web interface where users can upload a ZIP file containing their code and data, and select from a set of curated computational environments (Docker images). The SIVACOR backend will then automatically create a containerized environment, execute the analysis, and generate a TRO that includes the code, data, execution environment details, and results. This TRO can then be provided to journal editors, replacing the often tedious and manual process of verifying the reproducibility of the submitted research.
+SIVACOR allows researchers to work in their preferred environments until the last moment, without needing to fully understand Docker or similar technologies. The system  provides a web interface where users can upload a ZIP file containing their code and data, and select from a set of curated computational environments (Docker images). The SIVACOR backend will then automatically create a containerized environment, execute the analysis, and generate a [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro) that includes the code, data, execution environment details, and results. This [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro) can then be provided to journal editors, replacing the often tedious and manual process of verifying the reproducibility of the submitted research.
 
 :::{note}
 
 SIVACOR is currently in a pilot phase. As such, the system is limited
 
 - to specific curated Docker images (see [Images](images.md) for details)
-- to running each submission on a machine you choose from a fixed set, from 8 cores and 30 GiB of RAM up to 64 cores and 250 GiB (AMD EPYC-Milan Processors); the two largest are granted on request. Every size has the same 60 GB of disk, shared between your files and the software image
+- to running each submission on a machine you choose from a fixed set, from 8 cores and 30 GiB of RAM up to 64 cores and 250 GiB (AMD EPYC-Milan Processors)
 - to a maximum run time of 7 days
 
-Results are deleted 14 days after submission. See [System Description](system.md) for details.
+See [System Description](system.md) for details.
 
 :::
 

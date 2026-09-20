@@ -7,24 +7,36 @@ kernelspec:
 
 # Preparing a Compatible Replication Package
 
-### You should not include any data that you are not allowed to upload to third-party systems
+## Use a single software application per step
+
+Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
+
+::::{admonition} Additional information
+:class: dropdown seealso
+
+The single-application requirement means you cannot call one application from another (e.g., call R from Stata). If your code iterates frequently between applications, for instance in a loop, it is also not recommended to use this system. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
+
+::::
+
+## Do not include any data that you are not allowed to upload to third-party systems
 
 While SIVACOR does not publish data or replication packages, and deletes completed jobs after a short period of time, it is not a designated secure computing system.[^data] You should not upload *controlled* data, and all uploads should be compatible with any data use agreement you signed. 
 
-[^data]: SIVACOR runs on [JetStream2](https://jetstream-cloud.org/) infrastructure. The [JS2 Acceptable Use and Data Policy](https://docs.jetstream-cloud.org/general/policies/#acceptable-use-of-jetstream2) apply.
+[^data]: SIVACOR runs on [JetStream2](https://jetstream-cloud.org/) infrastructure. The [JS2 Acceptable Use and Data Policy](https://docs.jetstream-cloud.org/general/policies/#acceptable-use-of-jetstream2) apply. SIVACOR's privacy policy can be found at <https://submit.sivacor.org/privacy>.
 
-If you have data that you are allowed to upload, but not publish, see [the next point](#excluding-files-from-final-package) on how to exclude files from the final replication package.
+If you have data that you are allowed to upload, but not publish, see "[Excluding files](#excluding-files-from-final-package)" on how to exclude files from the final replication package.
 
 
 
 (excluding-files-from-final-package)=
-### Excluding files from final package
+## Excluding files from final package
 
-The final digitally signed replication package contains all data as originally included. If you need to remove files because you do not have redistribution rights, or large intermediate files, you can include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before the final replicated package is created. It follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use [glob patterns](https://en.wikipedia.org/wiki/Glob_%28programming%29), negations, and directory-specific rules.
-
+The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro). 
 
 :::{admonition} Example file and usage
-:class: dropdown tip
+:class: dropdown hint
+
+The `.sivacorignore` file follows the same pattern rules as [`.gitignore`](https://git-scm.com/docs/gitignore), so you can use [glob patterns](https://en.wikipedia.org/wiki/Glob_%28programming%29), negations, and directory-specific rules.
 
 For example, to exclude a `data/raw/` directory and all `.tmp` files, the `.sivacorignore` file would look like this:
 
@@ -33,7 +45,7 @@ data/raw/
 *.tmp
 ```
 
-Your replication package then should somewhat like this:
+Your replication package then should look somewhat like this:
 
 ```
 data/raw/
@@ -44,31 +56,52 @@ code/
 .sivacorignore
 ```
 
+before it is run, and might look like this
+
+```
+code/
+  main.R
+output/
+  figure.png
+  ...
+.sivacorignore
+```
+
+after the run (note removal of `data/raw`).
+
 :::
 
 
 
-### Your replication package should be portable.
+## Your replication package should be portable.
 
-Code must run **without manual intervention**, use a **single controller script** (e.g., `main.do` or `master.R`), and **avoid hard-coded absolute paths**. You can only upload the package, not edit it on the site. It should also not have inconsistently used **case-sensitive** file or directory names. 
+Code must run **without manual intervention**, use a **single controller script** (e.g., `main.do` or `master.R`) per step, and **omit hard-coded absolute paths**. File and directory paths are  **case-sensitive**, and should use **OS-neutral path separators** (`/`, not `\`). 
 
-:::{tip}
+:::{seealso}
 
 For some guidance on constructing a portable replication package, see [Steps 1-3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-1-main-file) at the AEA Data Editor's website. 
 
 :::
 
 (dependencies)=
-### All dependencies must either be included or installed automatically.
+## All dependencies must either be included or installed automatically.
 
 If your code uses libraries or packages, you must ensure that they are **installed automatically** (for Stata, we suggest you include them). We strongly encourage packages that use "environments", and packages to manage dependencies.
 
 
 ::::{tab-set}
 
-:::{tab-item} Tips for `R`
+:::{tab-item} R
 
-Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/). You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
+Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/).[^groundhog] You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
+
+:::{warning}
+
+Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your replication package. It is generally much more efficient to leverage the `CRAN` mirror defined naturally within the `rocker` images. 
+
+:::
+
+[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
 
 :::
 
@@ -76,48 +109,18 @@ Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packr
 
 Guidance for portable dependencies for Stata is provided [at Step 3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-3-dependencies) of the AEA Data Editor's guidance. See also the World Bank's [`repado`](https://worldbank.github.io/repkit/reference/repado.html).
 
+Note that even when you include Stata packages, you should provide the script that originally installed them, to demonstrate provenance.
+
 :::
 
 :::{tab-item} Julia
 
-The Julia images ship Julia and the package registry, and **no packages**. So if your code says
-`using DataFrames`, something in your replication package has to install it — SIVACOR does not do
-that for you, and does not read your `Project.toml` on its own.
+Include a `Project.toml` and `Manifest.toml`. 
 
-**Add a setup step that installs your dependencies.** Write a short script beside your main file:
+Declare your dependencies in a `Project.toml`. 
+The `Manifest.toml`, if present, will ensure that the code will install and use the same versions. Without it,  `Project.toml` will install latest versions of the dependencies.
 
-```julia
-# setup.jl
-using Pkg
-Pkg.instantiate()
-```
-
-and submit it as the **first step** of your run, with network isolation **off**, followed by your
-analysis as a second step, isolated if you want it to be. Steps share one workspace, including the
-package depot, so everything `setup.jl` installs is there when your main file runs. See
-[chained runs in Step 2](#chained-runs-steps) for how to add a step, and
-[the Julia notes](#julia-network) for what this means for network isolation.
-
-Anything else that installs works too — `Pkg.add(...)` in the setup script, or at the top of your
-main file if you are not isolating it. `Pkg.instantiate()` is just the one that installs exactly
-what you declared, and nothing else.
-
-**Declare your dependencies in a `Project.toml`**, which is what `Pkg.instantiate()` reads. Your
-step runs in the directory holding its own script, and Julia searches upward from there for the
-governing `Project.toml` (`--project=@.`), so a project file beside your scripts or at the top of
-your package both work. Several `Project.toml` files in one package — a `docs/` or `test/` one
-alongside the main project, as is normal in Julia — are fine: the nearest one above the script wins.
-
-**Include your `Manifest.toml` as well.** This is the difference between a run that is reproducible
-*in advance* and one that is only reproducible *after the fact*:
-
-- **With a `Manifest.toml`**, `Pkg.instantiate()` installs exactly the versions it pins. The same
-  package submitted next year resolves to the same versions as today.
-- **Without one**, it resolves your `Project.toml` against the registry as it stands on the day and
-  writes a `Manifest.toml`, which is included in your results. That file records what this run
-  used — it does not pin what a future run would use.
-
-Generate both by activating your project and adding your dependencies:
+Both can be generated by "activating" your project, and then interactively adding your dependencies:
 
 ```julia
 julia --project=.
@@ -125,42 +128,74 @@ julia> ]           # enter the package REPL
 (YourProject) pkg> add DataFrames CSV GLM
 ```
 
-Commit both files next to your main file, or at the top of your package.
+When running, include a `setup.jl` as your first workflow step (suggested), or include it in your main file:
+
+```{code} julia
+:filename: setup.jl
+using Pkg
+Pkg.instantiate()
+```
+
+
+Alternatively, use a `install.jl` to programmatically install your dependencies.
+
+```julia
+julia --project=.
+julia> include("install.jl")
+```
+
+where
+
+```{code} julia
+:filename: install.jl
+# Install project dependencies
+using Pkg
+Pkg.add("DataFrames")
+Pkg.add("CSV")
+Pkg.add("GLM")
+```
+
+Include `Project.toml` and `Manifest.toml`, as well as `setup.jl`  or `install.jl` if present,  next to your main file, or at the top of your package. 
+
 
 :::
 ::::
 
 :::{admonition} Minimal sample code
-:class: dropdown tip
+:class: dropdown seealso
 
 - Sample code for Stata (any version), Scenario B: <https://github.com/SIVACOR/sivacor-test-stata>
 - Sample code for Stata (any version), Scenario A (`main.do` in a non-root directory): <https://github.com/SIVACOR/sivacor-test-stata/tree/scenario-A>
 - Sample code for R (set up for R 4.3.1, tested on R 4.5.1): <https://github.com/SIVACOR/sivacor-test-r>
 - Sample code for MATLAB with and without use of Dynare: <https://github.com/SIVACOR/sivacor-test-matlab> (both use the same `dynare/dynare` container).
+- Sample code for Julia (any version): <https://github.com/SIVACOR/sivacor-test-julia>
+
 
 :::
 
 
-### Your replication package only uses a single software application per step
+(size-considerations)=
+## Package must be able to run on the SIVACOR workers
+The size available to run your code depends on the software being used, and how you manage files within your replication package. A complete run of your code needs room:
 
-Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python), as encapsulated by containers. If your replication requires multiple applications, you will need to configure separate runs. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
+- the operating system
+- the statistical software you use
+- multiple copies of your replication package:
+  - the ZIP file you upload
+  - the workspace it is extracted into
+  - anything your code writes
+
 
 ::::{admonition} Additional information
 :class: dropdown tip
 
-The single-application requirement means you cannot call one application from another (e.g., call R from Stata). It also is highly inconvenient when iterating between applications frequently. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
-
-::::
-
-### Size considerations
-
-The size available to run your code depends on the software being used, and how you manage files within your replication package. A complete run of your code needs room for more than one copy of itself:
-the archive you upload, the workspace it is extracted into, and anything your code writes all need to be accommodated.
-
-The machine's filesystem is **58 GiB**, of which about **12.7 GiB** is the operating system, Docker
+This instance of SIVACOR launches a virtual machine for each run. The machine's filesystem is **58 GiB**, of which about **12.7 GiB** is the operating system, Docker
 and the SIVACOR harness — so roughly **45 GiB** is available before the analysis software is added.
 Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives
-on. The table below lists what is left for your package after each one. See
+on. 
+
+
+The table below lists what is left for your package after each one. See
 [Available Software](images.md) for the full, curated list.
 
 ```{code-cell} python
@@ -227,7 +262,7 @@ for image_name, software in SAMPLE_IMAGES:
     # gained yet -- or has dropped -- would otherwise take the whole docs site
     # down with a KeyError.
     if image_name not in allowed or not allowed[image_name]:
-        continue
+        continue 
     tag = str(allowed[image_name][0])  # first entry is the most recently added tag
     if image_name in MEASURED_COMPRESSED_GIB:
         compressed_gib = MEASURED_COMPRESSED_GIB[image_name]
@@ -273,33 +308,31 @@ table += "</tbody>\n</table>"
 display(HTML(table))
 ```
 
-\* Estimated from the compressed download size. The software is kept **both** compressed and
-unpacked on the worker's disk, so it occupies roughly **3.5x** what it downloads — measured on a
-worker, and the reason these figures are lower than the download sizes suggest. Individual tags differ.
+\* Estimated from the compressed download size.[^downloadsize] 
+
+[^downloadsize]: The container is kept **both** compressed and
+unpacked on the worker's disk, so it occupies roughly **3.5x** what it downloads.
 
 :::{important}
 
-**If your analysis uses MATLAB/Dynare, read the `dynare` row before anything else.** That image alone
-occupies over 21 GiB, which leaves under 24 GiB for your package and everything it writes — by far the
-tightest combination on the platform, and the one that has actually run out of disk in practice. A
-large package plus Dynare frequently will not fit, and
-[extra scratch disk](step2-choosing-image.md#scratch-disk) is the way through it.
+**If your analysis uses MATLAB/Dynare, pay particular attention to the  `dynare` entry.** Images provided by the Dynare project are large, typically over 21 GiB. This leaves less than 24 GiB for the package and everything it writes. If you run into problems, see how to request 
+[extra scratch disk](step2-choosing-image.md#scratch-disk).
 
 :::
+
+::::
 
 For more information on the system itself, see [Hardware capabilities](system.md#hardware-capabilities).
 
 
-If free space runs low, the run is stopped and you will see an error saying the submission
-ran out of disk space — see the
-[FAQ](faq.md#my-job-failed-saying-it-ran-out-of-disk-space) for what to do about it.
+A run is stopped if the worker runs out of disk space,  see the
+[FAQ](faq.md#my-job-failed-saying-it-ran-out-of-disk-space). 
 
-If your package cannot be made to fit the free space in the table above, you can ask for
-[extra scratch disk](step2-choosing-image.md#scratch-disk) instead of shrinking it: a temporary disk
-on top of the machine's own, granted per account on request.
+If your package cannot be made to fit the free space in the table above, you may be able to ask for
+[extra scratch disk](step2-choosing-image.md#scratch-disk).
 
 
-### Prepare a ZIP or tar.gz file
+## Prepare a ZIP or tar.gz file
 
 Your replication package must be a single ZIP file or tar.gz file.
 
@@ -311,3 +344,7 @@ You may find [this checklist](https://aeadataeditor.github.io/aea-de-guidance/pr
 
 
 The next step is to [upload your package to SIVACOR](step1-upload.md).
+
+## ℹ️ FAQ
+
+See the [FAQ](faq.md#preparing-a-package).
