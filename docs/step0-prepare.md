@@ -95,13 +95,14 @@ If your code uses libraries or packages, you must ensure that they are **install
 
 Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/).[^groundhog] You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
 
-:::{warning}
+[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
+
+
+:::::{warning}
 
 Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your replication package. It is generally much more efficient to leverage the `CRAN` mirror defined naturally within the `rocker` images. 
 
-:::
-
-[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
+:::::
 
 :::
 
