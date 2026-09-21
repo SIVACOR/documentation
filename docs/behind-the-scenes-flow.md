@@ -110,7 +110,7 @@ In this example, there were two steps, which are also displayed for the user at 
 
 ## Cleaning up
 
-Since every job can also remove files, via the [`.sivacorignore`](excluding-files-from-final-package) mechanism, the last step is another arrangement, capturing the final state of the workspace.
+Since every job can also remove files, via the [`.sivacorignore`](step0-prepare.md#excluding-files-from-final-package) mechanism, the last step is another arrangement, capturing the final state of the workspace.
 
 :::{admonition}
 :class: seealso

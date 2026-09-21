@@ -1,4 +1,39 @@
+---
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Choosing Software and Running Jobs
+
+```{code-cell} python
+:tags: ["remove-input", "remove-output"]
+
+import csv
+from pathlib import Path
+
+from IPython.display import HTML
+
+nodes = list(csv.DictReader(Path("_data/jetstream2-nodes.csv").open()))
+disk_gb = next(n for n in nodes if n["default"] == "true")["disk_gb"]
+
+L, R = 'style="text-align:left"', 'style="text-align:right"'
+table = (
+    "<table>\n<thead><tr>"
+    f"<th {L}>Size</th><th {R}>Cores</th><th {R}>Available to your analysis</th>"
+    f"<th {R}>Disk</th><th {L}>Relative cost</th></tr></thead>\n<tbody>\n"
+)
+for n in nodes:
+    cost = f"{n['relative_cost']}×" + (" — by request" if n["by_request"] == "true" else "")
+    table += (
+        f"<tr><td {L}>{n['memory_gib']} GiB</td><td {R}>{n['cores']}</td>"
+        f"<td {R}>≈{n['memory_available_gib']} GiB</td><td {R}>{n['disk_gb']} GB</td>"
+        f"<td {L}>{cost}</td></tr>\n"
+    )
+table += "</tbody>\n</table>"
+size_table = HTML(table)
+```
 
 If the upload was successful, scroll down.
 
@@ -16,7 +51,7 @@ If you need a different image, please contact us.
 
 ## Identify the main file
 
-Finally, identify the name of the main file. This is the file that will be executed by SIVACOR. For `R`, this is typically an `R` script (`.R` file). For `Stata`, this is typically a `do` file (`.do` file). For `Julia`, this is a `.jl` file, and your package must also contain a `Project.toml` — see [Step 0](#dependencies). 
+Identify the name of the main file. This is the file that will be executed by SIVACOR. Include the extension (`.R`, `.do`,  `.jl`).
 
 :::{warning}
 
@@ -24,27 +59,73 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 
 :::
 
-(julia-network)=
-## Julia: dependency resolution happens before your code runs
+The file does not have to sit at the top of your package: SIVACOR searches the whole package for
+that name, and runs it from the directory it was found in.
 
-A Julia submission runs in **two stages**, and this is worth knowing before you choose network
-isolation.
+:::{warning}
 
-1. **Dependency resolution.** SIVACOR reads your `Project.toml`, downloads the packages it names
-   and precompiles them. This stage **needs the internet** and always has it, whatever you chose.
-   Your own code does not run here — though installing a package can run that package's own build
-   script, which is normal for Julia.
-2. **Your analysis.** This is where your main file runs, and this is the stage your network
-   isolation setting applies to.
+For the same reason, the name must be **unique within the package**. If `main.R` exists in both
+`code/` and `code/archive/`, SIVACOR cannot tell which one you meant and the run fails before it
+starts, listing every copy it found. Rename or remove the extra copies in the archive you upload.
 
-So **a Julia submission always reaches the network**, even when you ask for isolation. What the
-isolation setting controls — and what the signed Transparent Research Object records — is whether
-*your analysis* had network access. The two stages are recorded separately in the TRO for exactly
-this reason: the isolation claim is attached to the stage where it is true, and not to the one
-where it is not.
+`.sivacorignore` does **not** help here: it is applied after your code has run, to decide what
+goes into the final package, so an ignored file is still present and still ambiguous when the main
+file is resolved.
 
-The practical consequence: if your code needs to download something at run time, it will still
-fail under isolation. Only dependency resolution is exempt.
+:::
+
+:::{tip}
+
+ If your code needs packages, we suggest adding a setup step as the first part, and using a separate setup script, see [Step 0](#dependencies). Setup scripts typically require the network to be enabled, thus [**network isolation**](#network-isolation) should be disabled *for that step* — and left on for the analysis step that follows.
+
+:::
+
+:::{hint} About alternate extensions
+:class: dropdown
+
+Some software have multiple ways they can be invoked. For instance, you might use a RMarkdown file (`.Rmd`) instead of a plain R script (`.R`), or a Jupyter notebook (`.ipynb`) instead of a plain script. SIVACOR executes code using methods defined for each software, **not by extension**: an R image always runs your main file through R, a Stata image always through Stata. Naming a `.Rmd` or an `.ipynb` as the main file therefore does not work on its own — you need a **wrapper script**, in the image's own language, that your main file points to.
+
+To render an RMarkdown document, the main file would be an ordinary `.R` script:
+
+```{code} R
+:filename: main.R
+# Render RMarkdown
+# Assert that rmarkdown is available
+if (!requireNamespace("rmarkdown", quietly = TRUE)) {
+  stop("rmarkdown package is required but not installed")
+}
+rmarkdown::render("main.Rmd")
+``` 
+
+A Jupyter notebook can be driven the same way, from a script in whichever of the supported languages the notebook's kernel uses.
+
+Note also that many of these "fancier" methods require numerous additional packages just to handle the wrapper. For instance, to render a Jupyter notebook, 31 additional packages must be installed solely to render it. For RMarkdown, 12 additional packages are necessary.
+
+:::
+
+(network-isolation)=
+## Network isolation
+
+Each step carries a **Net Isolation** toggle, beside that step's image and main file. It is
+**off by default**, and it is per step, not per submission: one step may be isolated and the next
+not.
+
+When it is on, the container has **no network access at all** for the whole of that step. Nothing
+can be downloaded, no API can be called, and no result can depend on something fetched at run time.
+
+:::{important}
+
+**Isolation is part of what the signature certifies.** A step run with Net Isolation on records an
+`InternetIsolation` attribute in the signed TRO declaration — evidence to a data editor that the
+result could not have come from anywhere but the materials you uploaded. A step run without it
+records no such attribute, and nothing in the certificate claims otherwise.
+
+:::
+
+This is the reason to split dependency installation into its own step. Install packages in a first
+step with isolation **off**, then run the analysis in a second step with isolation **on**: the
+analysis — the part being certified — is then isolated, even though the package downloads were not.
+See [Step 0](step0-prepare.md#dependencies).
 
 (chained-runs-steps)=
 ## Optional chained runs (steps)
@@ -99,7 +180,7 @@ stages:
     main_file: main.R
 ```
 
-`memory_gb` must be one of the sizes in the table above. A file naming a size that is no longer
+`memory_gb` must be one of the sizes in the [machine size](#worker-size) table. A file naming a size that is no longer
 offered is refused rather than quietly run on a different machine, and the message names the sizes
 that are available.
 
@@ -120,15 +201,17 @@ Secrets imported from a file are placed in the form and sent with the submission
 (advanced-settings)=
 ## Advanced settings
 
-Below the steps is an **Advanced** panel. 
+Below the steps is an **Advanced** panel. It is **folded shut** until you click it, so if you
+cannot find these settings, open it first.
 
 ![Advanced panel](images/sivacor-advanced-panel.png)
 
-It holds three settings. 
+It holds three settings.
 
 :::{important}
 
-Each setting applies to the **whole** submission.
+Each setting applies to the **whole** submission. [Network isolation](#network-isolation) is the
+exception: it is set on each step, next to that step's image and main file.
 :::
 
 - [**Worker Size**](#worker-size): the type of machine your submission runs on
@@ -137,23 +220,26 @@ Each setting applies to the **whole** submission.
 
 
 (worker-size)=
-## Choose the machine size
+### Choose the machine size
 
 Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
 whole submission: every step runs on the same machine.
 
-| Size | Cores | Available to your analysis | Disk | Relative cost |
-|---|---|---|---|---|
-| 30 GiB | 8 | ≈28 GiB | 60 GB | 1× |
-| 60 GiB | 16 | ≈58 GiB | 60 GB | 2× |
-| 125 GiB | 32 | ≈123 GiB | 60 GB | 4× — by request |
-| 250 GiB | 64 | ≈248 GiB | 60 GB | 8× — by request |
+```{code-cell} python
+:tags: ["remove-input"]
+
+size_table
+```
 
 **Submissions default to the smallest size.** Only request more if you know that you need more. The output from a run shows what your last run
 actually used, as a share of what it was allowed.
 
 :::{admonition} Where to find run statistics
 :class: dropdown hint
+
+A finished run reports its **peak memory** and **peak disk** use on the submission page, beside
+the download links, as a share of what the machine allowed. Those two figures are what to size the
+*next* run on: a run that peaked at 40 % of a 30 GiB machine has no reason to ask for 60 GiB.
 
 ![Run statistics](images/sivacor-completed-run-full-highlight.png)
 :::
@@ -162,7 +248,7 @@ actually used, as a share of what it was allowed.
 
 Important points to consider:
 
-- **Disk does not grow with the size.** Every size has the same 60 GB primary disk, shared between your package
+- **Disk does not grow with the size.** Every size has the same {eval}`disk_gb` GB primary disk, shared between your package
   and the software image. If you have run out of *disk*, a bigger machine will not help: ask for
   [extra scratch disk](#scratch-disk) instead. See
   [Step 0](step0-prepare.md#size-considerations).
@@ -173,9 +259,9 @@ Important points to consider:
 
 
 (scratch-disk)=
-## Extra scratch disk
+### Extra scratch disk
 
-**Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary 60 GB disk. It is enabled only upon request, see **Requesting additional resources**.
+**Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary {eval}`disk_gb` GB disk. It is enabled only upon request, see **Requesting additional resources**.
 
 Once your account has a scratch disk allowance:
 
@@ -192,7 +278,7 @@ Once your account has a scratch disk allowance:
 
 :::
 
-## Requesting additional resources
+### Requesting additional resources
 
 To request additional resources, send an email to [support@sivacor.org](mailto:support@sivacor.org). 
 
@@ -203,7 +289,8 @@ SIVACOR uses a limited allocation of compute resources. The largest machine size
 
 :::
 
-## Environment variables
+(environment-secrets)=
+### Environment variables
 
 You can set environment variables for your job by using the `env_secrets` block in a workflow definition file, or by entering them in the submission form. These variables are available to your code during execution.
 
@@ -228,7 +315,8 @@ Then click on the `Run Replication Workflow` button.
 ![Submit job](images/sivacor-image-run-chained.png)
 
 :::{hint}
-If the  button is greyed out, you may have forgotten to press the `Upload` button. 
+If the button is greyed out, the upload has not finished, or the uploaded file was deleted. The
+button says which. See [Step 1](step1-upload.md).
 :::
 
 

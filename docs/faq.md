@@ -145,7 +145,17 @@ Stripping `.m` is done automatically, you should not omit it from your main file
 
 :::{tab-item} Julia
 
-TBA
+For Julia, the system always assumes that the directory containing the `(MAIN_FILE)` is the working directory. It then runs
+
+```
+cd (WORKING_DIRECTORY)
+/usr/local/julia/bin/julia --startup-file=no --project=@. (MAIN_FILE)
+```
+
+`--project=@.` makes Julia search upward from the working directory for a `Project.toml`, and use that environment; if there is none, it uses the default one. `--startup-file=no` keeps a stray `startup.jl` out of a certified run.
+
+Note that, unlike R, an `renv.lock` elsewhere in the package does **not** move the working directory for a Julia step.
+
 :::
 
 ::::
@@ -162,7 +172,7 @@ The message includes a **Go to your submission in progress** link that takes you
 submission that is still running. From there you can either wait for it to finish, or use
 **Cancel Job** to stop it — once it is cancelled you can submit a new one.
 
-### My job used to work, and now it runs out of memory
+### My job runs out of memory
 
 SIVACOR runs every submission on a machine created for that submission alone, and **you choose
 how large it is** — see [choosing the machine size](step2-choosing-image.md#worker-size). Two
@@ -171,16 +181,11 @@ things commonly cause this:
 - **Your submission used the default size.** New submissions default to the smallest machine
   (30 GiB, about 28 GiB usable). If your analysis needs more, pick a larger size and run it
   again — that is the whole fix.
-- **You are comparing against the old shared server.** Earlier in the pilot, submissions ran on a
-  larger shared machine, so an analysis that only just fitted before may exceed a smaller size now.
 
-The job log names the limit your run was actually given, and the exact figure is in the run's
-performance data — quote that rather than an approximation when you get in touch. The submission
-form also shows what your last run peaked at, as a share of what it was allowed, which is usually
-enough to tell whether you need the next size up.
 
-If your analysis needs one of the sizes marked *by request*, or needs more than the largest,
-please contact us — do not spend a long time trying to shrink it first.
+The job log names the limit your run was actually given, and the exact amount of memory used. When resubmitting, the submission form also shows what your last run peaked at.
+
+If your analysis needs one of the sizes marked *by request*, or needs more than the largest, please contact us — do not spend a long time trying to shrink it first. See [Step 2 - Requesting additional resources](step2-choosing-image.md#requesting-additional-resources).
 
 ### My job failed saying it ran out of disk space
 
@@ -260,9 +265,9 @@ with your code: simply submit the package again. If it keeps happening, please c
 
 ### The system appears to be down.
 
-SIVACOR runs on [Jetstream 2](https://jetstream-cloud.org/). If Jetstream 2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream 2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
+SIVACOR runs on [Jetstream2](https://jetstream-cloud.org/). If Jetstream2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
 
-If JetStream 2 is operational, but SIVACOR appears down, please contact us via the button at the top of this page.
+If Jetstream2 is operational, but SIVACOR appears down, please contact us via the button at the top of this page.
 
 ### It's failing on a file, but the file is there!
 
@@ -295,10 +300,14 @@ Issue: <https://github.com/SIVACOR/sivacor-repo-choice/issues/3>
 
 ### Julia errors
 
-Julia failures divide into two kinds, and the job log says which stage you are in. A failure under
-`===== Stage N Dependency Resolution =====` is about your `Project.toml` — see
-[the debugging notes](#julia-resolve-failed), and read `stderr`, because
-that is where Julia's package manager writes. A failure after it is your own code.
+#### `Package Foo not found` 
+
+This usually means your run has no step
+that installs these packages — see [the debugging notes](#julia-resolve-failed) and
+[Step 0](#dependencies). 
+
+If the step that failed is your setup step, consult `stderr`: that is where Julia's package manager writes (`stdout` will be empty). Each step's output is under its own
+`===== Stage N Output =====` heading.
 
 ## Downloading results
 

@@ -9,7 +9,7 @@ kernelspec:
 
 ## Use a single software application per step
 
-Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
+Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [container images](images.md)). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
 
 ::::{admonition} Additional information
 :class: dropdown seealso
@@ -22,7 +22,7 @@ The single-application requirement means you cannot call one application from an
 
 While SIVACOR does not publish data or replication packages, and deletes completed jobs after a short period of time, it is not a designated secure computing system.[^data] You should not upload *controlled* data, and all uploads should be compatible with any data use agreement you signed. 
 
-[^data]: SIVACOR runs on [JetStream2](https://jetstream-cloud.org/) infrastructure. The [JS2 Acceptable Use and Data Policy](https://docs.jetstream-cloud.org/general/policies/#acceptable-use-of-jetstream2) apply. SIVACOR's privacy policy can be found at <https://submit.sivacor.org/privacy>.
+[^data]: SIVACOR runs on [Jetstream2](https://jetstream-cloud.org/) infrastructure. The [JS2 Acceptable Use and Data Policy](https://docs.jetstream-cloud.org/general/policies/#acceptable-use-of-jetstream2) apply. SIVACOR's privacy policy can be found at <https://submit.sivacor.org/privacy>.
 
 If you have data that you are allowed to upload, but not publish, see "[Excluding files](#excluding-files-from-final-package)" on how to exclude files from the final replication package.
 
@@ -31,7 +31,18 @@ If you have data that you are allowed to upload, but not publish, see "[Excludin
 (excluding-files-from-final-package)=
 ## Excluding files from final package
 
-The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro). 
+The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro).
+
+:::{important}
+
+Pruning happens **after your code has run**, as the last step before the package is signed. So an
+ignored file is still there while your code runs — which is the point: you can read restricted
+input data during the run and still keep it out of the package you hand over. It also means
+`.sivacorignore` cannot change anything about *how* the run behaves, such as which file is picked
+when [the main file name is ambiguous](step2-choosing-image.md).
+
+:::
+
 
 :::{admonition} Example file and usage
 :class: dropdown hint
@@ -88,12 +99,17 @@ For some guidance on constructing a portable replication package, see [Steps 1-3
 
 If your code uses libraries or packages, you must ensure that they are **installed automatically** (for Stata, we suggest you include them). We strongly encourage packages that use "environments", and packages to manage dependencies.
 
+::::::{seealso} Details
+:class: dropdown
 
-::::{tab-set}
+:::::{tab-set}
 
-:::{tab-item} R
+::::{tab-item} R
 
-Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/).[^groundhog] You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage depenedencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script. 
+Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/).[^groundhog] You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage dependencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script.
+
+[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
+
 
 :::{warning}
 
@@ -101,25 +117,24 @@ Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your rep
 
 :::
 
-[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
+::::
 
-:::
-
-:::{tab-item} Stata
+::::{tab-item} Stata
 
 Guidance for portable dependencies for Stata is provided [at Step 3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-3-dependencies) of the AEA Data Editor's guidance. See also the World Bank's [`repado`](https://worldbank.github.io/repkit/reference/repado.html).
 
 Note that even when you include Stata packages, you should provide the script that originally installed them, to demonstrate provenance.
 
-:::
+::::
 
-:::{tab-item} Julia
+::::{tab-item} Julia
 
-Include `Project.toml` and `Manifest.toml`. 
+Include a `Project.toml` and `Manifest.toml`. 
 
+Declare your dependencies in a `Project.toml`. 
 The `Manifest.toml`, if present, will ensure that the code will install and use the same versions. Without it,  `Project.toml` will install latest versions of the dependencies.
 
-Both can be generated by activating your project, and then interactively adding your dependencies:
+Both can be generated by "activating" your project, and then interactively adding your dependencies:
 
 ```julia
 julia --project=.
@@ -127,17 +142,26 @@ julia> ]           # enter the package REPL
 (YourProject) pkg> add DataFrames CSV GLM
 ```
 
-Alternatively, use a `setup.jl` to programmatically install your dependencies.
+When running, include a `setup.jl` as your first workflow step (suggested), or include it in your main file:
+
+```{code} julia
+:filename: setup.jl
+using Pkg
+Pkg.instantiate()
+```
+
+
+Alternatively, use an `install.jl` to programmatically install your dependencies.
 
 ```julia
 julia --project=.
-julia> include("setup.jl")
+julia> include("install.jl")
 ```
 
 where
 
 ```{code} julia
-:filename: setup.jl
+:filename: install.jl
 # Install project dependencies
 using Pkg
 Pkg.add("DataFrames")
@@ -145,14 +169,12 @@ Pkg.add("CSV")
 Pkg.add("GLM")
 ```
 
-Include `Project.toml` and `Manifest.toml`, as well as `setup.jl` if present,  next to your main file, or at the top of your package. 
+Include `Project.toml` and `Manifest.toml`, as well as `setup.jl`  or `install.jl` if present,  next to your main file, or at the top of your package. 
 
-If your package contains
-several `Project.toml` files, SIVACOR uses the nearest one at or above your main file, equivalent to what 
-`julia --project=@.` would pick.
 
-:::
 ::::
+:::::
+::::::
 
 :::{admonition} Minimal sample code
 :class: dropdown seealso
@@ -168,24 +190,99 @@ several `Project.toml` files, SIVACOR uses the nearest one at or above your main
 
 
 (size-considerations)=
-## Package must be able to run on the SIVACOR workers
-The size available to run your code depends on the software being used, and how you manage files within your replication package. A complete run of your code needs room:
+## Package must be able to fit on the SIVACOR workers
+
+```{code-cell} python
+:tags: ["remove-input", "remove-output"]
+
+# ==============================================================
+import csv
+import math
+from pathlib import Path
+
+import requests
+import yaml
+from IPython.display import HTML
+
+DATA = Path("_data")
+
+# Everything is GiB (powers of 1024), as `df` on a worker reports it.
+nodes = list(csv.DictReader((DATA / "jetstream2-nodes.csv").open()))
+node = next(n for n in nodes if n["default"] == "true")
+DISK_GIB = float(node["disk_fs_gib"])
+OVERHEAD_GIB = float(node["overhead_gib"])
+FOOTPRINT_FACTOR = float(node["footprint_factor"])  # on-disk / compressed, see _data/README.md
+BASE_FREE_GIB = DISK_GIB - OVERHEAD_GIB
+
+images = list(csv.DictReader((DATA / "container-images.csv").open()))
+
+repos_url = "https://raw.githubusercontent.com/SIVACOR/sivacor-repo-choice/main/allowed_repos.yaml"
+allowed = yaml.safe_load(requests.get(repos_url).text)
+
+
+def hub_compressed_gib(image, tag):
+    info = requests.get(f"https://hub.docker.com/v2/repositories/{image}/tags/{tag}/").json()
+    size = next((i["size"] for i in info["images"] if i["architecture"] == "amd64"), info["full_size"])
+    return size / 1024**3
+
+
+rows = []
+for img in images:
+    name = img["image"]
+    if not allowed.get(name):  # not (or no longer) on the allow-list: skip, don't fail the build
+        continue
+    tag = str(allowed[name][0])
+    compressed = float(img["compressed_gib"]) if img["compressed_gib"] else hub_compressed_gib(name, tag)
+    on_disk = compressed * FOOTPRINT_FACTOR
+    rows.append((img["software"], f"{name}:{tag}", compressed, on_disk, BASE_FREE_GIB - on_disk))
+
+free = [r[4] for r in rows]
+dynare = next((r for r in rows if r[1].startswith("dynare/")), None)
+
+# Placeholders for the prose ({eval} shows a bare string).
+disk_gb = node["disk_gb"]
+disk_gib = f"{DISK_GIB:.0f}"
+overhead_gib = f"{OVERHEAD_GIB:.1f}"
+base_free_gib = f"{BASE_FREE_GIB:.0f}"
+footprint_factor = f"{FOOTPRINT_FACTOR:g}"
+free_min, free_max = f"{math.floor(min(free))}", f"{math.floor(max(free))}"
+dynare_on_disk = f"{math.floor(dynare[3])}" if dynare else "n/a"  # "over ..."
+dynare_free = f"{math.ceil(dynare[4])}" if dynare else "n/a"  # "less than ..."
+
+# MyST does not render `text/markdown` outputs, so build HTML.
+L, R = 'style="text-align:left"', 'style="text-align:right"'
+table = (
+    "<table>\n<thead><tr>"
+    f"<th {L}>Software</th><th {L}>Image</th><th {R}>Download size</th>"
+    f"<th {R}>Space it occupies*</th><th {R}>Free space for your package*</th>"
+    "</tr></thead>\n<tbody>\n"
+)
+for software, image_tag, compressed, on_disk, free_gib in rows:
+    table += (
+        f"<tr><td {L}>{software}</td><td {L}><code>{image_tag}</code></td>"
+        f"<td {R}>{compressed:.1f} GiB</td><td {R}>{on_disk:.1f} GiB</td>"
+        f"<td {R}>{free_gib:.1f} GiB</td></tr>\n"
+    )
+table += "</tbody>\n</table>"
+size_table = HTML(table)
+# ==============================================================
+```
+
+The size available to run your code depends on the **software** being used, and how you **manage files** within your replication package. A complete run of your code needs room:
 
 - the operating system
 - the statistical software you use
 - multiple copies of your replication package:
   - the ZIP file you upload
   - the workspace it is extracted into
-  - anything your code writes
+- anything your code writes
 
+Current SIVACOR nodes have  between **{eval}`free_min` and {eval}`free_max` GiB** free, depending on the software being used.
 
 ::::{admonition} Additional information
 :class: dropdown tip
 
-This instance of SIVACOR launches a virtual machine for each run. The machine's filesystem is **58 GiB**, of which about **12.7 GiB** is the operating system, Docker
-and the SIVACOR harness — so roughly **45 GiB** is available before the analysis software is added.
-Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives
-on. 
+This instance of SIVACOR launches a virtual machine for each run. Its disk is advertised as {eval}`disk_gb` GB; once formatted the filesystem measures **{eval}`disk_gib` GiB**, which is the figure every number below is in. Of that, about **{eval}`overhead_gib` GiB** is the operating system, Docker and the SIVACOR harness. Roughly **{eval}`base_free_gib` GiB** are available before the analysis software is added. Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives on.
 
 
 The table below lists what is left for your package after each one. See
@@ -194,121 +291,17 @@ The table below lists what is left for your package after each one. See
 ```{code-cell} python
 :tags: ["remove-input"]
 
-import yaml
-import requests
-from IPython.display import HTML, display
-
-# Everything here is GiB (powers of 1024), which is what `df` on a worker reports.
-# Mixing decimal GB with `df` figures was how an earlier version of this table came
-# out optimistic in two places at once.
-DISK_GIB = 58.0      # the filesystem's own figure on a worker
-OVERHEAD_GIB = 12.7  # operating system + Docker + the SIVACOR harness
-
-# Docker Hub reports the *compressed* layer total. What that costs on the worker's
-# disk is much more than the unpacked size, because the workers' Docker keeps the
-# compressed blobs in its content store *and* materialises a snapshot per layer --
-# so a file rewritten by a later layer is stored three times over.
-#
-# Measured 2026-08-22 on a VM built exactly like a worker, as the free-space delta
-# across a cold pull (and confirmed by `docker system df`):
-#
-#   dynare/dynare:6.1-R2024a   6.16 GiB compressed -> 21.00 GiB on disk  (3.41x)
-#   rocker/r-ver:4.6.1         0.34 GiB compressed ->  1.26 GiB on disk  (3.69x)
-#
-# Julia sits slightly above this factor (2026-09-16): 0.343 GiB compressed
-# unpacks to 1.163 GiB, so with both copies kept it rests at ~1.51 GiB -- 4.4x.
-# The table therefore credits a Julia submission with ~0.1 GiB more room than it
-# has, out of 44 GiB. Left alone rather than made per-image, because a factor
-# per software is a second table to keep true and this one is already the
-# smallest image by a wide margin.
-#
-# 3.5 is the measured middle. The previous value, 3, was described here as "a
-# deliberately conservative ceiling" but was in fact an under-estimate: it told
-# researchers they had more room than they do.
-FOOTPRINT_FACTOR = 3.5
-
-# A handful of representative images, not the full curated list (see images.md for that).
-SAMPLE_IMAGES = [
-    ("rocker/verse", "R"),
-    ("rocker/geospatial", "R"),
-    ("dynare/dynare", "MATLAB"),
-    ("dataeditors/stata19_5-mp-i-python", "Stata"),
-    ("dataeditors/stata19-mp", "Stata"),
-    ("ghcr.io/sivacor/julia1.13", "Julia"),
-]
-
-# Sizes normally come from Docker Hub's API. SIVACOR builds its own Julia images
-# and publishes them to GHCR, which is a different API behind a different token
-# flow -- so rather than add a second network path to the docs build, the Julia
-# figure is a measured literal. Read from the registry manifest 2026-09-16:
-# julia1.13:1.13.0-20260916 is 0.343 GiB compressed (julia1.11 0.333, julia1.10
-# 0.209). Re-measure when a new line is added; these images barely change size.
-MEASURED_COMPRESSED_GIB = {"ghcr.io/sivacor/julia1.13": 0.343}
-
-repos_url = "https://raw.githubusercontent.com/SIVACOR/sivacor-repo-choice/main/allowed_repos.yaml"
-allowed = yaml.safe_load(requests.get(repos_url).text)
-
-rows = []
-for image_name, software in SAMPLE_IMAGES:
-    # An image this build cannot price is skipped, not fatal. The allow-list is
-    # a separate repository on its own release cycle: a sample image it has not
-    # gained yet -- or has dropped -- would otherwise take the whole docs site
-    # down with a KeyError.
-    if image_name not in allowed or not allowed[image_name]:
-        continue 
-    tag = str(allowed[image_name][0])  # first entry is the most recently added tag
-    if image_name in MEASURED_COMPRESSED_GIB:
-        compressed_gib = MEASURED_COMPRESSED_GIB[image_name]
-    else:
-        tag_info = requests.get(
-            f"https://hub.docker.com/v2/repositories/{image_name}/tags/{tag}/"
-        ).json()
-        size_bytes = next(
-            (img["size"] for img in tag_info["images"] if img["architecture"] == "amd64"),
-            tag_info["full_size"],
-        )
-        compressed_gib = size_bytes / 1024**3
-    on_disk_gib = compressed_gib * FOOTPRINT_FACTOR
-    rows.append(
-        (
-            software,
-            f"{image_name}:{tag}",
-            compressed_gib,
-            on_disk_gib,
-            DISK_GIB - OVERHEAD_GIB - on_disk_gib,
-        )
-    )
-
-# MyST does not render `text/markdown` outputs, so emit HTML directly.
-L, R = 'style="text-align:left"', 'style="text-align:right"'
-table = (
-    "<table>\n<thead><tr>"
-    f"<th {L}>Software</th><th {L}>Image</th>"
-    f"<th {R}>Download size</th>"
-    f"<th {R}>Space it occupies*</th>"
-    f"<th {R}>Free space for your package*</th>"
-    "</tr></thead>\n<tbody>\n"
-)
-for software, image_tag, compressed_gib, on_disk_gib, free_gib in rows:
-    table += (
-        f"<tr><td {L}>{software}</td><td {L}><code>{image_tag}</code></td>"
-        f"<td {R}>{compressed_gib:.1f} GiB</td>"
-        f"<td {R}>{on_disk_gib:.1f} GiB</td>"
-        f"<td {R}>{free_gib:.1f} GiB</td></tr>\n"
-    )
-table += "</tbody>\n</table>"
-
-display(HTML(table))
+size_table
 ```
 
 \* Estimated from the compressed download size.[^downloadsize] 
 
 [^downloadsize]: The container is kept **both** compressed and
-unpacked on the worker's disk, so it occupies roughly **3.5x** what it downloads.
+unpacked on the worker's disk, so it occupies roughly **{eval}`footprint_factor`x** what it downloads.
 
 :::{important}
 
-**If your analysis uses MATLAB/Dynare, pay particular attention to the  `dynare` entry.** Images provided by the Dynare project are large, typically over 21 GiB. This leaves less than 24 GiB for the package and everything it writes. If you run into problems, see how to request 
+**If your analysis uses MATLAB/Dynare, pay particular attention to the  `dynare` entry.** Images provided by the Dynare project are large, typically over {eval}`dynare_on_disk` GiB. This leaves less than {eval}`dynare_free` GiB for the package and everything it writes. If you run into problems, see how to request 
 [extra scratch disk](step2-choosing-image.md#scratch-disk).
 
 :::

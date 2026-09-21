@@ -7,7 +7,10 @@ Markdown file with an Agent-Skills frontmatter, they make a skill that an AI
 coding assistant (or a person) can load to walk a researcher through SIVACOR
 without browsing the site. ``SKILL-HEADER.md`` supplies the frontmatter and
 framing, ``SKILL-FOOTER.md`` the quick reference; both live at the repository
-root, next to ``footer.md``, and are excluded from the MyST build.
+root, next to ``footer.md``, and are excluded from the MyST build. They may use
+``{{SITE_URL}}``, ``{{BUILD_DATE}}`` and any column of
+``docs/_data/jetstream2-nodes.csv`` upper-cased (``{{DISK_GB}}``,
+``{{UPLOAD_MAX_GB}}``, ...), taken from the default size.
 
 Usage::
 
@@ -19,20 +22,31 @@ The default output lands inside the built site, so the deploy publishes it at
 rewritten is whatever only makes sense on the rendered site:
 
 * the ``kernelspec`` frontmatter of executable pages is dropped;
-* ``{code-cell}`` blocks (the disk-space table) are replaced by a link to the
-  rendered page, since the skill cannot run Python;
+* ``{code-cell}`` blocks are *executed* (they are plain Python reading
+  ``docs/_data/*.csv`` and, for step 0, Docker Hub) so that ``{eval}``
+  placeholders get their values and displayed HTML tables become Markdown
+  tables; cells tagged ``remove-output`` leave nothing behind;
 * screenshots are dropped;
 * ``(label)=`` targets become ``<a id>`` anchors so ``#label`` links keep
   working inside the single file;
 * links between the step pages become in-file anchors, and links to any other
   page become absolute URLs on the site;
 * headings are demoted one level so the header's title is the only ``h1``.
+
+Dropping the screenshots is the one rewrite that can silently destroy content: a
+call-out whose only body was a figure becomes an empty ``:::{admonition}`` pair,
+which reads on the site and says nothing here. :func:`warn_empty_directives`
+reports those to stderr after each page is converted, so the fix lands in the
+source page rather than in this script.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import datetime as dt
+import html
+import os
 import re
 import sys
 from pathlib import Path
@@ -55,7 +69,11 @@ FOOTER = ROOT / "SKILL-FOOTER.md"
 
 FRONTMATTER = re.compile(r"\A---\n.*?\n---\n", re.DOTALL)
 # ```{code-cell} ... ``` -- MyST executable cell; the fence may carry options.
-CODE_CELL = re.compile(r"^```\{code-cell\}[^\n]*\n.*?^```[ \t]*$\n?", re.DOTALL | re.MULTILINE)
+CODE_CELL = re.compile(r"^```\{code-cell\}[^\n]*\n(?P<body>.*?)^```[ \t]*$\n?", re.DOTALL | re.MULTILINE)
+CELL_OPTION = re.compile(r"^:[a-z_-]+:[^\n]*\n")
+EVAL = re.compile(r"\{eval\}`([^`]+)`")
+TABLE_ROW = re.compile(r"<tr>(.*?)</tr>", re.DOTALL)
+TABLE_CELL = re.compile(r"<t[hd]([^>]*)>(.*?)</t[hd]>", re.DOTALL)
 LABEL = re.compile(r"^\(([A-Za-z0-9_-]+)\)=\s*$", re.MULTILINE)
 CLASS_OPTION = re.compile(r"^:class:[^\n]*\n", re.MULTILINE)
 IMAGE_LINE = re.compile(r"^!\[[^\]]*\]\([^)]*\)\s*\n", re.MULTILINE)
@@ -71,15 +89,60 @@ def page_url(site_url: str, stem: str, fragment: str) -> str:
     return f"{site_url.rstrip('/')}/docs/{stem}{fragment}"
 
 
+def html_table_to_md(markup: str) -> str:
+    rows = []
+    for row in TABLE_ROW.findall(markup):
+        cells = TABLE_CELL.findall(row)
+        rows.append(
+            (
+                ["right" in attrs for attrs, _ in cells],
+                [html.unescape(re.sub(r"<[^>]+>", "", body)).strip() for _, body in cells],
+            )
+        )
+    if not rows:
+        return ""
+    aligns, header = rows[0]
+    out = ["| " + " | ".join(header) + " |", "|" + "|".join("---:" if a else "---" for a in aligns) + "|"]
+    out += ["| " + " | ".join(cells) + " |" for _, cells in rows[1:]]
+    return "\n".join(out) + "\n"
+
+
+def run_cells(text: str) -> tuple[str, dict]:
+    """Execute each code cell in a shared namespace; replace it with its rendered output.
+
+    Cells run with ``docs/`` as the working directory, as they do under MyST.
+    """
+    ns: dict = {}
+    cwd = os.getcwd()
+    os.chdir(DOCS)
+    try:
+
+        def replace(m: re.Match) -> str:
+            body = m.group("body")
+            tags = ""
+            while opt := CELL_OPTION.match(body):
+                tags += opt.group(0)
+                body = body[opt.end():]
+            exec(body, ns)  # noqa: S102 -- our own docs' cells
+            if "remove-output" in tags:
+                return ""
+            last = body.strip().splitlines()[-1]
+            value = ns.get(last)
+            markup = getattr(value, "data", None) if value is not None else None
+            if not isinstance(markup, str):
+                raise ValueError(f"cannot render output of cell ending in {last!r}")
+            return html_table_to_md(markup)
+
+        return CODE_CELL.sub(replace, text), ns
+    finally:
+        os.chdir(cwd)
+
+
 def convert(text: str, stem: str, site_url: str) -> str:
     text = FRONTMATTER.sub("", text, count=1)
 
-    pointer = (
-        f"*(This section of the website contains a table that is computed at build time; "
-        f"see {page_url(site_url, stem, '#size-considerations' if stem == 'step0-prepare' else '')} "
-        f"for the current figures.)*\n"
-    )
-    text = CODE_CELL.sub(pointer, text)
+    text, ns = run_cells(text)
+    text = EVAL.sub(lambda m: str(eval(m.group(1), ns)), text)  # noqa: S307
 
     text = LABEL.sub(r'<a id="\1"></a>', text)
     text = CLASS_OPTION.sub("", text)
@@ -94,6 +157,58 @@ def convert(text: str, stem: str, site_url: str) -> str:
 
     text = MD_LINK.sub(relink, text)
     return demote_headings(text).strip() + "\n"
+
+
+COLON_OPEN = re.compile(r"^(:{3,})\{([a-z][a-z-]*)\}")
+COLON_CLOSE = re.compile(r"^(:{3,})\s*$")
+DIRECTIVE_OPTION = re.compile(r"^:[a-z_-]+:")
+
+
+def warn_empty_directives(text: str, stem: str) -> int:
+    """Report colon-fenced blocks left with no body, and return how many.
+
+    A block holding nothing but a screenshot is empty by the time it gets here.
+    Options (``:class: dropdown``) and the directive's own argument do not count
+    as a body; anything else does.
+    """
+    stack: list[list] = []
+    backtick = None
+    heading = ""
+    empty = 0
+
+    def mark_body() -> None:
+        if stack:
+            stack[-1][2] = True
+
+    for line in text.split("\n"):
+        fence = FENCE.match(line)
+        if backtick is not None:  # inside a code block: all of it is body
+            mark_body()
+            if fence and line.startswith(backtick):
+                backtick = None
+            continue
+        if fence and fence.group(1)[0] == "`":
+            backtick = fence.group(1)
+            mark_body()
+            continue
+        if opener := COLON_OPEN.match(line):
+            stack.append([opener.group(1), opener.group(2), False])
+        elif (closer := COLON_CLOSE.match(line)) and stack and stack[-1][0] == closer.group(1):
+            colons, name, has_body = stack.pop()
+            if not has_body:
+                empty += 1
+                where = f" under {heading!r}" if heading else ""
+                print(
+                    f"warning: {stem}.md: {colons}{{{name}}}{where} has no body once the "
+                    f"site-only markup is removed (a figure-only call-out?)",
+                    file=sys.stderr,
+                )
+            mark_body()  # the block itself is body for whatever encloses it
+        elif line.strip() and not DIRECTIVE_OPTION.match(line):
+            if HEADING.match(line) and not stack:
+                heading = line.lstrip("#").strip()
+            mark_body()
+    return empty
 
 
 def demote_headings(text: str) -> str:
@@ -111,11 +226,22 @@ def demote_headings(text: str) -> str:
     return "\n".join(out)
 
 
+def node_values() -> dict[str, str]:
+    """``{{DISK_GB}}``-style placeholders, from the default row of the nodes table."""
+    with (DOCS / "_data" / "jetstream2-nodes.csv").open(encoding="utf-8") as f:
+        node = next(n for n in csv.DictReader(f) if n["default"] == "true")
+    return {"{{" + k.upper() + "}}": v for k, v in node.items()}
+
+
 def fill(template: str, site_url: str) -> str:
-    return (
-        template.replace("{{SITE_URL}}", site_url.rstrip("/"))
-        .replace("{{BUILD_DATE}}", dt.date.today().isoformat())
-    )
+    values = {
+        "{{SITE_URL}}": site_url.rstrip("/"),
+        "{{BUILD_DATE}}": dt.date.today().isoformat(),
+        **node_values(),
+    }
+    for key, value in values.items():
+        template = template.replace(key, value)
+    return template
 
 
 def main() -> int:
@@ -128,6 +254,7 @@ def main() -> int:
     for name in STEP_FILES:
         stem = Path(name).stem
         body = convert((DOCS / name).read_text(encoding="utf-8"), stem, args.site_url)
+        warn_empty_directives(body, stem)
         parts.append(f'\n<a id="{stem}"></a>\n\n{body}')
     parts.append("\n" + fill(FOOTER.read_text(encoding="utf-8"), args.site_url).rstrip() + "\n")
 
