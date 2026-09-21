@@ -196,7 +196,7 @@ Each setting applies to the **whole** submission.
 
 
 (worker-size)=
-## Choose the machine size
+### Choose the machine size
 
 Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
 whole submission: every step runs on the same machine.
@@ -231,7 +231,7 @@ Important points to consider:
 
 
 (scratch-disk)=
-## Extra scratch disk
+### Extra scratch disk
 
 **Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary {eval}`disk_gb` GB disk. It is enabled only upon request, see **Requesting additional resources**.
 
@@ -250,7 +250,7 @@ Once your account has a scratch disk allowance:
 
 :::
 
-## Requesting additional resources
+### Requesting additional resources
 
 To request additional resources, send an email to [support@sivacor.org](mailto:support@sivacor.org). 
 
@@ -261,7 +261,7 @@ SIVACOR uses a limited allocation of compute resources. The largest machine size
 
 :::
 
-## Environment variables
+### Environment variables
 
 You can set environment variables for your job by using the `env_secrets` block in a workflow definition file, or by entering them in the submission form. These variables are available to your code during execution.
 
