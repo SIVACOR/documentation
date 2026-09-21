@@ -31,7 +31,18 @@ If you have data that you are allowed to upload, but not publish, see "[Excludin
 (excluding-files-from-final-package)=
 ## Excluding files from final package
 
-The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro). 
+The final digitally signed replication package contains all data as originally uploaded. If you need to remove files because you do not have redistribution rights, or large intermediate files, include a file named `.sivacorignore` (note the leading dot!) at the root of your project to exclude files or directories before package is finalized. This will be logged as part of the [TRO](https://transparency-certified.github.io/trace-specification/docs/elements.html#transparency-certified-research-objects-tro).
+
+:::{important}
+
+Pruning happens **after your code has run**, as the last step before the package is signed. So an
+ignored file is still there while your code runs — which is the point: you can read restricted
+input data during the run and still keep it out of the package you hand over. It also means
+`.sivacorignore` cannot change anything about *how* the run behaves, such as which file is picked
+when [the main file name is ambiguous](step2-choosing-image.md).
+
+:::
+
 
 :::{admonition} Example file and usage
 :class: dropdown hint

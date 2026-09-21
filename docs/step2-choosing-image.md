@@ -66,8 +66,11 @@ that name, and runs it from the directory it was found in.
 
 For the same reason, the name must be **unique within the package**. If `main.R` exists in both
 `code/` and `code/archive/`, SIVACOR cannot tell which one you meant and the run fails before it
-starts, listing every copy it found. Rename or remove the duplicates, or exclude the stale copy
-with [`.sivacorignore`](#excluding-files-from-final-package).
+starts, listing every copy it found. Rename or remove the extra copies in the archive you upload.
+
+`.sivacorignore` does **not** help here: it is applied after your code has run, to decide what
+goes into the final package, so an ignored file is still present and still ambiguous when the main
+file is resolved.
 
 :::
 

@@ -7,8 +7,8 @@ names the file or command at fault. The most common causes, and what to change:
 | What you see | What it means | What to do |
 |---|---|---|
 | `No main.do found` | The main file name does not match anything in the package | Check the exact spelling, case and extension. The file may sit in a subdirectory — that is fine, it is searched for |
-| `Multiple main.R files found: ...` | The same file name appears more than once anywhere in the package | Remove or rename the duplicates, or exclude the stale copy with `.sivacorignore`. The message lists every path |
-| Out of disk | The package plus the unpacked image exceeded the worker's disk | See [Step 0](#step0-prepare) — a **bigger machine will not help**, its disk is the same. Trim intermediates, or ask for [extra scratch disk](#scratch-disk) |
+| `Multiple main.R files found: ...` | The same file name appears more than once anywhere in the package | Rename or remove the extra copies and upload again — `.sivacorignore` cannot help, it is applied after the run. The message lists every path |
+| Out of disk | The package plus the unpacked image exceeded the worker's disk | See [Step 0](#step0-prepare) — a **bigger machine will not help**, its disk is the same. Have the code delete intermediates as it goes (`.sivacorignore` is applied after the run, so it frees nothing during it), or ask for [extra scratch disk](#scratch-disk) |
 | Out of memory | The kernel killed the container | Pick a larger [machine size](#worker-size). The container's own log says nothing, because it was killed without warning |
 | Stata `r(601)` and similar | Stata could not find a file | Usually an absolute path or a wrong working directory. See the [FAQ]({{SITE_URL}}/docs/faq#stata-errors) |
 | `Package Foo not found`, `renv` failures | Dependencies did not install | Isolation is per step: a setup step that installs packages needs **network isolation off**. See the [debugging guide]({{SITE_URL}}/docs/debugging) |
