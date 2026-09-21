@@ -13,9 +13,9 @@
 
 ### Limits at a glance
 
-- One archive per submission, **ZIP or tar.gz**, at most **5 GB**; **10 GB** stored per user at any one time.
+- One archive per submission, **ZIP or tar.gz**, at most **{{UPLOAD_MAX_GB}} GB**; **{{USER_QUOTA_GB}} GB** stored per user at any one time.
 - **One job at a time** per user.
-- Every machine size has the same **60 GB** disk, shared between your package and the software image; only the memory and cores change. Extra scratch disk is granted per account on request.
+- Every machine size has the same **{{DISK_GB}} GB** disk, shared between your package and the software image; only the memory and cores change. Extra scratch disk is granted per account on request.
 - A submission is **deleted 14 days** after it was submitted, and starting a new run deletes the previous one. Download the Replicated Package first.
 - Maximum run time is **7 days**.
 - Do not upload data you are not allowed to place on third-party systems; use `.sivacorignore` to keep non-redistributable or bulky files out of the final package.
