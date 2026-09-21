@@ -255,9 +255,9 @@ with your code: simply submit the package again. If it keeps happening, please c
 
 ### The system appears to be down.
 
-SIVACOR runs on [Jetstream 2](https://jetstream-cloud.org/). If Jetstream 2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream 2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
+SIVACOR runs on [Jetstream2](https://jetstream-cloud.org/). If Jetstream2 is down for maintenance, SIVACOR will be down as well. You can check the [Jetstream2 status page](https://jetstream.status.io/) for any ongoing maintenance or issues.
 
-If JetStream 2 is operational, but SIVACOR appears down, please contact us via the button at the top of this page.
+If Jetstream2 is operational, but SIVACOR appears down, please contact us via the button at the top of this page.
 
 ### It's failing on a file, but the file is there!
 

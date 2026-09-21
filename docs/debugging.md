@@ -16,7 +16,7 @@ Do not use that code on your own machine, unless you know what you are doing!
 
 ### Renv wants packages that do not exist (yet)
 
-Most of the containers used on SIVACOR use a date-based snapshot of CRAN (hosted on PPM). If you installed R on your computer, and then **later** installed packaeg which you captured with `renv`, then you may get inconsistencies. To fix this, you can try this:
+Most of the containers used on SIVACOR use a date-based snapshot of CRAN (hosted on PPM). If you installed R on your computer, and then **later** installed package which you captured with `renv`, then you may get inconsistencies. To fix this, you can try this:
 
 ```r
 # 1. Read the lockfile into an R list
