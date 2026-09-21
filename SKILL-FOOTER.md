@@ -1,3 +1,21 @@
+## When a run fails
+
+A failed run still offers the **Run output log** (stdout) and **Run error log** (stderr) for
+download — the signed artifacts are offered only on success. Read those logs first; the message
+names the file or command at fault. The most common causes, and what to change:
+
+| What you see | What it means | What to do |
+|---|---|---|
+| `No main.do found` | The main file name does not match anything in the package | Check the exact spelling, case and extension. The file may sit in a subdirectory — that is fine, it is searched for |
+| `Multiple main.R files found: ...` | The same file name appears more than once anywhere in the package | Remove or rename the duplicates, or exclude the stale copy with `.sivacorignore`. The message lists every path |
+| Out of disk | The package plus the unpacked image exceeded the worker's disk | See [Step 0](#step0-prepare) — a **bigger machine will not help**, its disk is the same. Trim intermediates, or ask for [extra scratch disk](#scratch-disk) |
+| Out of memory | The kernel killed the container | Pick a larger [machine size](#worker-size). The container's own log says nothing, because it was killed without warning |
+| Stata `r(601)` and similar | Stata could not find a file | Usually an absolute path or a wrong working directory. See the [FAQ]({{SITE_URL}}/docs/faq#stata-errors) |
+| `Package Foo not found`, `renv` failures | Dependencies did not install | Isolation is per step: a setup step that installs packages needs **network isolation off**. See the [debugging guide]({{SITE_URL}}/docs/debugging) |
+| Image pull failed | The image could not be fetched onto the worker | Re-submit; if it persists, mail support — the image, not the package, is at fault |
+| Waiting for a worker, for a long time | No machine free yet | Normal for a few minutes; see the [FAQ]({{SITE_URL}}/docs/faq#monitoring-job-status) |
+| Submission abandoned / presumed lost | The worker died mid-run | Not caused by the package. Re-submit; see the [FAQ]({{SITE_URL}}/docs/faq#my-job-failed-with-submission-abandoned) |
+
 ## Quick reference
 
 | | |

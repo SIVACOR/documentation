@@ -9,7 +9,7 @@ kernelspec:
 
 ## Use a single software application per step
 
-Each step of a SIVACOR submission only supports a single software application (e.g., Stata, R, Python). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
+Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [container images](images.md)). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
 
 ::::{admonition} Additional information
 :class: dropdown seealso
@@ -140,7 +140,7 @@ Pkg.instantiate()
 ```
 
 
-Alternatively, use a `install.jl` to programmatically install your dependencies.
+Alternatively, use an `install.jl` to programmatically install your dependencies.
 
 ```julia
 julia --project=.
@@ -229,6 +229,7 @@ free = [r[4] for r in rows]
 dynare = next((r for r in rows if r[1].startswith("dynare/")), None)
 
 # Placeholders for the prose ({eval} shows a bare string).
+disk_gb = node["disk_gb"]
 disk_gib = f"{DISK_GIB:.0f}"
 overhead_gib = f"{OVERHEAD_GIB:.1f}"
 base_free_gib = f"{BASE_FREE_GIB:.0f}"
@@ -270,7 +271,7 @@ Current SIVACOR nodes have  between **{eval}`free_min` and {eval}`free_max` GiB*
 ::::{admonition} Additional information
 :class: dropdown tip
 
-This instance of SIVACOR launches a virtual machine for each run. The machine's filesystem is **{eval}`disk_gib` GiB**, of which about **{eval}`overhead_gib` GiB** is the operating system, Docker and the SIVACOR harness. Roughly **{eval}`base_free_gib` GiB** are available before the analysis software is added. Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives on. 
+This instance of SIVACOR launches a virtual machine for each run. Its disk is advertised as {eval}`disk_gb` GB; once formatted the filesystem measures **{eval}`disk_gib` GiB**, which is the figure every number below is in. Of that, about **{eval}`overhead_gib` GiB** is the operating system, Docker and the SIVACOR harness. Roughly **{eval}`base_free_gib` GiB** are available before the analysis software is added. Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives on.
 
 
 The table below lists what is left for your package after each one. See

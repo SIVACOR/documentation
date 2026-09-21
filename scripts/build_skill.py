@@ -32,6 +32,12 @@ rewritten is whatever only makes sense on the rendered site:
 * links between the step pages become in-file anchors, and links to any other
   page become absolute URLs on the site;
 * headings are demoted one level so the header's title is the only ``h1``.
+
+Dropping the screenshots is the one rewrite that can silently destroy content: a
+call-out whose only body was a figure becomes an empty ``:::{admonition}`` pair,
+which reads on the site and says nothing here. :func:`warn_empty_directives`
+reports those to stderr after each page is converted, so the fix lands in the
+source page rather than in this script.
 """
 
 from __future__ import annotations
@@ -153,6 +159,58 @@ def convert(text: str, stem: str, site_url: str) -> str:
     return demote_headings(text).strip() + "\n"
 
 
+COLON_OPEN = re.compile(r"^(:{3,})\{([a-z][a-z-]*)\}")
+COLON_CLOSE = re.compile(r"^(:{3,})\s*$")
+DIRECTIVE_OPTION = re.compile(r"^:[a-z_-]+:")
+
+
+def warn_empty_directives(text: str, stem: str) -> int:
+    """Report colon-fenced blocks left with no body, and return how many.
+
+    A block holding nothing but a screenshot is empty by the time it gets here.
+    Options (``:class: dropdown``) and the directive's own argument do not count
+    as a body; anything else does.
+    """
+    stack: list[list] = []
+    backtick = None
+    heading = ""
+    empty = 0
+
+    def mark_body() -> None:
+        if stack:
+            stack[-1][2] = True
+
+    for line in text.split("\n"):
+        fence = FENCE.match(line)
+        if backtick is not None:  # inside a code block: all of it is body
+            mark_body()
+            if fence and line.startswith(backtick):
+                backtick = None
+            continue
+        if fence and fence.group(1)[0] == "`":
+            backtick = fence.group(1)
+            mark_body()
+            continue
+        if opener := COLON_OPEN.match(line):
+            stack.append([opener.group(1), opener.group(2), False])
+        elif (closer := COLON_CLOSE.match(line)) and stack and stack[-1][0] == closer.group(1):
+            colons, name, has_body = stack.pop()
+            if not has_body:
+                empty += 1
+                where = f" under {heading!r}" if heading else ""
+                print(
+                    f"warning: {stem}.md: {colons}{{{name}}}{where} has no body once the "
+                    f"site-only markup is removed (a figure-only call-out?)",
+                    file=sys.stderr,
+                )
+            mark_body()  # the block itself is body for whatever encloses it
+        elif line.strip() and not DIRECTIVE_OPTION.match(line):
+            if HEADING.match(line) and not stack:
+                heading = line.lstrip("#").strip()
+            mark_body()
+    return empty
+
+
 def demote_headings(text: str) -> str:
     """Add one ``#`` to every heading, leaving ``#`` comments in code blocks alone."""
     out, fence = [], None
@@ -196,6 +254,7 @@ def main() -> int:
     for name in STEP_FILES:
         stem = Path(name).stem
         body = convert((DOCS / name).read_text(encoding="utf-8"), stem, args.site_url)
+        warn_empty_directives(body, stem)
         parts.append(f'\n<a id="{stem}"></a>\n\n{body}')
     parts.append("\n" + fill(FOOTER.read_text(encoding="utf-8"), args.site_url).rstrip() + "\n")
 

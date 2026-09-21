@@ -145,7 +145,17 @@ Stripping `.m` is done automatically, you should not omit it from your main file
 
 :::{tab-item} Julia
 
-TBA
+For Julia, the system always assumes that the directory containing the `(MAIN_FILE)` is the working directory. It then runs
+
+```
+cd (WORKING_DIRECTORY)
+/usr/local/julia/bin/julia --startup-file=no --project=@. (MAIN_FILE)
+```
+
+`--project=@.` makes Julia search upward from the working directory for a `Project.toml`, and use that environment; if there is none, it uses the default one. `--startup-file=no` keeps a stray `startup.jl` out of a certified run.
+
+Note that, unlike R, an `renv.lock` elsewhere in the package does **not** move the working directory for a Julia step.
+
 :::
 
 ::::

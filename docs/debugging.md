@@ -71,6 +71,6 @@ Check the Julia version. The image you selected pins a specific release, and a `
 generated on a different one may not resolve. Selecting the image matching your local Julia is
 usually the fastest fix.
 
-Note also that network isolation is per step — see [Step 2](#julia-network). Code that downloads
+Note also that network isolation is per step — see [Step 2](step2-choosing-image.md#network-isolation). Code that downloads
 data at run time fails in an isolated step even though your setup step installed its packages
 fine.

@@ -59,40 +59,33 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 
 :::
 
+The file does not have to sit at the top of your package: SIVACOR searches the whole package for
+that name, and runs it from the directory it was found in.
+
+:::{warning}
+
+For the same reason, the name must be **unique within the package**. If `main.R` exists in both
+`code/` and `code/archive/`, SIVACOR cannot tell which one you meant and the run fails before it
+starts, listing every copy it found. Rename or remove the duplicates, or exclude the stale copy
+with [`.sivacorignore`](#excluding-files-from-final-package).
+
+:::
+
 :::{tip}
 
- If your code needs packages, we suggest adding a setup step as the first part, and using a separate setup script, see [Step 0](#dependencies). Setup scripts typically require the network to be enabled, thus **network isolation** should be disabled.
+ If your code needs packages, we suggest adding a setup step as the first part, and using a separate setup script, see [Step 0](#dependencies). Setup scripts typically require the network to be enabled, thus [**network isolation**](#network-isolation) should be disabled *for that step* — and left on for the analysis step that follows.
 
 :::
 
 :::{hint} About alternate extensions
 :class: dropdown
 
-Some software have multiple ways they can be invoked. For instance, you might use a RMarkdown file (`.Rmd`) instead of a plain R script (`.R`), or a Jupyter notebook (`.ipynb`) instead of a Python script (`.py`). SIVACOR executes code using methods defined for each software, not by extension. You may need a **wrapper script** to properly execute your main file. Examples might be
+Some software have multiple ways they can be invoked. For instance, you might use a RMarkdown file (`.Rmd`) instead of a plain R script (`.R`), or a Jupyter notebook (`.ipynb`) instead of a plain script. SIVACOR executes code using methods defined for each software, **not by extension**: an R image always runs your main file through R, a Stata image always through Stata. Naming a `.Rmd` or an `.ipynb` as the main file therefore does not work on its own — you need a **wrapper script**, in the image's own language, that your main file points to.
 
-```{code} python
-:file: main.py
-import nbformat
-from nbconvert.preprocessors import ClearOutputPreprocessor, ExecutePreprocessor
-
-NOTEBOOK = "main.ipynb"
-
-with open(NOTEBOOK) as f:
-    nb = nbformat.read(f, as_version=4)
-
-# clear stale outputs, then execute all cells
-ClearOutputPreprocessor().preprocess(nb, {})
-ExecutePreprocessor(timeout=None).preprocess(nb, {"metadata": {"path": "."}})
-
-# write the executed notebook back in place
-with open(NOTEBOOK, "w") as f:
-    nbformat.write(nb, f)
-```
-
-or
+To render an RMarkdown document, the main file would be an ordinary `.R` script:
 
 ```{code} R
-:file: main.R
+:filename: main.R
 # Render RMarkdown
 # Assert that rmarkdown is available
 if (!requireNamespace("rmarkdown", quietly = TRUE)) {
@@ -101,9 +94,35 @@ if (!requireNamespace("rmarkdown", quietly = TRUE)) {
 rmarkdown::render("main.Rmd")
 ``` 
 
-Note also that many of these "fancier"  methods require numerous additional packages just to handle the wrapper. For instance, to render a Jupyter notebook, 31 additional packages must be installed solely to render it. For RMarkdown, 12 additional packages are necessary.
+A Jupyter notebook can be driven the same way, from a script in whichever of the supported languages the notebook's kernel uses.
+
+Note also that many of these "fancier" methods require numerous additional packages just to handle the wrapper. For instance, to render a Jupyter notebook, 31 additional packages must be installed solely to render it. For RMarkdown, 12 additional packages are necessary.
 
 :::
+
+(network-isolation)=
+## Network isolation
+
+Each step carries a **Net Isolation** toggle, beside that step's image and main file. It is
+**off by default**, and it is per step, not per submission: one step may be isolated and the next
+not.
+
+When it is on, the container has **no network access at all** for the whole of that step. Nothing
+can be downloaded, no API can be called, and no result can depend on something fetched at run time.
+
+:::{important}
+
+**Isolation is part of what the signature certifies.** A step run with Net Isolation on records an
+`InternetIsolation` attribute in the signed TRO declaration — evidence to a data editor that the
+result could not have come from anywhere but the materials you uploaded. A step run without it
+records no such attribute, and nothing in the certificate claims otherwise.
+
+:::
+
+This is the reason to split dependency installation into its own step. Install packages in a first
+step with isolation **off**, then run the analysis in a second step with isolation **on**: the
+analysis — the part being certified — is then isolated, even though the package downloads were not.
+See [Step 0](step0-prepare.md#dependencies).
 
 (chained-runs-steps)=
 ## Optional chained runs (steps)
@@ -158,7 +177,7 @@ stages:
     main_file: main.R
 ```
 
-`memory_gb` must be one of the sizes in the table above. A file naming a size that is no longer
+`memory_gb` must be one of the sizes in the [machine size](#worker-size) table. A file naming a size that is no longer
 offered is refused rather than quietly run on a different machine, and the message names the sizes
 that are available.
 
@@ -179,15 +198,17 @@ Secrets imported from a file are placed in the form and sent with the submission
 (advanced-settings)=
 ## Advanced settings
 
-Below the steps is an **Advanced** panel. 
+Below the steps is an **Advanced** panel. It is **folded shut** until you click it, so if you
+cannot find these settings, open it first.
 
 ![Advanced panel](images/sivacor-advanced-panel.png)
 
-It holds three settings. 
+It holds three settings.
 
 :::{important}
 
-Each setting applies to the **whole** submission.
+Each setting applies to the **whole** submission. [Network isolation](#network-isolation) is the
+exception: it is set on each step, next to that step's image and main file.
 :::
 
 - [**Worker Size**](#worker-size): the type of machine your submission runs on
@@ -212,6 +233,10 @@ actually used, as a share of what it was allowed.
 
 :::{admonition} Where to find run statistics
 :class: dropdown hint
+
+A finished run reports its **peak memory** and **peak disk** use on the submission page, beside
+the download links, as a share of what the machine allowed. Those two figures are what to size the
+*next* run on: a run that peaked at 40 % of a 30 GiB machine has no reason to ask for 60 GiB.
 
 ![Run statistics](images/sivacor-completed-run-full-highlight.png)
 :::
@@ -261,6 +286,7 @@ SIVACOR uses a limited allocation of compute resources. The largest machine size
 
 :::
 
+(environment-secrets)=
 ### Environment variables
 
 You can set environment variables for your job by using the `env_secrets` block in a workflow definition file, or by entering them in the submission form. These variables are available to your code during execution.
@@ -286,7 +312,8 @@ Then click on the `Run Replication Workflow` button.
 ![Submit job](images/sivacor-image-run-chained.png)
 
 :::{hint}
-If the  button is greyed out, you may have forgotten to press the `Upload` button. 
+If the button is greyed out, the upload has not finished, or the uploaded file was deleted. The
+button says which. See [Step 1](step1-upload.md).
 :::
 
 
