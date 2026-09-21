@@ -1,4 +1,39 @@
+---
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Choosing Software and Running Jobs
+
+```{code-cell} python
+:tags: ["remove-input", "remove-output"]
+
+import csv
+from pathlib import Path
+
+from IPython.display import HTML
+
+nodes = list(csv.DictReader(Path("_data/jetstream2-nodes.csv").open()))
+disk_gb = next(n for n in nodes if n["default"] == "true")["disk_gb"]
+
+L, R = 'style="text-align:left"', 'style="text-align:right"'
+table = (
+    "<table>\n<thead><tr>"
+    f"<th {L}>Size</th><th {R}>Cores</th><th {R}>Available to your analysis</th>"
+    f"<th {R}>Disk</th><th {L}>Relative cost</th></tr></thead>\n<tbody>\n"
+)
+for n in nodes:
+    cost = f"{n['relative_cost']}×" + (" — by request" if n["by_request"] == "true" else "")
+    table += (
+        f"<tr><td {L}>{n['memory_gib']} GiB</td><td {R}>{n['cores']}</td>"
+        f"<td {R}>≈{n['memory_available_gib']} GiB</td><td {R}>{n['disk_gb']} GB</td>"
+        f"<td {L}>{cost}</td></tr>\n"
+    )
+table += "</tbody>\n</table>"
+size_table = HTML(table)
+```
 
 If the upload was successful, scroll down.
 
@@ -16,8 +51,7 @@ If you need a different image, please contact us.
 
 ## Identify the main file
 
-Finally, identify the name of the main file. This is the file that will be executed by SIVACOR. For `R`, this is typically an `R` script (`.R` file). For `Stata`, this is typically a `do` file (`.do` file).
-For `Julia`, this is a `.jl` file. If your code needs packages, add a setup step ahead of it, see [Step 0](#dependencies) and [below](#julia-network).
+Identify the name of the main file. This is the file that will be executed by SIVACOR. Include the extension (`.R`, `.do`,  `.jl`).
 
 :::{warning}
 
@@ -25,29 +59,51 @@ Please be sure to use the proper case (`main.do` is not the same as `Main.do`) a
 
 :::
 
-(julia-network)=
-## Julia: installing packages, and network isolation
+:::{tip}
 
-The Julia images ship no packages, so a submission whose code needs them has to install them —
-and installing needs the internet. Network isolation is **per step**, which is what makes both
-possible in one run:
+ If your code needs packages, we suggest adding a setup step as the first part, and using a separate setup script, see [Step 0](#dependencies). Setup scripts typically require the network to be enabled, thus **network isolation** should be disabled.
 
-1. **A setup step**, with isolation **off**, running a script of yours that installs your
-   dependencies — typically `Pkg.instantiate()`; see [Step 0](#dependencies).
-2. **Your analysis step**, with isolation **on** if you want it. The packages installed by step 1
-   are still there: steps share one workspace, and the Julia depot lives in it.
+:::
 
-Each step is recorded separately in the signed Transparent Research Object, with its own isolation
-claim, so the certificate says plainly that the install had the network and your analysis did not.
+:::{hint} About alternate extensions
+:class: dropdown
 
-Two practical consequences:
+Some software have multiple ways they can be invoked. For instance, you might use a RMarkdown file (`.Rmd`) instead of a plain R script (`.R`), or a Jupyter notebook (`.ipynb`) instead of a Python script (`.py`). SIVACOR executes code using methods defined for each software, not by extension. You may need a **wrapper script** to properly execute your main file. Examples might be
 
-- **If you isolate a step, nothing in it can reach the network** — including package installation.
-  A single isolated step whose code calls `using SomePackage` fails with Julia's own error about the
-  package not being found, not with a message from SIVACOR. That is the fix: add the setup step.
-- **Installing a package is not inert.** Julia runs each package's own `deps/build.jl` on install,
-  so your setup step executes third-party build code with network access. That is normal for Julia,
-  and it is one more reason the step is yours to write and to see in the log.
+```{code} python
+:file: main.py
+import nbformat
+from nbconvert.preprocessors import ClearOutputPreprocessor, ExecutePreprocessor
+
+NOTEBOOK = "main.ipynb"
+
+with open(NOTEBOOK) as f:
+    nb = nbformat.read(f, as_version=4)
+
+# clear stale outputs, then execute all cells
+ClearOutputPreprocessor().preprocess(nb, {})
+ExecutePreprocessor(timeout=None).preprocess(nb, {"metadata": {"path": "."}})
+
+# write the executed notebook back in place
+with open(NOTEBOOK, "w") as f:
+    nbformat.write(nb, f)
+```
+
+or
+
+```{code} R
+:file: main.R
+# Render RMarkdown
+# Assert that rmarkdown is available
+if (!requireNamespace("rmarkdown", quietly = TRUE)) {
+  stop("rmarkdown package is required but not installed")
+}
+rmarkdown::render("main.Rmd")
+``` 
+
+Note also that many of these "fancier"  methods require numerous additional packages just to handle the wrapper. For instance, to render a Jupyter notebook, 31 additional packages must be installed solely to render it. For RMarkdown, 12 additional packages are necessary.
+
+:::
 
 (chained-runs-steps)=
 ## Optional chained runs (steps)
@@ -145,12 +201,11 @@ Each setting applies to the **whole** submission.
 Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
 whole submission: every step runs on the same machine.
 
-| Size | Cores | Available to your analysis | Disk | Relative cost |
-|---|---|---|---|---|
-| 30 GiB | 8 | ≈28 GiB | 60 GB | 1× |
-| 60 GiB | 16 | ≈58 GiB | 60 GB | 2× |
-| 125 GiB | 32 | ≈123 GiB | 60 GB | 4× — by request |
-| 250 GiB | 64 | ≈248 GiB | 60 GB | 8× — by request |
+```{code-cell} python
+:tags: ["remove-input"]
+
+size_table
+```
 
 **Submissions default to the smallest size.** Only request more if you know that you need more. The output from a run shows what your last run
 actually used, as a share of what it was allowed.
@@ -165,7 +220,7 @@ actually used, as a share of what it was allowed.
 
 Important points to consider:
 
-- **Disk does not grow with the size.** Every size has the same 60 GB primary disk, shared between your package
+- **Disk does not grow with the size.** Every size has the same {eval}`disk_gb` GB primary disk, shared between your package
   and the software image. If you have run out of *disk*, a bigger machine will not help: ask for
   [extra scratch disk](#scratch-disk) instead. See
   [Step 0](step0-prepare.md#size-considerations).
@@ -178,7 +233,7 @@ Important points to consider:
 (scratch-disk)=
 ## Extra scratch disk
 
-**Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary 60 GB disk. It is enabled only upon request, see **Requesting additional resources**.
+**Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary {eval}`disk_gb` GB disk. It is enabled only upon request, see **Requesting additional resources**.
 
 Once your account has a scratch disk allowance:
 

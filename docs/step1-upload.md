@@ -1,4 +1,22 @@
+---
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Uploading Packages to SIVACOR
+
+```{code-cell} python
+:tags: ["remove-input", "remove-output"]
+
+import csv
+from pathlib import Path
+
+node = next(n for n in csv.DictReader(Path("_data/jetstream2-nodes.csv").open()) if n["default"] == "true")
+upload_max_gb = node["upload_max_gb"]
+user_quota_gb = node["user_quota_gb"]
+```
 
 ## Logging In
 
@@ -27,8 +45,8 @@ Once logged in, you will see the upload page.
 ![Upload page](images/sivacor-upload-page.png)
 
 Upload the replication package (`ZIP` or `tar.gz` files). You can either click to choose a
-file, or drag it onto the upload area. A single archive may be at most **5 GB**, and each
-user may store up to **10 GB** on SIVACOR at any one time.
+file, or drag it onto the upload area. A single archive may be at most **{eval}`upload_max_gb` GB**, and each
+user may store up to **{eval}`user_quota_gb` GB** on SIVACOR at any one time.
 
 ![Successful upload](images/sivacor-upload-successful.png)
 
