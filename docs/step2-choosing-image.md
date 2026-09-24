@@ -201,17 +201,15 @@ Secrets imported from a file are placed in the form and sent with the submission
 (advanced-settings)=
 ## Advanced settings
 
-Below the steps is an **Advanced** panel. It is **folded shut** until you click it, so if you
-cannot find these settings, open it first.
+Several advanced parameters are in a dropdown menu. 
 
 ![Advanced panel](images/sivacor-advanced-panel.png)
 
-It holds three settings.
 
 :::{important}
 
-Each setting applies to the **whole** submission. [Network isolation](#network-isolation) is the
-exception: it is set on each step, next to that step's image and main file.
+Each setting applies to the **whole** submission.
+
 :::
 
 - [**Worker Size**](#worker-size): the type of machine your submission runs on

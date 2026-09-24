@@ -76,7 +76,9 @@ project:
         - file: docs/system.md
         - file: docs/keys.md
     - url: 'https://submit.sivacor.org'
-      title: Submit a job    
+      title: Submit a job  
+    - url: 'https://feedback.sivacor.org/'
+      title:  Feedback survey  
   downloads:
     - file: pdf_book
       title: PDF   
