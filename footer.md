@@ -1,10 +1,10 @@
 :::::{div}
-:class: col-screen flex flex-col items-center gap-3 py-4
+:class: col-screen flex flex-col items-center gap-y-1 my-0 py-0
 
 <!-- Institutional logos, one pair per colour scheme -->
 
 ::::{div}
-:class: hidden dark:block
+:class: hidden dark:block my-0
 
 :::{div}
 :class: flex items-center justify-center
@@ -38,7 +38,7 @@
 ::::
 
 ::::{div}
-:class: dark:hidden
+:class: dark:hidden my-0
 
 :::{div}
 :class: flex items-center justify-center
@@ -72,7 +72,7 @@
 ::::
 
 ::::{div}
-:class: text-center text-xs text-myst-text-tertiary opacity-70 max-w-3xl
+:class: text-center text-xs my-0 text-myst-text-tertiary opacity-70 max-w-3xl
 
 This project is currently funded by the Alfred P. Sloan Foundation under Grant [G-2026-79586](https://sloan.org/grant-detail/g-2026-79586).\
 Prior material is based on work supported by the National Science Foundation under grants
