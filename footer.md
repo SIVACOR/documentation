@@ -1,68 +1,50 @@
-% Here we use `grid` to add a basic grid structure to the HTML,
-% but the formatting column sizes are defined manually in css/footer.css
-% see the `grid-template-columns` line.
+:::::{div}
+:class: col-screen flex flex-col items-center gap-3 py-4
 
-:::::{grid} 1 1 2 2
-:class: outer-grid col-screen
-
-<!-- Project description -->
-
+<!-- Institutional logos, one pair per colour scheme -->
 
 ::::{div}
 :class: hidden dark:block
+
+:::{div}
+:class: flex items-center justify-center gap-8
 
 ```{image} /img/uoi_dark.png
 :alt: University of Illinois Wordmark
 :height: 30px
-:align: center
 ```
-
-::::
-
-::::{div}
-:class: dark:hidden
-
-```{image} /img/uoi_light.png
-:alt: University of Illinois Wordmark
-:height: 30px
-:align: center
-```
-::::
-
-::::{div}
-:class: hidden dark:block
 
 ```{image} /img/cornell_dark.png
 :alt: Cornell University Wordmark
 :height: 30px
-:align: center
 ```
+
+:::
 
 ::::
 
 ::::{div}
 :class: dark:hidden
 
+:::{div}
+:class: flex items-center justify-center gap-8
+
+```{image} /img/uoi_light.png
+:alt: University of Illinois Wordmark
+:height: 30px
+```
+
 ```{image} /img/cornell_light.png
 :alt: Cornell University Wordmark
 :height: 30px
-:align: center
 ```
+
+:::
 
 ::::
 
 ::::{div}
-:class: col-span-full text-center text-sm
-
-```{image} /img/nsf-logo.gif
-:alt: National Science Foundation
-:height: 16px
-```
-```{image} /img/Sloan-Logo-primary-blac-web.png
-:alt: Alfred P. Sloan Foundation
-:height: 16px
-:class: dark:invert
-```
+:class: text-center text-xs text-gray-500 dark:text-gray-400 max-w-3xl
 
 This project is currently funded by the Alfred P. Sloan Foundation under Grant [G-2026-79586](https://sloan.org/grant-detail/g-2026-79586).
 Prior material is based on work supported by the National Science Foundation under grants
