@@ -1,0 +1,14 @@
+/* Tight vertical spacing for the site footer (footer.md). */
+.sivacor-footer,
+.sivacor-footer * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.sivacor-footer {
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+  row-gap: 0.5rem;
+}
+.sivacor-footer p {
+  line-height: 1.4;
+}
