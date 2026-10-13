@@ -52,3 +52,9 @@
 ::::
 
 :::::
+
+::::{div}
+:class: text-xs text-center opacity-70
+
+{version}`build`
+::::
