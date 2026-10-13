@@ -51,30 +51,29 @@ If you need a different image, please contact us.
 
 ## Identify the main file
 
-Identify the name of the main file. This is the file that will be executed by SIVACOR. Include the extension (`.R`, `.do`,  `.jl`).
+Identify the name of the main file. This is the file that will be executed by SIVACOR. 
 
 :::{warning}
 
-Please be sure to use the proper case (`main.do` is not the same as `Main.do`) and include the extension.
+Please be sure to use the proper case (`main.do` is not the same as `Main.do`). Include the extension (`.R`, `.do`,  `.jl`, `.m`).[^main-file-extension]
 
 :::
 
 The file does not have to sit at the top of your package: SIVACOR searches the whole package for
 that name, and runs it from the directory it was found in.
 
-:::{warning}
+:::{warning} The name must be **unique within the package**
+:class: dropdown 
 
-For the same reason, the name must be **unique within the package**. If `main.R` exists in both
+If `main.R` exists in both
 `code/` and `code/archive/`, SIVACOR cannot tell which one you meant and the run fails before it
 starts, listing every copy it found. Rename or remove the extra copies in the archive you upload.
 
-`.sivacorignore` does **not** help here: it is applied after your code has run, to decide what
-goes into the final package, so an ignored file is still present and still ambiguous when the main
-file is resolved.
 
 :::
 
-:::{tip}
+:::{tip} If your code needs packages...
+:class:  dropdown
 
  If your code needs packages, we suggest adding a setup step as the first part, and using a separate setup script, see [Step 0](#dependencies). Setup scripts typically require the network to be enabled, thus [**network isolation**](#network-isolation) should be disabled *for that step* — and left on for the analysis step that follows.
 
@@ -99,32 +98,32 @@ rmarkdown::render("main.Rmd")
 
 A Jupyter notebook can be driven the same way, from a script in whichever of the supported languages the notebook's kernel uses.
 
+
 Note also that many of these "fancier" methods require numerous additional packages just to handle the wrapper. For instance, to render a Jupyter notebook, 31 additional packages must be installed solely to render it. For RMarkdown, 12 additional packages are necessary.
 
 :::
 
+[^main-file-extension]: If you do not see extensions on your laptop, Windows and MacOS turn them off by default. See guidance for [Windows](https://learn.microsoft.com/en-us/answers/questions/4349805/how-can-i-get-the-extension-to-display-along-with), [MacOS](https://support.apple.com/en-ca/guide/mac-help/mchlp2304/mac), or [this one](https://learning.compuscholar.com/course_includes/Showing_File_Extensions.pdf).
+
 (network-isolation)=
 ## Network isolation
 
-Each step carries a **Net Isolation** toggle, beside that step's image and main file. It is
-**off by default**, and it is per step, not per submission: one step may be isolated and the next
-not.
+Each step has a **Net Isolation** toggle. It is
+**off by default**. The toggle is active for that step only.
 
-When it is on, the container has **no network access at all** for the whole of that step. Nothing
-can be downloaded, no API can be called, and no result can depend on something fetched at run time.
+When network isolation is turned on, the container has **no network access** for the entire step. No API can be called, and no websites can be accessed.
 
-:::{important}
+:::{important} Network isolation increases the credibility of your analysis.
+:class: dropdown
 
-**Isolation is part of what the signature certifies.** A step run with Net Isolation on records an
-`InternetIsolation` attribute in the signed TRO declaration — evidence to a data editor that the
-result could not have come from anywhere but the materials you uploaded. A step run without it
-records no such attribute, and nothing in the certificate claims otherwise.
+**Isolation is recorded as part of the [TRO](tro).** A step run with Net Isolation on records an
+`InternetIsolation` attribute in the signed TRO declaration — evidence to a future reader that the
+result could not have come from anywhere but the materials you uploaded. This is harder to infer in the absence of the system-specific certification of network isolation.
 
 :::
 
-This is the reason to split dependency installation into its own step. Install packages in a first
-step with isolation **off**, then run the analysis in a second step with isolation **on**: the
-analysis — the part being certified — is then isolated, even though the package downloads were not.
+Network isolation is a reason to split dependency installation into its own step. Install packages in a first
+step with isolation **off**, then run the analysis in a second step with isolation **on**.
 See [Step 0](step0-prepare.md#dependencies).
 
 (chained-runs-steps)=

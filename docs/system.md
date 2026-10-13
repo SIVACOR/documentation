@@ -88,6 +88,13 @@ into the TRO like any other.
 At busy times, your submission may have to wait for a machine to become available before it
 starts. See [Monitoring Jobs](step3-monitoring.md).
 
+(tro)=
+## TRO: Trusted Research Object
+
+TRACE Systems produce Transparency-Certified Research Objects (TROs) which can be used for dissemination and review.
+
+A TRO is an aggregation of computational research artifacts, records of their execution within a particular system, technical metadata about their contents, digitally signed by the system within which they are executed. [more](https://transparency-certified.github.io/trace-specification/docs/elements/#element-tro).
+
 ## TRS: Trusted Research System
 
 SIVACOR has the following TRS [capabilities](https://transparency-certified.github.io/trace-specification/docs/trov-vocabulary/#predefined-values-trs-capability-types):
