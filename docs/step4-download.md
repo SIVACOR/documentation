@@ -12,32 +12,28 @@ You can now download the `Replicated Package`, a ZIP file that contains your ori
 
 ![SIVACOR output files](images/sivacor-downloadable-files.png)
 
-The same three TRACE files are also offered individually — `TRO Declaration`, `TRS Signature` and
-`Trusted Timestamp` — for anyone who wants to verify the signature without unpacking the whole
-archive. They are the same bytes that are inside the ZIP.
+The components can also be individually downloaded. 
 
-Alongside them are the `Run output log` (what your code wrote to standard output) and the
-`Run error log` (standard error). These are offered whether the run succeeded or failed.
-
-You can also download a `Workflow definition` — a small YAML file describing the software, versions and main files this run used. It is not part of the signed package; it is there so you (or a colleague) can reproduce the same setup later by importing it on the submission page, instead of filling the form in by hand (see
+You can also download a `Workflow definition` — a small YAML file describing the software, versions and main files this run used. It is not part of the signed . It can be used to reproduce the same setup later by importing it on the submission page, instead of filling the form in by hand (see
 [Optional chained runs](step2-choosing-image.md#chained-runs-steps)).
 
 ## After a failed run
 
-A run that failed produces no signed package — there is nothing to certify — so the `Replicated
-Package` and the three TRACE files are not offered. What you get is the **`Run output log`** and
-the **`Run error log`**, and those are where the reason is.
+![Failed run](images/sivacor-failed.png)
 
-Read the error log first: it names the command, file or package at fault. The
-[debugging guide](debugging.md) covers the common ones per software, and the
-[FAQ](faq.md#how-do-i-know-a-job-failed) covers failures that are not your package's doing, such as
-a lost worker.
+A failed run does not produce a signed package, only the **`Run output log`** and
+the **`Run error log`**. Download those to inspect the detailed reason for failure.
+
+![Log files](images/sivacor-failed-part2.png)
+
+Read the error log first: it will list the command, file or package at fault. The
+[debugging guide](debugging.md) covers  common ones per software. The
+[FAQ](faq.md#how-do-i-know-a-job-failed) also covers failures that are system faults, not package faults.
 
 :::{tip}
 
 Download both logs before starting a new run. **Starting a new run deletes the previous one**,
-logs included, and a failed run is usually the thing you most want to keep while you fix the
-package.
+logs included.
 
 :::
 
@@ -45,15 +41,14 @@ package.
 
 ::::{danger}
 
-SIVACOR only briefly retains your results (see [privacy policy](https://submit.sivacor.org/privacy)). To keep any results, you **must** download results as soon as possible.
+SIVACOR only briefly retains your results (see [privacy policy](https://submit.sivacor.org/privacy)). To keep your own results, you **must** download results.
 
 ::::
 
 ::::{danger}
 
 
-**Starting a new run deletes the previous one.** By clicking the button  `Delete & Run New Job`  you are asked to confirm. Deletion is immediate.
-This is also how you delete results without waiting for the 14 days to run out.
+**Starting a new run deletes the previous one.** By clicking the button  `Delete & Run New Job`,  the system implements what the button says. There is no recovery. (Runs are also deleted after 14 days of inactivity.)
 
 ::::
 
