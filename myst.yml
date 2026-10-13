@@ -50,6 +50,9 @@ project:
     - SKILL-HEADER.md
     - SKILL-FOOTER.md
   github: sivacor/documentation
+  plugins:
+    # Provides the {version} role used in footer.md.
+    - plugins/version.mjs
   #bibliography:
   #  - references.bib
   exports:

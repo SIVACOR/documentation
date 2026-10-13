@@ -78,11 +78,6 @@ jobs:
       # Replication Package" page (client-side, from the rendered headings).
       - name: Inject section checklist
         run: python scripts/inject_checklist.py
-      # Stamps "Version (<hash>) (<date>)" of the checked-out commit under the
-      # "Made with MyST" link in the sidebar footer. On PRs that is the merge
-      # commit, the same one the preview comment below names.
-      - name: Inject version stamp
-        run: python scripts/inject_version.py
       # Preview deploys go to Cloudflare Pages, not GitHub Pages, which only has
       # room for one deployment (production, from main). Skipped for forked PRs:
       # their runs cannot read secrets, and handing a Pages-write token to
