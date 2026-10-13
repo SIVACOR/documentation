@@ -84,6 +84,7 @@ project:
       title: PDF   
 site:
   options:
+    style: footer.css
     logo: site_logo.png
     favicon: favicon.ico
     folders: true

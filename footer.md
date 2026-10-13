@@ -1,5 +1,5 @@
 :::::{div}
-:class: col-screen flex flex-col items-center gap-y-1 my-0 py-0
+:class: sivacor-footer col-screen flex flex-col items-center
 
 <!-- Institutional logos, one pair per colour scheme -->
 
