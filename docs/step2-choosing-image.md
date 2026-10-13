@@ -51,11 +51,11 @@ If you need a different image, please contact us.
 
 ## Identify the main file
 
-Identify the name of the main file. This is the file that will be executed by SIVACOR. Include the extension (`.R`, `.do`,  `.jl`).
+Identify the name of the main file. This is the file that will be executed by SIVACOR. 
 
 :::{warning}
 
-Please be sure to use the proper case (`main.do` is not the same as `Main.do`) and include the extension.
+Please be sure to use the proper case (`main.do` is not the same as `Main.do`). Include the extension (`.R`, `.do`,  `.jl`, `.m`).[^main-file-extension]
 
 :::
 
@@ -99,9 +99,12 @@ rmarkdown::render("main.Rmd")
 
 A Jupyter notebook can be driven the same way, from a script in whichever of the supported languages the notebook's kernel uses.
 
+
 Note also that many of these "fancier" methods require numerous additional packages just to handle the wrapper. For instance, to render a Jupyter notebook, 31 additional packages must be installed solely to render it. For RMarkdown, 12 additional packages are necessary.
 
 :::
+
+[^main-file-extension]: If you do not see extensions on your laptop, Windows and MacOS turn them off by default. See guidance for [Windows](https://learn.microsoft.com/en-us/answers/questions/4349805/how-can-i-get-the-extension-to-display-along-with), [MacOS](https://support.apple.com/en-ca/guide/mac-help/mchlp2304/mac), or [this one](https://learning.compuscholar.com/course_includes/Showing_File_Extensions.pdf).
 
 (network-isolation)=
 ## Network isolation
