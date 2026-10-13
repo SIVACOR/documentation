@@ -1,5 +1,5 @@
-// MyST plugin: the {version} role renders "Version #<hash> <date>" for the
-// commit the site is built from, with the hash linked to the commit on GitHub.
+// MyST plugin: the {version} role renders "Version <hash> (<date>)" for the
+// commit the site is built from, linked to the commit on GitHub.
 // Used in footer.md. The hash and date are those of the checkout's HEAD; on PR
 // builds that is the merge commit, the same one the preview comment names.
 import { execSync } from 'node:child_process';
@@ -29,9 +29,8 @@ const versionRole = {
       {
         type: 'link',
         url: `${REPO_URL}/commit/${sha}`,
-        children: [{ type: 'text', value: `#${short}` }],
+        children: [{ type: 'text', value: `${short} (${date})` }],
       },
-      { type: 'text', value: ` ${date}` },
     ];
   },
 };
