@@ -7,10 +7,16 @@
 :class: hidden dark:block
 
 :::{div}
-:class: flex items-center justify-center gap-8
+:class: flex items-center justify-center
 
 ```{image} /img/uoi_dark.png
 :alt: University of Illinois Wordmark
+:height: 30px
+```
+
+```{image} /img/spacer.png
+:alt: ""
+:width: 118px
 :height: 30px
 ```
 
@@ -27,10 +33,16 @@
 :class: dark:hidden
 
 :::{div}
-:class: flex items-center justify-center gap-8
+:class: flex items-center justify-center
 
 ```{image} /img/uoi_light.png
 :alt: University of Illinois Wordmark
+:height: 30px
+```
+
+```{image} /img/spacer.png
+:alt: ""
+:width: 118px
 :height: 30px
 ```
 
@@ -44,7 +56,7 @@
 ::::
 
 ::::{div}
-:class: text-center text-xs text-gray-500 dark:text-gray-400 max-w-3xl
+:class: text-center text-xs text-myst-text-tertiary opacity-70 max-w-3xl
 
 This project is currently funded by the Alfred P. Sloan Foundation under Grant [G-2026-79586](https://sloan.org/grant-detail/g-2026-79586).
 Prior material is based on work supported by the National Science Foundation under grants
