@@ -231,6 +231,7 @@ Each setting applies to the **whole** submission.
 
 ::::{note} Additional resource: Increased machine size
 :name: worker-size
+:class: dropdown
 
 Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
 whole submission: every step runs on the same machine.
@@ -269,6 +270,8 @@ the download links, as a share of what the machine allowed. Those two figures ar
 
 ::::{note} Additional resource: Extra scratch disk
 :name: scratch-disk
+:class: dropdown
+
 
 **Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary {eval}`disk_gb` GB disk. It is enabled only upon request, see **Requesting additional resources**.
 
@@ -299,8 +302,9 @@ SIVACOR uses a limited allocation of compute resources. The largest machine size
 
 :::
 
-::::{note} Environment variables
+:::::{note} Environment variables
 :name: environment-secrets
+:class: dropdown
 
 You can set environment variables for your job by using the `env_secrets` block in a workflow definition file, or by entering them in the submission form. These variables are available to your code during execution.
 
@@ -324,7 +328,7 @@ env_secrets:
 ```
 
 :::
-::::
+:::::
 
 ## Submitting jobs
 
