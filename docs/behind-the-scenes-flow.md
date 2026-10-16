@@ -68,7 +68,7 @@ An [arrangement](https://transparency-certified.github.io/trace-specification/do
 ```
 [2026-09-19T18:32:06-05:00] Executing workflow on workspace.
 Starting recorded run
-Pulled dataeditors/stata19_5-mp:2026-08-12 (10 layers)
+Pulled sscng/stata19_5-mp:2026-08-12 (10 layers)
 ```
 :::
 
@@ -98,7 +98,7 @@ When there are multiple steps to a workflow, this repeats for each step:
 ```
 [2026-09-19T18:32:24-05:00] Executing workflow on workspace.
 Starting recorded run
-Pulled dataeditors/stata19_5-mp:2026-08-12 (1 layers)
+Pulled sscng/stata19_5-mp:2026-08-12 (1 layers)
 [2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_arrangement)
 [2026-09-19T18:32:28-05:00] Running TRO utilities in the workspace. (add_performance)
 ```

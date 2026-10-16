@@ -43,7 +43,7 @@ If the upload was successful, scroll down.
 
 Choose first the software and version from the curated list (see [container images](images.md)). You can also select an image tag (sub version), but generally, the latest version should work. 
 
-:::{attention}
+:::{attention} Image missing?
 
 If you need a different image, please contact us.
 
@@ -53,9 +53,9 @@ If you need a different image, please contact us.
 
 Identify the name of the main file. This is the file that will be executed by SIVACOR. 
 
-:::{warning}
+:::{warning} Use proper case.
 
-Please be sure to use the proper case (`main.do` is not the same as `Main.do`). Include the extension (`.R`, `.do`,  `.jl`, `.m`).[^main-file-extension]
+Please be sure to use the proper case (`main.do` is not the same as `MAIN.do`). Include the extension (`.R`, `.do`,  `.jl`, `.m`).[^main-file-extension]
 
 :::
 
@@ -113,7 +113,7 @@ Each step has a **Net Isolation** toggle. It is
 
 When network isolation is turned on, the container has **no network access** for the entire step. No API can be called, and no websites can be accessed.
 
-:::{important} Network isolation increases the credibility of your analysis.
+:::{important} Turning on network isolation increases the credibility of your analysis.
 :class: dropdown
 
 **Isolation is recorded as part of the [TRO](tro).** A step run with Net Isolation on records an
@@ -122,9 +122,6 @@ result could not have come from anywhere but the materials you uploaded. This is
 
 :::
 
-Network isolation is a reason to split dependency installation into its own step. Install packages in a first
-step with isolation **off**, then run the analysis in a second step with isolation **on**.
-See [Step 0](step0-prepare.md#dependencies).
 
 (chained-runs-steps)=
 ## Optional chained runs (steps)
@@ -133,7 +130,7 @@ You can chain multiple runs together, by selecting the `+ ADD STEP` button. The 
 
 ![Chaining runs](images/sivacor-image-choice-chained-2.png)
 
-:::{admonition} Advanced configuration of steps
+::::{admonition} Advanced configuration of steps
 :class: seealso dropdown
 
 If you need to repeatedly run similar jobs on SIVACOR, you can describe the steps in a file
@@ -146,14 +143,13 @@ the [curated images](images.md).
 Importing replaces whatever is currently in the form, so you can always review and adjust
 the steps before running.
 
-A finished run offers the matching `Workflow definition` download, so the easiest way to get
-a valid file is to run once, download it, and reuse it afterwards.
+A [finished run](download-success) provides a working `Workflow definition` to download; this is an easy way to get  valid file after an initial manual configuration.
 
 Expected configuration:
 
 ```yaml
 stages:
-  - image_name: dataeditors/stata15
+  - image_name: sscng/stata15
     image_tag: "2023-01-27"
     main_file: main_step1.do
     network_isolation: true
@@ -188,13 +184,30 @@ account has an allowance for it. A downloaded `Workflow definition` carries the 
 granted, so a file that came from somebody else may ask for more than you can have; the import is
 then refused and names your limit. A run that used no extra disk has no `disk_gb` line at all.
 
-:::{danger}
 
-Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
+::::
+
+:::{tip} If your code requires dependency  installation or data downloads, use split processing.
+:class: dropdown
+
+If you [install user-contributed packages or dependencies](step0-prepare.md#dependencies)
+ (Stata, R, Julia) or need to download data from internet resources (API), you should split this into its own [step](chained-runs-steps). Install packages and download data in a first
+step with isolation **off**, then run the analysis in a second step with isolation **on**.
+
+
+```yaml
+stages:
+  - image_name: sscng/stata15
+    image_tag: "2023-01-27"
+    main_file: step1_setup.do
+    network_isolation: false
+  - image_name: sscng/stata15
+    image_tag: "2023-01-27"
+    main_file: step2_analysis.do
+    network_isolation: true
+```
 
 :::
-
-
 
 
 (advanced-settings)=
@@ -205,7 +218,7 @@ Several advanced parameters are in a dropdown menu.
 ![Advanced panel](images/sivacor-advanced-panel.png)
 
 
-:::{important}
+:::{warning} These are global settings.
 
 Each setting applies to the **whole** submission.
 
@@ -216,8 +229,9 @@ Each setting applies to the **whole** submission.
 - [**Environment Secrets**](#environment-secrets): values passed to your code as environment variables. 
 
 
-(worker-size)=
-### Choose the machine size
+::::{note} Additional resource: Increased machine size
+:name: worker-size
+:class: dropdown
 
 Under **Advanced**, **Worker Size** sets the machine your submission runs on. It applies to the
 whole submission: every step runs on the same machine.
@@ -241,11 +255,10 @@ the download links, as a share of what the machine allowed. Those two figures ar
 ![Run statistics](images/sivacor-completed-run-full-highlight.png)
 :::
 
-:::{important}
+:::{important} Key points to consider
 
-Important points to consider:
 
-- **Disk does not grow with the size.** Every size has the same {eval}`disk_gb` GB primary disk, shared between your package
+- **Disk does not grow with machine size.** Every size has the same {eval}`disk_gb` GB primary disk, shared between your package
   and the software image. If you have run out of *disk*, a bigger machine will not help: ask for
   [extra scratch disk](#scratch-disk) instead. See
   [Step 0](step0-prepare.md#size-considerations).
@@ -253,10 +266,12 @@ Important points to consider:
 - **The usable disk and memory size is always lower than the  name suggests.** A small amount is reserved for the operating system itself. 
 - The two **largest sizes are not selectable** by default. They must be requested, see **Requesting additional resources**.
 :::
+::::
 
+::::{note} Additional resource: Extra scratch disk
+:name: scratch-disk
+:class: dropdown
 
-(scratch-disk)=
-### Extra scratch disk
 
 **Extra Scratch Disk** asks for a temporary disk *in addition to* the machine's primary {eval}`disk_gb` GB disk. It is enabled only upon request, see **Requesting additional resources**.
 
@@ -274,28 +289,35 @@ Once your account has a scratch disk allowance:
 
 
 :::
+::::
 
-### Requesting additional resources
+
+::::{note} Requesting additional resources
+:name: request-resources
+:class: dropdown
+
 
 To request additional resources, send an email to [support@sivacor.org](mailto:support@sivacor.org). 
 
 :::{admonition} Information requested
-:class: dropdown seealso
+:class:  seealso
 
 SIVACOR uses a limited allocation of compute resources. The largest machine sizes cost the project four and eight times the smallest, and additional volumes are similarly limited. We review requests sent to [support@sivacor.org](mailto:support@sivacor.org). Please  say what you are running and why it needs the additional resources. Once your account is authorized to use the larger machine sizes, they become selectable. If authorized to use additional volumes, the field becomes editable.
 
 :::
+::::
 
-(environment-secrets)=
-### Environment variables
+
+:::::{note} Environment variables
+:name: environment-secrets
+:class: dropdown
 
 You can set environment variables for your job by using the `env_secrets` block in a workflow definition file, or by entering them in the submission form. These variables are available to your code during execution.
 
 ![Entering environment variables](images/sivacor-fred-apikey.png)
 
-
 :::{admonition} Workflow YAML Example
-:class: dropdown tip
+:class:  tip
 
 ```yaml
 env_secrets:
@@ -304,6 +326,14 @@ env_secrets:
 ```
 
 :::
+
+:::{danger}
+
+Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
+
+:::
+
+:::::
 
 ## Submitting jobs
 

@@ -93,8 +93,9 @@ globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Contain
 
 :::{tab-item} Stata
 
-Stata images are built by the AEA Data Editor, with permission from StataCorp. See the [dataeditors repositories](https://hub.docker.com/u/dataeditors) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version. Images contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
+Stata images are built by [SSC NG](https://ssc-ng.net/docker-stata/)[^stataimg], with permission from StataCorp. See the [sscng repositories](https://hub.docker.com/u/sscng) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version. Images contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
 
+[^stataimg]: These images were previously created by Lars Vilhuber, AEA Data Editor, and published at <https://hub.docker.com/r/dataeditors/>. Maintenance was transferred to [SSC-NG](https://ssc-ng.net/) in October 2026.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -125,6 +126,11 @@ if 'df_r' in globals():
 :::{tab-item} MATLAB
 
 We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most MATLAB toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Tags identify a particular combination of Dynare and MATLAB versions. 
+
+:::{warning}
+
+MATLAB images require `network_isolation: false` to run, due to the need for a license server.
+:::
 
 ```{code-cell} python
 :tags: ["remove-input"]
