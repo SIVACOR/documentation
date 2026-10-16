@@ -291,16 +291,22 @@ Once your account has a scratch disk allowance:
 :::
 ::::
 
-### Requesting additional resources
+
+::::{note} Requesting additional resources
+:name: request-resources
+:class: dropdown
+
 
 To request additional resources, send an email to [support@sivacor.org](mailto:support@sivacor.org). 
 
 :::{admonition} Information requested
-:class: dropdown seealso
+:class:  seealso
 
 SIVACOR uses a limited allocation of compute resources. The largest machine sizes cost the project four and eight times the smallest, and additional volumes are similarly limited. We review requests sent to [support@sivacor.org](mailto:support@sivacor.org). Please  say what you are running and why it needs the additional resources. Once your account is authorized to use the larger machine sizes, they become selectable. If authorized to use additional volumes, the field becomes editable.
 
 :::
+::::
+
 
 :::::{note} Environment variables
 :name: environment-secrets
@@ -310,16 +316,8 @@ You can set environment variables for your job by using the `env_secrets` block 
 
 ![Entering environment variables](images/sivacor-fred-apikey.png)
 
-::::{margin}
-:::{danger}
-
-Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
-
-:::
-::::
-
 :::{admonition} Workflow YAML Example
-:class: dropdown tip
+:class:  tip
 
 ```yaml
 env_secrets:
@@ -328,6 +326,13 @@ env_secrets:
 ```
 
 :::
+
+:::{danger}
+
+Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
+
+:::
+
 :::::
 
 ## Submitting jobs
