@@ -24,7 +24,7 @@ infers how to run the main file from the image, **never from the file's extensio
 | Software | Images | How the main file is run |
 |---|---|---|
 | R | `rocker/*` | `R --no-save --no-restore -f MAIN_FILE` |
-| Stata | `dataeditors/stata*` | `stata-mp -b do MAIN_FILE` |
+| Stata | `sscng/stata*` | `stata-mp -b do MAIN_FILE` |
 | MATLAB / Dynare | `dynare/dynare` | `matlab -batch MAIN_FILE` (the `.m` is stripped for you) |
 | Julia | `ghcr.io/sivacor/julia*` | `julia --startup-file=no --project=@. MAIN_FILE` |
 

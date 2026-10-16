@@ -113,7 +113,7 @@ Each step has a **Net Isolation** toggle. It is
 
 When network isolation is turned on, the container has **no network access** for the entire step. No API can be called, and no websites can be accessed.
 
-:::{important} Network isolation increases the credibility of your analysis.
+:::{important} Turning on network isolation increases the credibility of your analysis.
 :class: dropdown
 
 **Isolation is recorded as part of the [TRO](tro).** A step run with Net Isolation on records an
@@ -122,9 +122,6 @@ result could not have come from anywhere but the materials you uploaded. This is
 
 :::
 
-Network isolation is a reason to split dependency installation into its own step. Install packages in a first
-step with isolation **off**, then run the analysis in a second step with isolation **on**.
-See [Step 0](step0-prepare.md#dependencies).
 
 (chained-runs-steps)=
 ## Optional chained runs (steps)
@@ -133,7 +130,7 @@ You can chain multiple runs together, by selecting the `+ ADD STEP` button. The 
 
 ![Chaining runs](images/sivacor-image-choice-chained-2.png)
 
-:::{admonition} Advanced configuration of steps
+::::{admonition} Advanced configuration of steps
 :class: seealso dropdown
 
 If you need to repeatedly run similar jobs on SIVACOR, you can describe the steps in a file
@@ -146,14 +143,13 @@ the [curated images](images.md).
 Importing replaces whatever is currently in the form, so you can always review and adjust
 the steps before running.
 
-A finished run offers the matching `Workflow definition` download, so the easiest way to get
-a valid file is to run once, download it, and reuse it afterwards.
+A [finished run](download-success) provides a working `Workflow definition` to download; this is an easy way to get  valid file after an initial manual configuration.
 
 Expected configuration:
 
 ```yaml
 stages:
-  - image_name: dataeditors/stata15
+  - image_name: sscng/stata15
     image_tag: "2023-01-27"
     main_file: main_step1.do
     network_isolation: true
@@ -188,13 +184,17 @@ account has an allowance for it. A downloaded `Workflow definition` carries the 
 granted, so a file that came from somebody else may ask for more than you can have; the import is
 then refused and names your limit. A run that used no extra disk has no `disk_gb` line at all.
 
-:::{danger}
 
-Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
+::::
+
+:::{tip} If your code requires dependency  installation or data downloads, use split processing.
+:class: dropdown
+
+If you [install user-contributed packages or dependencies](step0-prepare.md#dependencies)
+ (Stata, R, Julia) or need to download data from internet resources (API), you should split this into its own [step](chained-runs-steps). Install packages and download data in a first
+step with isolation **off**, then run the analysis in a second step with isolation **on**.
 
 :::
-
-
 
 
 (advanced-settings)=
@@ -293,6 +293,13 @@ You can set environment variables for your job by using the `env_secrets` block 
 
 ![Entering environment variables](images/sivacor-fred-apikey.png)
 
+::::{margin}
+:::{danger}
+
+Secrets imported from a file are placed in the form and sent with the submission, but they are never stored in your browser, and they are never included in a downloaded `Workflow definition`. If you share a workflow file that you wrote by hand, remember to remove any `env_secrets` from it first.
+
+:::
+::::
 
 :::{admonition} Workflow YAML Example
 :class: dropdown tip
