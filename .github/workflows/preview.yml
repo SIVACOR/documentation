@@ -1,0 +1,83 @@
+# Deploys the preview of a fork PR on request. deploy.yml builds fork PRs
+# without secrets and keeps the output as the `preview-html` artifact; this
+# workflow, started by someone with write access after reviewing the PR,
+# publishes that artifact to Cloudflare Pages. Nothing from the PR is executed
+# here: the artifact is only ever treated as static files to upload.
+#
+#   gh workflow run preview.yml -f pr=42 [-f sha=<reviewed head commit>]
+name: Deploy fork PR preview
+on:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+        type: number
+      sha:
+        description: >-
+          Head commit you reviewed (optional). If given, the run refuses to
+          deploy when the PR has moved on since.
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      # To find deploy.yml's run and download its artifact.
+      actions: read
+      # To post the preview link back to the PR.
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      # Only for the shared deploy action, taken from this repository's own
+      # branch, never from the PR.
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/actions
+      - name: Find the build of the PR's head commit
+        id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr }}
+          REVIEWED: ${{ inputs.sha }}
+        run: |
+          head=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid)
+          if [ -n "$REVIEWED" ] && [ "${head#"$REVIEWED"}" = "$head" ]; then
+            echo "::error::PR #$PR is now at $head, not the reviewed $REVIEWED."
+            exit 1
+          fi
+          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow deploy.yml \
+            --event pull_request --commit "$head" --status success \
+            --json databaseId --jq '.[0].databaseId // empty')
+          if [ -z "$run" ]; then
+            echo "::error::No successful deploy.yml run for $head (PR #$PR). Wait for it to finish, or re-run it if its artifact expired."
+            exit 1
+          fi
+          echo "head=$head" >> "$GITHUB_OUTPUT"
+          echo "run=$run" >> "$GITHUB_OUTPUT"
+      - name: Download the build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN: ${{ steps.find.outputs.run }}
+        run: gh run download "$RUN" --repo "$GITHUB_REPOSITORY" --name preview-html --dir site
+      # A `_worker.js` or `_routes.json` in the deployed directory would make
+      # Cloudflare run it as server-side code; a docs build never has them.
+      - name: Strip server-side code
+        run: rm -rf site/_worker.js site/_routes.json
+      - name: Deploy PR preview to Cloudflare Pages
+        uses: ./.github/actions/cf-preview
+        with:
+          directory: ./site
+          pr: ${{ inputs.pr }}
+          commit: ${{ steps.find.outputs.head }}
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          github-token: ${{ github.token }}

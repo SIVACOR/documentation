@@ -1,0 +1,52 @@
+# Shared by deploy.yml (same-repo PRs, deployed straight from the build) and
+# preview.yml (fork PRs, deployed on request from the build's artifact), so
+# both publish to the same place and keep the same single PR comment.
+name: Cloudflare Pages PR preview
+description: Deploy a built site as a Cloudflare Pages preview and post the link on the PR.
+inputs:
+  directory:
+    description: Directory holding the built HTML.
+    required: true
+  pr:
+    description: Pull request number.
+    required: true
+  commit:
+    description: Commit the site was built from, quoted in the PR comment.
+    required: true
+  api-token:
+    required: true
+  account-id:
+    required: true
+  github-token:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Deploy to Cloudflare Pages
+      id: deploy
+      uses: cloudflare/wrangler-action@v4
+      with:
+        apiToken: ${{ inputs.api-token }}
+        accountId: ${{ inputs.account-id }}
+        # `pr-N` never matches the project's production branch, so these are
+        # always preview deployments, and the alias URL stays stable for the
+        # life of the PR instead of changing on every force-push.
+        command: >-
+          pages deploy ${{ inputs.directory }}
+          --project-name=sivacor-docs-preview
+          --branch=pr-${{ inputs.pr }}
+    # `--edit-last` keeps this to one comment per PR that is rewritten in
+    # place, rather than a new one on every push. Values are passed through
+    # env rather than interpolated into the script, so nothing from the PR
+    # can be executed as shell.
+    - name: Publish preview link
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        PR: ${{ inputs.pr }}
+        COMMIT: ${{ inputs.commit }}
+        URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+      run: |
+        echo "📖 Docs preview: $URL" >> "$GITHUB_STEP_SUMMARY"
+        gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --edit-last --create-if-none \
+          --body "📖 **Docs preview:** $URL — built from commit \`${COMMIT:0:7}\`"
