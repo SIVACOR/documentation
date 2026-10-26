@@ -67,12 +67,11 @@ jobs:
       - name: Inject site banner
         if: github.event_name != 'pull_request'
         run: python scripts/inject_banner.py
-      # PR builds are published as Cloudflare Pages previews, so they always
-      # carry a banner saying so, stamped with the build time (merged with
-      # banner.yml if that is enabled). Same condition as the preview deploy
-      # step below; builds that go nowhere are not worth stamping.
+      # PR builds are published as Cloudflare Pages previews (fork PRs only on
+      # request, via preview.yml), so they always carry a banner saying so,
+      # stamped with the build time (merged with banner.yml if that is enabled).
       - name: Inject preview banner
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event_name == 'pull_request'
         run: python scripts/inject_banner.py --preview "$(date -u '+%Y-%m-%d %H:%M UTC')"
       # Adds the tick-able section checklist to the "Preparing a Compatible
       # Replication Package" page (client-side, from the rendered headings).
@@ -81,35 +80,34 @@ jobs:
       # Preview deploys go to Cloudflare Pages, not GitHub Pages, which only has
       # room for one deployment (production, from main). Skipped for forked PRs:
       # their runs cannot read secrets, and handing a Pages-write token to
-      # unreviewed code would be a bad trade for a preview.
+      # unreviewed code would be a bad trade for a preview. Fork PRs instead keep
+      # their build as an artifact, which a maintainer can deploy with preview.yml.
       - name: Deploy PR preview to Cloudflare Pages
-        id: preview
         if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: cloudflare/wrangler-action@v4
+        uses: ./.github/actions/cf-preview
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # `pr-N` never matches the project's production branch, so these are
-          # always preview deployments, and the alias URL stays stable for the
-          # life of the PR instead of changing on every force-push.
-          command: >-
-            pages deploy ./_build/html
-            --project-name=sivacor-docs-preview
-            --branch=pr-${{ github.event.pull_request.number }}
-      # `--edit-last` keeps this to one comment per PR that is rewritten in
-      # place, rather than a new one on every push. Values are passed through
-      # env rather than interpolated into the script, so nothing from the PR
-      # can be executed as shell.
-      - name: Publish preview link
-        if: steps.preview.outcome == 'success'
+          directory: ./_build/html
+          pr: ${{ github.event.pull_request.number }}
+          commit: ${{ github.sha }}
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          github-token: ${{ github.token }}
+      # preview.yml finds this artifact by name and by the PR head commit of
+      # this run, so the name must stay in step with it.
+      - name: Keep fork PR build for preview
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-html
+          path: ./_build/html
+          retention-days: 14
+      - name: Explain how to preview a fork PR
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
         env:
-          GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
-          URL: ${{ steps.preview.outputs.pages-deployment-alias-url }}
         run: |
-          echo "📖 Docs preview: $URL" >> "$GITHUB_STEP_SUMMARY"
-          gh pr comment "$PR" --edit-last --create-if-none \
-            --body "📖 **Docs preview:** $URL — built from commit \`${GITHUB_SHA:0:7}\`"
+          echo "Fork PR: no preview was deployed. After reviewing the changes, a maintainer can deploy this build with:" >> "$GITHUB_STEP_SUMMARY"
+          echo '`gh workflow run preview.yml -f pr='"$PR"'`' >> "$GITHUB_STEP_SUMMARY"
       - name: Upload artifact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
