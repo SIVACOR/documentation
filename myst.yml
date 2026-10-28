@@ -94,13 +94,19 @@ project:
       title: PDF   
 site:
   options:
-    style: footer.css
+    style: assets/site.css
     logo: site_logo.png
     favicon: favicon.ico
     folders: true
     hide_myst_branding: true
     source_download: false
-    
+    # Not a theme option: read by scripts/inject_checklist.py, which adds a
+    # tick-able checklist of the ## sections to these pages (a heading inside
+    # a {div} with :class: no-checklist is left out).
+    checklist_pages:
+      - docs/step0-eligibility.md
+      - docs/step0-prepare.md
+
   template: book-theme
   actions:
     - title: Submit a Job

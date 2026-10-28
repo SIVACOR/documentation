@@ -73,8 +73,9 @@ jobs:
       - name: Inject preview banner
         if: github.event_name == 'pull_request'
         run: python scripts/inject_banner.py --preview "$(date -u '+%Y-%m-%d %H:%M UTC')"
-      # Adds the tick-able section checklist to the "Preparing a Compatible
-      # Replication Package" page (client-side, from the rendered headings).
+      # Inlines assets/checklist.js, which adds a tick-able section checklist
+      # (client-side, from the rendered headings) to the pages listed under
+      # site.options.checklist_pages in myst.yml.
       - name: Inject section checklist
         run: python scripts/inject_checklist.py
       # Preview deploys go to Cloudflare Pages, not GitHub Pages, which only has

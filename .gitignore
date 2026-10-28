@@ -30,3 +30,6 @@ venv
 
 # Output dir
 _build
+
+# Claude Code worktrees
+.claude/worktrees/
