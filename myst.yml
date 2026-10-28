@@ -66,6 +66,7 @@ project:
     - file: docs/intro.md
     - file: docs/steps.md
       children:
+        - file: docs/step0-eligibility.md
         - file: docs/step0-prepare.md
         - file: docs/step1-upload.md
         - file: docs/step2-choosing-image.md
@@ -73,6 +74,10 @@ project:
         - file: docs/step4-download.md
         - file: docs/images.md
         - file: docs/behind-the-scenes-flow.md
+    - file: docs/tutorials.md
+      children:
+        - file: docs/tutorial-removing-data.md
+        - file: docs/tutorial-checking-integrity.md
     - file: docs/faq.md
       children:
         - file: docs/debugging.md
