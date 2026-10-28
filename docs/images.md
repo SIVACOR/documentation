@@ -127,10 +127,9 @@ if 'df_r' in globals():
 
 We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most MATLAB toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Tags identify a particular combination of Dynare and MATLAB versions. 
 
-:::{warning}
-
+```{warning}
 MATLAB images require `network_isolation: false` to run, due to the need for a license server.
-:::
+```
 
 ```{code-cell} python
 :tags: ["remove-input"]

@@ -49,6 +49,8 @@ project:
     # not pages of the site.
     - SKILL-HEADER.md
     - SKILL-FOOTER.md
+    # Maintainer notes, not part of the site.
+    - dev/**
   github: sivacor/documentation
   plugins:
     # Provides the {version} role used in footer.md.
