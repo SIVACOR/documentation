@@ -37,8 +37,21 @@ output/
 
 after the run (note removal of `data/raw`).
 
+:::{note} A more detailed worked example with sample code can be found here:
+
+[SIVACOR/sivacor-test-r-sivacorignore](https://github.com/SIVACOR/sivacor-test-r-sivacorignore)
+
+:::
+
 ## Removing data that are obtained via API
 
 In general, you should provide a copy of the data that you obtain via API, as the API query might yield different results over time. However, if you cannot, then `.sivacorignore` can be used to exclude the API-obtained data from your replication package.
 
-A more elaborate example is provided in [SIVACOR/sivacor-test-remove-files](https://github.com/SIVACOR/sivacor-test-remove-files), which also demonstrates how to not include the API key in the replication package. See [Environment variables](step2-choosing-image.md#environment-secrets) for details.
+
+:::{note} An example using publicly available data is here:
+
+[SIVACOR/sivacor-test-remove-files](https://github.com/SIVACOR/sivacor-test-remove-files)
+
+The example  also demonstrates how to not include the API key in the replication package. See [Environment variables](step2-choosing-image.md#environment-secrets) for details.
+
+:::
