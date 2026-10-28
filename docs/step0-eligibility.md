@@ -9,16 +9,52 @@ kernelspec:
 
 Not every replication package can be run on SIVACOR. This page helps you make that assessment before going forward. 
 
-## Use a single software application per step
+## Available software
 
-Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [container images](images.md)). If your replication package requires multiple applications, you will need to configure separate steps. However, your package itself can include the code for multiple applications, and you can chain them together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps).
+```{code-cell} python
+:tags: ["remove-input", "remove-output"]
 
-::::{admonition} Additional information
-:class: dropdown seealso
+import requests
+import yaml
+from IPython.display import HTML
 
-The single-application requirement means you cannot call one application from another (e.g., call R from Stata). If your code iterates frequently between applications, for instance in a loop, it is also not recommended to use this system. It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis. 
+software_url = "https://raw.githubusercontent.com/SIVACOR/sivacor-repo-choice/main/allowed_repos_by_software.yaml"
+by_software = yaml.safe_load(requests.get(software_url).text)
 
-::::
+# MyST does not render `text/markdown` outputs, so build HTML.
+L = 'style="text-align:left"'
+table = (
+    "<table>\n<thead><tr>"
+    f"<th {L}>Software</th><th {L}>Description</th>"
+    "</tr></thead>\n<tbody>\n"
+)
+for software, info in by_software.items():
+    table += f"<tr><td {L}>{software}</td><td {L}>{info.get('description', '')}</td></tr>\n"
+table += "</tbody>\n</table>"
+software_table = HTML(table)
+```
+
+SIVACOR can only run the software listed below. Your replication package must be able to run with one (or a sequence) of these. See [Available Software](images.md) for the specific versions available for each. 
+
+:::{note}
+
+SIVACOR does not currently support orchestration software (`make`, `snakemake`, bash scripts, though that may change in the future.)
+
+:::
+
+```{code-cell} python
+:tags: ["remove-input"]
+
+software_table
+```
+
+
+## Ability to separate code into discrete software steps
+
+Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [container images](images.md)). While it is possible to chain multiple software steps in sequence (see [instructions in Step 2](#chained-runs-steps)), SIVACOR does not currently support call one application from another (e.g., call `R` from `Stata`, or `Julia` from `MATLAB). If your code iterates frequently between applications, for instance in a loop, you cannot use this system. 
+
+It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis, your package can be handled by SIVACOR.
+
 
 (do-not-include-data-not-allowed)=
 ## Do not include any data that you are not allowed to upload to third-party systems

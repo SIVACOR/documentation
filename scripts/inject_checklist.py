@@ -36,7 +36,7 @@ MARKER = "sivacor-checklist-style"
 # Site paths (no trailing slash, no origin) of the pages that get a checklist.
 # The script is injected everywhere so that client-side navigation to one of
 # these pages also triggers it.
-PAGES = ["/docs/step0-prepare"]
+PAGES = ["/docs/step0-prepare", "/docs/step0-eligibility"]
 
 CHECKLIST_CSS = """
 #sivacor-checklist {
