@@ -93,7 +93,11 @@ globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Contain
 
 :::{tab-item} Stata
 
-Stata images are built by [SSC NG](https://ssc-ng.net/docker-stata/)[^stataimg], with permission from StataCorp. See the [sscng repositories](https://hub.docker.com/u/sscng) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version. Images contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
+Stata images are built by [SSC NG](https://ssc-ng.net/docker-stata/)[^stataimg], with permission from StataCorp. See the [sscng repositories](https://hub.docker.com/u/sscng) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version. 
+
+```{important} 
+Stata images contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
+```
 
 [^stataimg]: These images were previously created by Lars Vilhuber, AEA Data Editor, and published at <https://hub.docker.com/r/dataeditors/>. Maintenance was transferred to [SSC-NG](https://ssc-ng.net/) in October 2026.
 
@@ -143,13 +147,17 @@ if 'df_matlab' in globals():
 
 :::{tab-item} Julia
 
-Julia containers differ only minimally from [official Julia images](https://github.com/docker-library/julia). They add a non-root user, and make efficiency simplifications for the package registry, see  [`SIVACOR/julia`](https://github.com/SIVACOR/julia). Images are available at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages).
+We build Julia containers and publish them at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages).
+They differ only minimally from [official Julia images](https://github.com/docker-library/julia), see  [`SIVACOR/julia`](https://github.com/SIVACOR/julia). 
 
-Containers are named after the Julia release — `julia1.10`, `julia1.11` — and a tag per build,
-`<julia version>-<build date>`. New tags are created either when a new Julia release is made, or when the underlying Linux container is updated. Pick the version matching the Julia you developed against, and the newest tag
+Containers are named after the major-minor Julia release — `julia1.10`, `julia1.11` — and a tag per build,
+`<julia patch version>-<build date>`. Pick the version matching the Julia you developed against, and the newest tag
 within it.
 
+
+```{important}
 Julia containers do not include  **any packages**. Use  `Project.toml` to add packages; see [Step 0](#dependencies).
+```
 
 ```{code-cell} python
 :tags: ["remove-input"]
