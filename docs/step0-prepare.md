@@ -68,35 +68,69 @@ For some guidance on constructing a portable replication package, see [Steps 1-3
 
 If your code uses libraries or packages, you must ensure that they are **installed automatically** (for Stata, we suggest you include them). We strongly encourage packages that use "environments", and packages to manage dependencies.
 
-::::::{seealso} Details
+:::::::{seealso} Details
 :class: dropdown
 
-:::::{tab-set}
+::::::{tab-set}
 
-::::{tab-item} R
+:::::{tab-item} R
 
 Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packrat`](https://rstudio.github.io/packrat/).[^groundhog] You can also include code at the top of your main R script to install any required packages that are not already installed. All code necessary to manage dependencies must be part of the replication package, and must run unattended. For instance, if using `renv`, include the `.Rprofile` and ensure that `renv::restore()` is called at the start of your main R script.
+
+:::{warning} Do not use a hard-coded CRAN mirror
+:class: dropdown
+
+Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your replication package. 
+While on your computer, R installations may balk when you don't interactively select a CRAN mirror, the `R` containers have a pre-defined CRAN mirror. See [renv documentation](https://rstudio.github.io/renv/articles/renv.html) for details.
+
+:::
+
+::::{note} Example code
+:class: dropdown
+
+
+```r
+install.packages("renv")  # only once
+renv::init()               # only once per project
+renv::snapshot()           # only once per project, after all packages are installed. You should choose to install all packages detected, then snapshotting.
+renv::status()             # to check status
+```
+
+This will create a file `renv.lock` in the top-level directory of your project.
+
+**Adding to replication package**
+
+The following files should be included in your replication package:
+
+```bash
+.Rprofile
+renv.lock
+renv/activate.R
+renv/settings.json
+```
+
+:::{warning} Do not include the entire `renv` directory
+
+In particular not the `renv/library` subdirectory, as it is platform-specific (of no use to other platforms), and can be very large.
+
+:::
+::::
 
 [^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
 
 
-:::{warning}
 
-Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your replication package. It is generally much more efficient to leverage the `CRAN` mirror defined naturally within the `rocker` images. 
+:::::
 
-:::
+:::::{tab-item} Stata
 
-::::
-
-::::{tab-item} Stata
-
-Guidance for portable dependencies for Stata is provided [at Step 3](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-3-dependencies) of the AEA Data Editor's guidance. See also the World Bank's [`repado`](https://worldbank.github.io/repkit/reference/repado.html).
+See the [Tutorial for Stata Packages](tutorial-stata-packages) for instructions on how you can include Stata packages reproducibly. Other guidance can be found at  [the AEA Data Editor's site](https://aeadataeditor.github.io/aea-de-guidance/preparing-replication-package.html#step-3-dependencies), the World Bank's [`repado`](https://worldbank.github.io/repkit/reference/repado.html), the [Self Checking Reproducibility tutorial](https://larsvilhuber.github.io/self-checking-reproducibility/12-environments-in-stata.html) and [Julian Reif's Stata Coding Guide](https://julianreif.com/guide/).
 
 Note that even when you include Stata packages, you should provide the script that originally installed them, to demonstrate provenance.
 
-::::
+:::::
 
-::::{tab-item} Julia
+:::::{tab-item} Julia
 
 Include a `Project.toml` and `Manifest.toml`. 
 
@@ -141,9 +175,9 @@ Pkg.add("GLM")
 Include `Project.toml` and `Manifest.toml`, as well as `setup.jl`  or `install.jl` if present,  next to your main file, or at the top of your package. 
 
 
-::::
 :::::
 ::::::
+:::::::
 
 :::{admonition} Minimal sample code
 :class: dropdown seealso

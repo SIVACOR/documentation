@@ -38,7 +38,7 @@ SIVACOR can only run the software listed below. Your replication package must be
 
 :::{note}
 
-SIVACOR does not currently support orchestration software (`make`, `snakemake`, bash scripts, though that may change in the future.)
+SIVACOR does not currently support orchestration software (`make`, `snakemake`, bash scripts, etc.) though that may change in the future.
 
 :::
 

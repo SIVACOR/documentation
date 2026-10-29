@@ -77,6 +77,7 @@ project:
     - file: docs/tutorials.md
       children:
         - file: docs/tutorial-removing-data.md
+        - file: docs/tutorial-stata-packages.md
         - file: docs/tutorial-checking-integrity.md
     - file: docs/faq.md
       children:
