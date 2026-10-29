@@ -39,13 +39,14 @@ input data during the run, but  keep it out of the package you publish.
 :::
 
 :::{warning} You should limit removal to files that you are not allowed to publish.
+:class: dropdown
 
 A data editor or future reader might not accept the package if you remove files that should and could have been included. 
 
 :::
 
 :::{admonition} Example file and usage
-:class: dropdown hint
+:class: dropdown seealso
 
 See the [tutorial on removing data with `.sivacorignore`](tutorial-removing-data) for an example file and usage.
 
