@@ -8,7 +8,8 @@ hook for adding checkboxes, and the theme exposes no ``<head>`` slot for custom
 JS (see ``inject_banner.py``), so this is another post-build step: a small
 script is injected into every page and, on the pages listed in ``PAGES``, builds
 a list of checkboxes from the article's ``<h2>`` headings, linked to their
-anchors, and remembers ticks in ``localStorage``.
+anchors, and remembers ticks in ``localStorage``. A heading inside an element
+with class ``no-checklist`` (a MyST ``{div}``) is left out.
 
 Deriving the list from the rendered headings rather than from the markdown
 means there is nothing to keep in sync when sections are added or renamed --
@@ -35,7 +36,7 @@ MARKER = "sivacor-checklist-style"
 # Site paths (no trailing slash, no origin) of the pages that get a checklist.
 # The script is injected everywhere so that client-side navigation to one of
 # these pages also triggers it.
-PAGES = ["/docs/step0-prepare"]
+PAGES = ["/docs/step0-prepare", "/docs/step0-eligibility"]
 
 CHECKLIST_CSS = """
 #sivacor-checklist {
@@ -195,7 +196,13 @@ CHECKLIST_JS = """
     if (existing && existing.isConnected) return;
     var article = document.querySelector("main article");
     if (!article) return;
-    var headings = Array.prototype.slice.call(article.querySelectorAll("h2[id]"));
+    // MyST drops classes on headings, so a page opts a heading out by
+    // wrapping it in a {div} with :class: no-checklist.
+    var headings = Array.prototype.slice
+      .call(article.querySelectorAll("h2[id]"))
+      .filter(function (h) {
+        return !h.closest(".no-checklist");
+      });
     if (!headings.length) return;
     if (!hydrated(headings[0])) {
       // A clean hydration mutates nothing, so the observer will not fire
