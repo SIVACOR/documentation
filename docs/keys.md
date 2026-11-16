@@ -115,10 +115,10 @@ changed, so an older TRO keeps whatever was current when it was made.
 | Date | Change |
 |---|---|
 | 2025-11-13 | Key `F7DB 4853 … 862A FF4A` created, with user ID `SIVACOR TRS <editors@sivacor.org>`. |
+| 2025-12-13 | TRS contact (`trov:contact`) changed from the placeholder `email@goes.here` to `admin@sivacor.org`. |
 | 2026-01-30 | User ID `Admin SIVACOR <admin@sivacor.org>` added to the same key. TROs signed after this date embed a copy of the key with both user IDs; the fingerprint is unchanged. |
 
 The contact address that a TRO gives for SIVACOR (`trov:wasAssembledBy` /
-`trov:contact`) was the placeholder `email@goes.here` in early TROs, such as one
-signed on 2025-12-10. It has since been corrected to `admin@sivacor.org`, which
-TROs from at least 2026-05-14 carry. Either way, the TRO was signed by the key
+`trov:contact`) was the placeholder `email@goes.here` in TROs signed before 2025-12-13, such as
+one signed on 2025-12-10, and has been `admin@sivacor.org` since. Either way, the TRO was signed by the key
 above, and <support@sivacor.org> is the address to write to.
