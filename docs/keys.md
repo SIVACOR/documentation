@@ -42,6 +42,14 @@ cannot differ.
 ```{literalinclude} ../keys/sivacor-trs.asc
 ```
 
+The key is also published from the sivacor.org domain itself, through a
+[Web Key Directory](https://wiki.gnupg.org/WKD), so GnuPG can fetch it by
+e-mail address:
+
+```bash
+gpg --auto-key-locate clear,wkd,nodefault --locate-external-keys editors@sivacor.org
+```
+
 A copy is also on the [Ubuntu key server](https://keyserver.ubuntu.com/pks/lookup?search=0xF7DB48539F207AD4612DC408D8BB2071862AFF4A&fingerprint=on&op=index).
 That server accepts uploads from anyone, so it is a convenience, not a source
 of trust: confirm the fingerprint against this page.
