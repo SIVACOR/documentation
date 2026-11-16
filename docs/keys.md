@@ -50,6 +50,15 @@ e-mail address:
 gpg --auto-key-locate clear,wkd,nodefault --locate-external-keys editors@sivacor.org
 ```
 
+It is on [keys.openpgp.org](https://keys.openpgp.org/search?q=F7DB48539F207AD4612DC408D8BB2071862AFF4A)
+too, with both addresses confirmed. That server publishes an e-mail address on
+a key only after the owner of the mailbox has confirmed it, so a lookup there by
+address is also a check that the key belongs to SIVACOR:
+
+```bash
+gpg --keyserver hkps://keys.openpgp.org --recv-keys F7DB48539F207AD4612DC408D8BB2071862AFF4A
+```
+
 A copy is also on the [Ubuntu key server](https://keyserver.ubuntu.com/pks/lookup?search=0xF7DB48539F207AD4612DC408D8BB2071862AFF4A&fingerprint=on&op=index).
 That server accepts uploads from anyone, so it is a convenience, not a source
 of trust: confirm the fingerprint against this page.
