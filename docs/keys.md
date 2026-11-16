@@ -91,9 +91,13 @@ TRO verifiable after the key that signed it is retired.
   and the old one stays listed, with the dates it was in use, so that TROs it
   signed remain verifiable. A retired key is never removed from this page.
 - **Revocation.** If a key is ever compromised, its revocation is published
-  here and on the key servers, with the date it stopped being trustworthy. A
-  TRO signed with it before that date stays verifiable through its trusted
-  timestamp, which proves the signature already existed.
+  here and on the key servers, with the date it stopped being trustworthy.
+  Verification tools will then flag *every* signature made with that key,
+  including older ones: `gpg` warns that the key is revoked, and some tools
+  reject the signature outright. For a TRO signed before that date, the
+  evidence that it is genuine is its trusted timestamp, which proves the
+  signature already existed while the key was still trustworthy. This page will
+  give the date to compare it against.
 
 ## History
 
