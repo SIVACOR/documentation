@@ -334,6 +334,7 @@ These three files are also included in the `tro` folder inside the replication p
   anything — it is a convenience, so the same configuration can be re-created later by
   importing it on the submission page. It never contains any secrets you supplied.
 
+(checking-tro-files)=
 ### What can I do with the TRO files? How can I check the package?
 
 There are two levels of verification possible:
@@ -380,6 +381,10 @@ Verification: OK
 
 It is OK to ignore the warning, the important part is the `Verification: OK` line.
 
+This shows that the declaration and signature have not changed since they were
+timestamped. It does not show *who* signed them: for that, check the signature
+against the SIVACOR signing key, as described in
+[Checking a TRO's signature](#checking-the-signature).
 
 ::::
 

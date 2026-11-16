@@ -61,6 +61,15 @@ jobs:
       # the HTML build only so that the output directory exists.
       - name: Build SKILL.md
         run: python scripts/build_skill.py
+      # Publishes the signing key at a stable address,
+      # <site>/keys/sivacor-trs.asc, which docs/keys.md names as canonical and
+      # which scripts may fetch. MyST gives files it serves hashed names, so the
+      # key is copied in after the HTML build. The same file is included into
+      # the keys page, so the page and the address cannot disagree.
+      - name: Publish signing key
+        run: |
+          mkdir -p _build/html/keys
+          cp keys/*.asc _build/html/keys/
       # Bakes banner.yml into every built page. No-op when the banner is
       # disabled. Must run after the HTML build and before the upload; the PDF
       # is built earlier on purpose, so it never carries the banner.
