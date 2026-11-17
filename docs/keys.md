@@ -63,12 +63,76 @@ A copy is also on the [Ubuntu key server](https://keyserver.ubuntu.com/pks/looku
 That server accepts uploads from anyone, so it is a convenience, not a source
 of trust: confirm the fingerprint against this page.
 
+(signing-key-list)=
+## Key list
+
+The keys SIVACOR has signed with, and when, are also published as a
+machine-readable list at
+
+**<https://docs.sivacor.org/keys/sivacor-trs-keys.json>**
+
+It follows the [TRS key list format](https://github.com/transparency-certified/tro-utils/issues/36#issuecomment-6926934721)
+that `tro-utils verify-signature --trs-keys` reads, and like the key file it is
+included into this page from the file served at that address:
+
+```{literalinclude} ../keys/sivacor-trs-keys.json
+:language: json
+```
+
+- `fingerprint` names the key; the key itself is the file `sivacor-trs.asc` above.
+- `valid_from` and `valid_until` bound when SIVACOR signed with the key.
+  `valid_until` is `null` while the key is in use.
+- `status` is `current`, `retired` or `compromised`; a compromised key also
+  carries `compromised_since`. See [](#key-life-cycle).
+- `ids` lists every identifier SIVACOR has given itself in a TRO
+  (`trov:wasAssembledBy`). TROs signed before October 2026 use the generic
+  `trs`, which older versions of `tro-utils` wrote for every TRS; see
+  [](#key-history). Matching `trs` does not let another system's TRO pass,
+  since its signature must still come from a key listed here.
+
+A key is never removed from the list, so TROs it signed stay verifiable.
+
 (checking-the-signature)=
 ## Checking a TRO's signature
 
-`tro-utils` does not check the signature yet, so this is done with GnuPG. Use
-`gpgv` with a keyring holding only the SIVACOR key, so that nothing is imported
-into your own keyring and no other key can satisfy the check:
+With [`tro-utils`](https://github.com/transparency-certified/tro-utils) 0.5.3
+or later, check the signature against the key list:
+
+```bash
+curl -fsSO https://docs.sivacor.org/keys/sivacor-trs-keys.json
+tro-utils verify-signature tro/tro-<id>.jsonld --trs-keys sivacor-trs-keys.json
+```
+
+A valid signature looks like this:
+
+```
+Signature: OK
+Signed by: Admin SIVACOR <admin@sivacor.org>
+Key fingerprint: F7DB48539F207AD4612DC408D8BB2071862AFF4A
+Key listed in: sivacor-trs-keys.json (current)
+Timestamp: 2026-09-20T09:06:42+00:00
+```
+
+The list vouches for the key's fingerprint, so `tro-utils` can take the key
+itself from the TRO. It also checks the TRO's trusted timestamp (the `.tsr`
+file) and judges the key as it stood at that time, so a TRO stays verifiable
+after its key is retired. To take the key from the canonical file instead of
+the TRO, add `--keyring sivacor-trs.asc` after downloading it.
+
+:::{note}
+TROs that SIVACOR made until about the end of March 2026 use an earlier draft
+of the TRO vocabulary; their declaration has no `trov:vocabularyVersion`.
+Current versions of `tro-utils` cannot read them, and stop with *"Your TRO was
+created with an older version of the TRO vocabulary"*. Check their signature
+with GnuPG, as below. Their signature is just as valid; only the tool has
+moved on.
+:::
+
+### With GnuPG alone
+
+Without `tro-utils`, use `gpgv` with a keyring holding only the SIVACOR key, so
+that nothing is imported into your own keyring and no other key can satisfy the
+check:
 
 ```bash
 curl -fsSO https://docs.sivacor.org/keys/sivacor-trs.asc
@@ -96,26 +160,30 @@ Do not check the signature with the key embedded in the TRO
 embedded key agree with each other, which a forged TRO also achieves.
 :::
 
-The trusted timestamp (the `.tsr` file) is checked separately, with
-`tro-utils verify-timestamp`; see [the FAQ](#checking-tro-files).
+`gpgv` does not look at the trusted timestamp (the `.tsr` file). Check it
+separately, with `tro-utils verify-timestamp`; see [the FAQ](#checking-tro-files).
 It proves *when* the declaration and signature existed, which is what keeps a
 TRO verifiable after the key that signed it is retired.
 
+(key-life-cycle)=
 ## Key life cycle
 
 - **Expiry.** The current key has no expiry date.
 - **Replacement.** If SIVACOR changes keys, the new key is added to this page
-  and the old one stays listed, with the dates it was in use, so that TROs it
-  signed remain verifiable. A retired key is never removed from this page.
+  and to the [key list](#signing-key-list), and the old one is marked `retired`
+  with the date it went out of use, so that TROs it signed remain verifiable.
+  A retired key is never removed from either.
 - **Revocation.** If a key is ever compromised, its revocation is published
-  here and on the key servers, with the date it stopped being trustworthy.
-  Verification tools will then flag *every* signature made with that key,
-  including older ones: `gpg` warns that the key is revoked, and some tools
+  here and on the key servers, and the key list marks it `compromised` from the
+  earliest date it may have been in other hands. `gpg` will then warn about
+  *every* signature made with that key, including older ones, and some tools
   reject the signature outright. For a TRO signed before that date, the
   evidence that it is genuine is its trusted timestamp, which proves the
-  signature already existed while the key was still trustworthy. This page will
-  give the date to compare it against.
+  signature already existed while the key was still trustworthy.
+  `tro-utils verify-signature --trs-keys` makes that comparison itself: it
+  accepts such a TRO, with a warning, and rejects one timestamped later.
 
+(key-history)=
 ## History
 
 What SIVACOR has written into its TROs over time. Signed TROs cannot be
@@ -126,6 +194,8 @@ changed, so an older TRO keeps whatever was current when it was made.
 | 2025-11-13 | Key `F7DB 4853 … 862A FF4A` created, with user ID `SIVACOR TRS <editors@sivacor.org>`. |
 | 2025-12-13 | TRS contact (`trov:contact`) changed from the placeholder `email@goes.here` to `admin@sivacor.org`. |
 | 2026-01-30 | User ID `Admin SIVACOR <admin@sivacor.org>` added to the same key. TROs signed after this date embed a copy of the key with both user IDs; the fingerprint is unchanged. |
+| 2026-10 | TRS identifier (`trov:wasAssembledBy` / `@id`) changed from the generic `trs` to `https://sivacor.org/`, with the move to `tro-utils` 0.5. The [key list](#signing-key-list) gives both. |
+| 2026-11-17 | [Key list](#signing-key-list) published. |
 
 The contact address that a TRO gives for SIVACOR (`trov:wasAssembledBy` /
 `trov:contact`) was the placeholder `email@goes.here` in TROs signed before 2025-12-13, such as
