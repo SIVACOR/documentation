@@ -41,11 +41,11 @@ If the upload was successful, scroll down.
 
 ## Choose software and version
 
-Choose first the software and version from the curated list (see [container images](images.md)). You can also select an image tag (sub version), but generally, the latest version should work. 
+Choose a **Software Environment** from the curated list, which is grouped by software (Stata, R, MATLAB, Julia) — see [Available Software](images.md) for what each one contains. Then choose its **Version**; generally, the latest version should work.
 
-:::{attention} Image missing?
+:::{attention} Software missing?
 
-If you need a different image, please contact us.
+If you need a different software environment, please contact us.
 
 :::
 
@@ -82,7 +82,7 @@ starts, listing every copy it found. Rename or remove the extra copies in the ar
 :::{hint} About alternate extensions
 :class: dropdown
 
-Some software have multiple ways they can be invoked. For instance, you might use a RMarkdown file (`.Rmd`) instead of a plain R script (`.R`), or a Jupyter notebook (`.ipynb`) instead of a plain script. SIVACOR executes code using methods defined for each software, **not by extension**: an R image always runs your main file through R, a Stata image always through Stata. Naming a `.Rmd` or an `.ipynb` as the main file therefore does not work on its own — you need a **wrapper script**, in the image's own language, that your main file points to.
+Some software have multiple ways they can be invoked. For instance, you might use a RMarkdown file (`.Rmd`) instead of a plain R script (`.R`), or a Jupyter notebook (`.ipynb`) instead of a plain script. SIVACOR executes code using methods defined for each software, **not by extension**: an R environment always runs your main file through R, a Stata environment always through Stata. Naming a `.Rmd` or an `.ipynb` as the main file therefore does not work on its own — you need a **wrapper script**, in the environment's own language, that your main file points to.
 
 To render an RMarkdown document, the main file would be an ordinary `.R` script:
 
@@ -111,7 +111,7 @@ Note also that many of these "fancier" methods require numerous additional packa
 Each step has a **Net Isolation** toggle. It is
 **off by default**. The toggle is active for that step only.
 
-When network isolation is turned on, the container has **no network access** for the entire step. No API can be called, and no websites can be accessed.
+When network isolation is turned on, your code has **no network access** for the entire step. No API can be called, and no websites can be accessed.
 
 :::{important} Turning on network isolation increases the credibility of your analysis.
 :class: dropdown
@@ -126,7 +126,7 @@ result could not have come from anywhere but the materials you uploaded. This is
 (chained-runs-steps)=
 ## Optional chained runs (steps)
 
-You can chain multiple runs together, by selecting the `+ ADD STEP` button. The runs will be run in separate containers. Each run inherits the workspace modified by the previous run, so the output of one run will be made available as input to the next run.
+You can chain multiple runs together, by selecting the `+ ADD STEP` button. Each run starts in a fresh copy of its software environment. Each run inherits the workspace modified by the previous run, so the output of one run will be made available as input to the next run.
 
 ![Chaining runs](images/sivacor-image-choice-chained-2.png)
 
@@ -137,8 +137,8 @@ If you need to repeatedly run similar jobs on SIVACOR, you can describe the step
 and import it instead of filling in the form. Expand **Optional: Import workflow definition**
 at the top of the submission form, then choose or drag in a `YAML` or `JSON` file (any file
 name, up to 256 KB). The file is checked before anything is filled in, and you will be told
-which step is at fault if something is wrong — for example if an image or tag is not one of
-the [curated images](images.md).
+which step is at fault if something is wrong — for example if a software environment or version is not one of
+the [curated ones](images.md).
 
 Importing replaces whatever is currently in the form, so you can always review and adjust
 the steps before running.
@@ -259,7 +259,7 @@ the download links, as a share of what the machine allowed. Those two figures ar
 
 
 - **Disk does not grow with machine size.** Every size has the same {eval}`disk_gb` GB primary disk, shared between your package
-  and the software image. If you have run out of *disk*, a bigger machine will not help: ask for
+  and the software environment. If you have run out of *disk*, a bigger machine will not help: ask for
   [extra scratch disk](#scratch-disk) instead. See
   [Step 0](step0-prepare.md#size-considerations).
 - **Cores and memory are tied, not chosen separately.** 

@@ -9,7 +9,7 @@ kernelspec:
 
 ## Use a single software application per step
 
-Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [container images](images.md)). For each such step, you need a separate controller script, and  configure separate steps, which you chain  together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps). Your package should include the complete code for multiple applications.
+Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [Available Software](images.md)). For each such step, you need a separate controller script, and  configure separate steps, which you chain  together in a highly simplified workflow system at submission, see [instructions in Step 2](#chained-runs-steps). Your package should include the complete code for multiple applications.
 
 ::::{admonition} Additional information
 :class: dropdown seealso
@@ -82,7 +82,7 @@ Possible approaches include [`renv`](https://rstudio.github.io/renv/) or [`packr
 :class: dropdown
 
 Do not define a `CRAN` archive (e.g., `https://cloud.r-project.org`) in your replication package. 
-While on your computer, R installations may balk when you don't interactively select a CRAN mirror, the `R` containers have a pre-defined CRAN mirror. See [renv documentation](https://rstudio.github.io/renv/articles/renv.html) for details.
+While on your computer, R installations may balk when you don't interactively select a CRAN mirror, the SIVACOR `R` environments have a pre-defined CRAN mirror. See [renv documentation](https://rstudio.github.io/renv/articles/renv.html) for details.
 
 :::
 
@@ -117,7 +117,7 @@ In particular not the `renv/library` subdirectory, as it is platform-specific (o
 :::
 ::::
 
-[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` images used here.
+[^groundhog]: [`groundhog`](https://cran.r-project.org/web/packages/groundhog/index.html) is another option for managing R package dependencies. However, on Linux, it always recompiles from source, which can take a very long time, and may fail, depending on the system libraries required on the `rocker` environments used here.
 
 
 
@@ -186,7 +186,7 @@ Include `Project.toml` and `Manifest.toml`, as well as `setup.jl`  or `install.j
 - Sample code for Stata (any version), Scenario B: <https://github.com/SIVACOR/sivacor-test-stata>
 - Sample code for Stata (any version), Scenario A (`main.do` in a non-root directory): <https://github.com/SIVACOR/sivacor-test-stata/tree/scenario-A>
 - Sample code for R (set up for R 4.3.1, tested on R 4.5.1): <https://github.com/SIVACOR/sivacor-test-r>
-- Sample code for MATLAB with and without use of Dynare: <https://github.com/SIVACOR/sivacor-test-matlab> (both use the same `dynare/dynare` container).
+- Sample code for MATLAB with and without use of Dynare: <https://github.com/SIVACOR/sivacor-test-matlab> (both use the same `dynare/dynare` software environment).
 - Sample code for Julia (any version): <https://github.com/SIVACOR/sivacor-test-julia>
 
 

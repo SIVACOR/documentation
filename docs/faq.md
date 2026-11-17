@@ -194,10 +194,10 @@ The error looks like this:
 > Ran out of disk space: 4.7 GiB free on the workspace filesystem, below the 5.0 GiB floor.
 
 The machine running your submission has 60 GB of disk, and that space is shared between your
-replication package (including everything your code writes) and the software image it runs
-in. Large images consume a substantial part of it — see the
+replication package (including everything your code writes) and the software environment it runs
+in. Large environments consume a substantial part of it — see the
 [disk size table](step0-prepare.md#size-considerations) for how much room typical
-images leave free.
+environments leave free.
 
 Things that help:
 
@@ -221,7 +221,7 @@ quote what your last run's workspace peaked at, which the submission form shows 
 ### My submission has been "Waiting for a worker" for a long time
 
 SIVACOR starts a machine for each submission, which normally takes two to three minutes,
-followed by the download of the software image. If other users' submissions are occupying
+followed by the download of the software environment. If other users' submissions are occupying
 the machines available to the pilot, yours waits until one frees up.
 
 A wait of several minutes is normal, especially for MATLAB. If a submission stays in this
@@ -271,7 +271,7 @@ If Jetstream2 is operational, but SIVACOR appears down, please contact us via th
 
 ### It's failing on a file, but the file is there!
 
-Actually, the file may not be called exactly the same thing. The containers used by SIVACOR are based on Linux, and Linux uses a case-sensitive file system. So if your main file is called `Main.do`, or `Main.DO`, that is not the same as `main.do`. The same applies for any files written or read by Stata or R: Reading from `data/raw/gs4.csv` is not the same as reading from `data/Raw/GS4.csv`.
+Actually, the file may not be called exactly the same thing. The software environments used by SIVACOR are based on Linux, and Linux uses a case-sensitive file system. So if your main file is called `Main.do`, or `Main.DO`, that is not the same as `main.do`. The same applies for any files written or read by Stata or R: Reading from `data/raw/gs4.csv` is not the same as reading from `data/Raw/GS4.csv`.
 
 ### Stata errors
 
@@ -286,7 +286,7 @@ This is a file-not found error. There are two reasons for this:
 
 #### `rJava`
 
-Due to the way the containers are set up, it is currently not possible to use Java-related packages. The typical error message will be
+Due to the way the software environments are set up, it is currently not possible to use Java-related packages. The typical error message will be
 
 ```
 Error: package or namespace load failed for ‘rJava’:
