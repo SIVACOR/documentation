@@ -1,0 +1,18 @@
+{
+  "format": "https://w3id.org/trace/trs-keys/v1",
+  "updated": "2026-11-17T00:00:00Z",
+  "systems": [
+    {
+      "ids": ["https://sivacor.org/", "trs"],
+      "name": "SIVACOR",
+      "keys": [
+        {
+          "fingerprint": "F7DB48539F207AD4612DC408D8BB2071862AFF4A",
+          "valid_from": "2025-11-13T23:24:51Z",
+          "valid_until": null,
+          "status": "current"
+        }
+      ]
+    }
+  ]
+}
