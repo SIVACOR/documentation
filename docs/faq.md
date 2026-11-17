@@ -388,6 +388,67 @@ against the SIVACOR signing key, as described in
 
 ::::
 
+(checking-older-timestamps)=
+::::{admonition} Checking the timestamp of an older TRO
+:class: tip dropdown
+
+`tro-utils verify-timestamp` fails on TROs that SIVACOR made before about
+April 2026, although their timestamps are valid. There are two reasons:
+
+- Until about the end of March 2026, SIVACOR's TROs used an earlier draft of
+  the TRO vocabulary, which current versions of `tro-utils` cannot read.
+- The timestamp authority, [FreeTSA](https://freetsa.org/), changed its signing
+  certificate in February 2026, and the old one expired on 2026-03-11.
+  `tro-utils` checks every timestamp against the current certificate, as of
+  today, so timestamps made before the change fail even in older versions.
+
+The check can be done with OpenSSL instead. It gives OpenSSL both FreeTSA
+certificates, and asks it to judge them as of the time in the timestamp
+itself:
+
+```bash
+TRO=tro/tro-<id>     # the TRO's file name, without the extension
+
+# FreeTSA's root certificate, and its signing certificates, current and previous
+curl -fsS https://freetsa.org/files/cacert.pem -o freetsa-ca.pem
+curl -fsS https://freetsa.org/files/tsa.crt -o freetsa-tsa.pem
+curl -fsS https://web.archive.org/web/20251203091925id_/https://www.freetsa.org/files/tsa.crt >> freetsa-tsa.pem
+
+# What was timestamped: the SHA-512 hashes of the declaration and the signature
+printf '{\n  "tro_declaration": "%s",\n  "trs_signature": "%s"\n}' \
+  "$(sha512sum < "$TRO.jsonld" | cut -d' ' -f1)" \
+  "$(sha512sum < "$TRO.sig" | cut -d' ' -f1)" > tsr-payload.json
+
+# Verify, as of the time in the timestamp
+WHEN=$(openssl ts -reply -in "$TRO.tsr" -text 2>/dev/null | sed -n 's/^Time stamp: //p')
+echo "Timestamped: $WHEN"
+openssl ts -verify -data tsr-payload.json -in "$TRO.tsr" \
+  -CAfile freetsa-ca.pem -untrusted freetsa-tsa.pem -attime "$(date -d "$WHEN" +%s)"
+```
+
+For a TRO from 2025-12-10 this prints:
+
+```
+Timestamped: Dec 10 10:19:42 2025 GMT
+Warning: certificate from 'freetsa-tsa.pem' with subject '/O=Free TSA/OU=TSA/...' not yet valid
+Verification: OK
+```
+
+The warning is about the *current* certificate, which did not exist yet at that
+time, and can be ignored; what counts is `Verification: OK`. The same commands
+work for newer TROs too, for which the warning names the old certificate
+instead.
+
+The previous signing certificate comes from the Internet Archive because
+FreeTSA no longer serves it. Where it comes from does not matter for the
+check: OpenSSL accepts it only if it was issued by FreeTSA's root certificate,
+which is downloaded from FreeTSA itself.
+
+On macOS, use `shasum -a 512` instead of `sha512sum`, and
+`date -j -f "%b %d %T %Y %Z" "$WHEN" +%s` instead of `date -d "$WHEN" +%s`.
+
+::::
+
 ::::{admonition} Verifying the arrangements
 :class: tip dropdown
 

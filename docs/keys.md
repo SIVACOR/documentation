@@ -161,7 +161,8 @@ embedded key agree with each other, which a forged TRO also achieves.
 :::
 
 `gpgv` does not look at the trusted timestamp (the `.tsr` file). Check it
-separately, with `tro-utils verify-timestamp`; see [the FAQ](#checking-tro-files).
+separately, with `tro-utils verify-timestamp`; see [the FAQ](#checking-tro-files),
+which also shows how to check [an older TRO's timestamp](#checking-older-timestamps).
 It proves *when* the declaration and signature existed, which is what keeps a
 TRO verifiable after the key that signed it is retired.
 
