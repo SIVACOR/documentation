@@ -7,7 +7,7 @@ kernelspec:
 
 # Available Software
 
-SIVACOR only allows you to run certain well-defined software stacks, packaged as Docker images, from known and trusted sources. The table below shows all available software images with their tags and links to their Docker Hub repositories. If you believe additional images should be added, file a [pull request](https://github.com/SIVACOR/sivacor-repo-choice/issues/new) at the [sivacor-repo-choice](https://github.com/SIVACOR/sivacor-repo-choice/) repository, and contact us.
+SIVACOR only allows you to run certain well-defined software environments from known and trusted sources. The tables below list every **Software Environment** and **Version** you can pick in the submission form, with a link to more information about each. (Technically, each environment is a Docker image and each version one of its tags; you do not need to know anything about Docker to use them.) If you believe additional software should be added, file a [pull request](https://github.com/SIVACOR/sivacor-repo-choice/issues/new) at the [sivacor-repo-choice](https://github.com/SIVACOR/sivacor-repo-choice/) repository, and contact us.
 
 
 ```{code-cell} python
@@ -85,7 +85,7 @@ for software, group_df in software_groups:
     software_data[software] = group_df
 
 # Export data to global namespace for use in MyST tabs
-globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy().rename(columns={'Container': 'Image'}) 
+globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Container', 'Tag']].copy().rename(columns={'Container': 'Software Environment', 'Tag': 'Version'}) 
                   for software, group_df in software_data.items()})
 ```
 
@@ -93,13 +93,13 @@ globals().update({f'df_{software.lower().replace(" ", "_")}': group_df[['Contain
 
 :::{tab-item} Stata
 
-Stata images are built by [SSC NG](https://ssc-ng.net/docker-stata/)[^stataimg], with permission from StataCorp. See the [sscng repositories](https://hub.docker.com/u/sscng) for more information. Stata containers define Stata versions, with tags identifying the within-version regular updates. Usually, you can use the latest tag for a specific version. 
+Stata environments are built by [SSC NG](https://ssc-ng.net/docker-stata/)[^stataimg], with permission from StataCorp. See the [sscng repositories](https://hub.docker.com/u/sscng) for more information. Each environment corresponds to a Stata version, and its versions identify the regular updates within it. Usually, you can use the latest version available. 
 
 ```{important} 
-Stata images contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
+Stata environments contain no user-installed packages (`net install`, `ssc install`, etc.). You must provide an installation script that adds any such packages into a project-specific folder,  see [Step 0](#dependencies). 
 ```
 
-[^stataimg]: These images were previously created by Lars Vilhuber, AEA Data Editor, and published at <https://hub.docker.com/r/dataeditors/>. Maintenance was transferred to [SSC-NG](https://ssc-ng.net/) in October 2026.
+[^stataimg]: These environments were previously created by Lars Vilhuber, AEA Data Editor, and published at <https://hub.docker.com/r/dataeditors/>. Maintenance was transferred to [SSC-NG](https://ssc-ng.net/) in October 2026.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -113,7 +113,7 @@ if 'df_stata' in globals():
 
 :::{tab-item} R
 
-We use a subset of images from the [rocker project](https://www.rocker-project.org/) for `R`. See the  [rocker repositories](https://hub.docker.com/u/rocker) for more information. An image name is defined by a combination of pre-installed packages. Any additional packages must be installed, using an appropriate method,  see [Step 0](#dependencies). Tags identify different versions of R.
+We use a subset of the environments built by the [rocker project](https://www.rocker-project.org/) for `R`. See the  [rocker repositories](https://hub.docker.com/u/rocker) for more information. Each environment comes with a different combination of pre-installed packages. Any additional packages must be installed, using an appropriate method,  see [Step 0](#dependencies). Versions identify different releases of R.
 
 ```{code-cell} python
 :tags: ["remove-input"]
@@ -129,10 +129,10 @@ if 'df_r' in globals():
 
 :::{tab-item} MATLAB
 
-We use images from  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most MATLAB toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Tags identify a particular combination of Dynare and MATLAB versions. 
+We use the environments built by  [dynare/dynare](https://hub.docker.com/r/dynare/dynare) for MATLAB, because they contain most MATLAB toolboxes. Only certain versions of MATLAB are supported. You should use these even if you do not use [Dynare](https://www.dynare.org/). Each version identifies a particular combination of Dynare and MATLAB releases. 
 
 ```{warning}
-MATLAB images require `network_isolation: false` to run, due to the need for a license server.
+MATLAB environments require network isolation to be turned off (`network_isolation: false`) to run, due to the need for a license server.
 ```
 
 ```{code-cell} python
@@ -147,16 +147,16 @@ if 'df_matlab' in globals():
 
 :::{tab-item} Julia
 
-We build Julia containers and publish them at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages).
-They differ only minimally from [official Julia images](https://github.com/docker-library/julia), see  [`SIVACOR/julia`](https://github.com/SIVACOR/julia). 
+We build the Julia environments and publish them at [`ghcr.io/sivacor`](https://github.com/orgs/SIVACOR/packages).
+They differ only minimally from the [official Julia images](https://github.com/docker-library/julia), see  [`SIVACOR/julia`](https://github.com/SIVACOR/julia). 
 
-Containers are named after the major-minor Julia release — `julia1.10`, `julia1.11` — and a tag per build,
-`<julia patch version>-<build date>`. Pick the version matching the Julia you developed against, and the newest tag
+Environments are named after the major-minor Julia release — `julia1.10`, `julia1.11` — and each build is a version,
+`<julia patch version>-<build date>`. Pick the environment matching the Julia you developed against, and the newest version
 within it.
 
 
 ```{important}
-Julia containers do not include  **any packages**. Use  `Project.toml` to add packages; see [Step 0](#dependencies).
+Julia environments do not include **any packages**, and SIVACOR does not install them for you. If your code needs packages, ship a `Project.toml` (and ideally a `Manifest.toml`) and add a first step that installs them — for example a `setup.jl` running `using Pkg; Pkg.instantiate()`, with network isolation turned off for that step only. See [Step 0](#dependencies).
 ```
 
 ```{code-cell} python

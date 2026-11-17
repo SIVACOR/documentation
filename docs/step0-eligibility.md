@@ -51,7 +51,7 @@ software_table
 
 ## Ability to separate code into discrete software steps
 
-Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [container images](images.md)). While it is possible to chain multiple software steps in sequence (see [instructions in Step 2](#chained-runs-steps)), SIVACOR does not currently support call one application from another (e.g., call `R` from `Stata`, or `Julia` from `MATLAB). If your code iterates frequently between applications, for instance in a loop, you cannot use this system. 
+Each step of a SIVACOR submission only supports a single software application (Stata, R, MATLAB/Dynare or Julia — see [Available Software](images.md)). While it is possible to chain multiple software steps in sequence (see [instructions in Step 2](#chained-runs-steps)), SIVACOR does not currently support call one application from another (e.g., call `R` from `Stata`, or `Julia` from `MATLAB). If your code iterates frequently between applications, for instance in a loop, you cannot use this system. 
 
 It can, however, be used when a small number of actions are needed in one software application, with the bulk in a main application. For instance, if you use Stata for data preparation, but R for all remaining analysis, your package can be handled by SIVACOR.
 
@@ -140,7 +140,7 @@ dynare_free = f"{math.ceil(dynare[4])}" if dynare else "n/a"  # "less than ..."
 L, R = 'style="text-align:left"', 'style="text-align:right"'
 table = (
     "<table>\n<thead><tr>"
-    f"<th {L}>Software</th><th {L}>Image</th><th {R}>Download size</th>"
+    f"<th {L}>Software</th><th {L}>Software Environment</th><th {R}>Download size</th>"
     f"<th {R}>Space it occupies*</th><th {R}>Free space for your package*</th>"
     "</tr></thead>\n<tbody>\n"
 )
@@ -169,7 +169,7 @@ Current SIVACOR nodes have  between **{eval}`free_min` and {eval}`free_max` GiB*
 ::::{admonition} Additional planning information
 :class: dropdown tip
 
-This instance of SIVACOR launches a virtual machine for each run. Its disk is advertised as {eval}`disk_gb` GB; once formatted the filesystem measures **{eval}`disk_gib` GiB**, which is the figure every number below is in. Of that, about **{eval}`overhead_gib` GiB** is the operating system, Docker and the SIVACOR harness. Roughly **{eval}`base_free_gib` GiB** are available before the analysis software is added. Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives on.
+This instance of SIVACOR launches a virtual machine for each run. Its disk is advertised as {eval}`disk_gb` GB; once formatted the filesystem measures **{eval}`disk_gib` GiB**, which is the figure every number below is in. Of that, about **{eval}`overhead_gib` GiB** is the operating system and the SIVACOR harness. Roughly **{eval}`base_free_gib` GiB** are available before the analysis software is added. Software sizes differ a great deal, and the software is unpacked onto the same disk your package lives on.
 
 
 The table below lists what is left for your package after each one. See
@@ -183,12 +183,12 @@ size_table
 
 \* Estimated from the compressed download size.[^downloadsize] 
 
-[^downloadsize]: The container is kept **both** compressed and
+[^downloadsize]: The software is kept **both** compressed and
 unpacked on the worker's disk, so it occupies roughly **{eval}`footprint_factor`x** what it downloads.
 
 :::{important}
 
-**If your analysis uses MATLAB/Dynare, pay particular attention to the  `dynare` entry.** Images provided by the Dynare project are large, typically over {eval}`dynare_on_disk` GiB. This leaves less than {eval}`dynare_free` GiB for the package and everything it writes. If you run into problems, see how to request 
+**If your analysis uses MATLAB/Dynare, pay particular attention to the  `dynare` entry.** Environments provided by the Dynare project are large, typically over {eval}`dynare_on_disk` GiB. This leaves less than {eval}`dynare_free` GiB for the package and everything it writes. If you run into problems, see how to request 
 [extra scratch disk](step2-choosing-image.md#scratch-disk).
 
 :::
