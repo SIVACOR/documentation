@@ -119,6 +119,15 @@ file) and judges the key as it stood at that time, so a TRO stays verifiable
 after its key is retired. To take the key from the canonical file instead of
 the TRO, add `--keyring sivacor-trs.asc` after downloading it.
 
+:::{note}
+TROs that SIVACOR made until about the end of March 2026 use an earlier draft
+of the TRO vocabulary; their declaration has no `trov:vocabularyVersion`.
+Current versions of `tro-utils` cannot read them, and stop with *"Your TRO was
+created with an older version of the TRO vocabulary"*. Check their signature
+with GnuPG, as below. Their signature is just as valid; only the tool has
+moved on.
+:::
+
 ### With GnuPG alone
 
 Without `tro-utils`, use `gpgv` with a keyring holding only the SIVACOR key, so
